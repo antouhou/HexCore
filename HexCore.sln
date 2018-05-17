@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexCore", "HexCore\HexCore.csproj", "{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
