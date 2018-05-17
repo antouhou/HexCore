@@ -4,61 +4,28 @@ using HexCore.DataStructures;
 using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
+using Tests.Fixtures;
 
 namespace Tests.HexGraph
 {
     [TestFixture]
     public class GraphTest
     {
-        private readonly List<MovementType> _movementTypes = new List<MovementType>
-        {
-            new MovementType()
-            {
-                Name = "ground",
-                MovementCostTo =
-                {
-                    {"ground", 1},
-                    {"forest", 2},
-                    {"water", 3}
-                }
-            },
-            new MovementType()
-            {
-                Name = "forest",
-                MovementCostTo =
-                {
-                    {"ground", 1},
-                    {"forest", 1},
-                    {"water", 3}
-                }
-            },
-            new MovementType()
-            {
-                Name = "water",
-                MovementCostTo =
-                {
-                    {"ground", 2},
-                    {"forest", 2},
-                    {"water", 1}
-                }
-            }
-        };
-
         [Test]
         public void ShouldCreateGraph()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
-            Assert.That(graph.Columns.Count == 3);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns)
             {
-                Assert.That(row.Count == 3);
+                Assert.That(row.Count, Is.EqualTo(3));
             }
         }
 
         [Test]
         public void ShouldResizeWholeGraphUp()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(4, 5);
             Assert.That(graph.Columns.Count, Is.EqualTo(4));
             foreach (var row in graph.Columns)
@@ -70,7 +37,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldResizeGraphDown()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(2, 3);
             Assert.That(graph.Columns.Count, Is.EqualTo(2));
             foreach (var row in graph.Columns)
@@ -83,7 +50,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldResizeOnlyCellsInEachRow()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(3, 4);
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns)
@@ -95,7 +62,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldResizeOnlyCellsInEachRowDown()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(3, 2);
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns)
@@ -107,7 +74,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldResizeOnlyHeightUp()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(4, 3);
             Assert.That(graph.Columns.Count, Is.EqualTo(4));
             foreach (var row in graph.Columns)
@@ -119,7 +86,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldResizeOnlyColsDown()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(2, 3);
             Assert.That(graph.Columns.Count, Is.EqualTo(2));
             foreach (var row in graph.Columns)
@@ -131,7 +98,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldNotResizeIfNothingChanged()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             graph.Resize(3, 3);
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns)
@@ -144,7 +111,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldMaintainCellStatesOnResize()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             Assert.False(graph.Columns[0][1].IsBlocked);
             graph.Columns[0][1].IsBlocked = true;
             Assert.True(graph.Columns[0][1].IsBlocked);
@@ -155,7 +122,7 @@ namespace Tests.HexGraph
         [Test]
         public void AllCellsShouldHaveCorrectPositions()
         {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             Assert.That(graph.Columns.Count, Is.EqualTo(6));
             for (var x = 0;
                 x < graph.Columns.Count;
@@ -198,7 +165,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldGetCorrectNeighbors()
         {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, _movementTypes);
+            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             Assert.That(graph.Columns.Count, Is.EqualTo(6));
             for (var x = 0; x < graph.Columns.Count; x++)
             {

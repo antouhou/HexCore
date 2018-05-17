@@ -100,6 +100,11 @@ namespace HexCore.HexGraph
             UpdateCoordinatesList();
         }
 
+        public void SetCellMovementType(Coordinate2D cellPosition, MovementType newMovementType)
+        {
+            Columns[cellPosition.X][cellPosition.Y].MovementType = newMovementType;
+        }
+
         private void UpdateCoordinatesList()
         {
             _cubeCoordinates = GetAllCellsCubeCoordinates().ToList();
