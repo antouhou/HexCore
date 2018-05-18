@@ -314,6 +314,7 @@ namespace Tests.AStar
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Avoiding obstacles
+                new Coordinate2D(6, 6),
                 new Coordinate2D(6, 5),
                 new Coordinate2D(6, 4),
                 // Going parallel to the bank
