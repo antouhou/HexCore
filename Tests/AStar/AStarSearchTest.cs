@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
 using HexCore.AStar;
 using HexCore.DataStructures;
-using HexCore.HexGraph;
-using Tests.Fixtures;
-using System.Collections.Generic;
 using HexCore.Helpers;
+using HexCore.HexGraph;
+using NUnit.Framework;
+using Tests.Fixtures;
 
 namespace Tests.AStar
 {
@@ -309,7 +309,7 @@ namespace Tests.AStar
                 new Coordinate2D(2, 3),
                 new Coordinate2D(3, 3)
             }, MovementTypes.Water);
-            
+
             //Let's see what's going to happen!
             expectedOffsetPath = new List<Coordinate2D>
             {
@@ -334,16 +334,16 @@ namespace Tests.AStar
 
             var restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
             var restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
-            
+
             Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
             for (var i = 0; i < expectedPath.Count; i++)
             {
                 Assert.That(path[i], Is.EqualTo(expectedPath[i]));
             }
-            
+
             // Now let's check water movement type - it should prefer going through the water rather than the ground
             path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Water);
-            
+
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Avoiding obstacles
@@ -365,7 +365,7 @@ namespace Tests.AStar
 
             restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
             restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
-            
+
             Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
             for (var i = 0; i < expectedPath.Count; i++)
             {

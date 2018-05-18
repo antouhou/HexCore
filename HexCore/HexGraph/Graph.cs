@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HexCore.AStar;
 using HexCore.DataStructures;
 using HexCore.Helpers;
@@ -101,12 +100,13 @@ namespace HexCore.HexGraph
             {
                 Columns[coordinate.X][coordinate.Y].IsBlocked = true;
             }
+
             UpdateCoordinatesList();
         }
 
         public void SetOneCellBlocked(Coordinate2D coordinate)
         {
-            SetManyCellsBlocked(new List<Coordinate2D> { coordinate });
+            SetManyCellsBlocked(new List<Coordinate2D> {coordinate});
         }
 
         public void SetManyCellsMovementType(IEnumerable<Coordinate2D> coordinates, MovementType movementType)

@@ -1,5 +1,5 @@
-﻿using HexCore.HexGraph;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HexCore.HexGraph;
 
 namespace Tests.Fixtures
 {

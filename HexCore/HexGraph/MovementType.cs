@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HexCore.HexGraph
 {
-    [System.Serializable]
+    [Serializable]
     public class MovementType
     {
         public string Name = "";

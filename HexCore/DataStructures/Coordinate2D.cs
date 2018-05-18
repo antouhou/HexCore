@@ -1,6 +1,8 @@
-﻿namespace HexCore.DataStructures
+﻿using System;
+
+namespace HexCore.DataStructures
 {
-    [System.Serializable]
+    [Serializable]
     public struct Coordinate2D
     {
         public int X, Y;
