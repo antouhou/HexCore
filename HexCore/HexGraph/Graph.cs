@@ -192,12 +192,12 @@ namespace HexCore.HexGraph
                 fringes.Add(fringe);
             }
 
-            // So start position won't be included in area
+            // So start position won't be included in the area
             visited.Remove(startPosition);
             return visited;
         }
 
-        private CellState GetCellStateByCubeCoordinate(Coordinate3D coordinate)
+        private CellState GetCellStateByCoordinate3D(Coordinate3D coordinate)
         {
             var offset = CoordinateConverter.ConvertOneCubeToOffset(_offsetType, coordinate);
             return Columns[offset.X][offset.Y];
@@ -205,7 +205,7 @@ namespace HexCore.HexGraph
 
         public int GetMovementCost(Coordinate3D coordinate, MovementType unitMovementType)
         {
-            var cellState = GetCellStateByCubeCoordinate(coordinate);
+            var cellState = GetCellStateByCoordinate3D(coordinate);
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }
     }
