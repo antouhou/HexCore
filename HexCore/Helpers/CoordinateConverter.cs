@@ -67,7 +67,8 @@ namespace HexCore.Helpers
             }
         }
 
-        public static List<Coordinate2D> ConvertManyCubeToOffset(OffsetTypes offsetType, List<Coordinate3D> cubeCoordinates)
+        public static List<Coordinate2D> ConvertManyCubeToOffset(OffsetTypes offsetType,
+            List<Coordinate3D> cubeCoordinates)
         {
             switch (offsetType)
             {

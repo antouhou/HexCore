@@ -10,7 +10,6 @@ namespace Tests.Helpers
     [TestFixture]
     public class CoordinateConverterTest
     {
-        
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
         {

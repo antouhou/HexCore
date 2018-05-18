@@ -12,7 +12,7 @@ namespace Tests.Fixtures
             {
                 {"ground", 1},
                 {"forest", 2},
-                {"water", 3}
+                {"water", 2}
             }
         };
 
@@ -38,8 +38,11 @@ namespace Tests.Fixtures
             }
         };
 
-        public static readonly List<MovementType> TypesList = new List<MovementType> {
-            Ground, Forest, Water
+        public static readonly List<MovementType> TypesList = new List<MovementType>
+        {
+            Ground,
+            Forest,
+            Water
         };
     }
 }

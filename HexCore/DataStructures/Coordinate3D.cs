@@ -18,7 +18,7 @@ namespace HexCore.DataStructures
         {
             return new Coordinate3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
-        
+
         public static Coordinate3D operator -(Coordinate3D a, Coordinate3D b)
         {
             return new Coordinate3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
