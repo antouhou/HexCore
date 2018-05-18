@@ -11,17 +11,12 @@ namespace HexCore.AStar
      */
     public static class AStarSearch
     {
-        // It's just returns a distance to the goal.
+        // Returns a distance to the goal.
         private static double Heuristic(Coordinate3D a, Coordinate3D b)
         {
             return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2;
         }
 
-        /**
-         * In order to find shortest path between two points, you need to:
-         * var path = new AStartSearch(graph, start, goal).ReconstructPath();
-         * TODO: Having two methods looks redundant. Needs to be rafctored.
-         */
         public static List<Coordinate3D> FindPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,
             MovementType unitMovementType)
         {
@@ -62,9 +57,9 @@ namespace HexCore.AStar
                 curr = cameFrom[curr];
             }
 
-            //path.Add(_start); // optional
+            // path.Add(start); // optional
             // Reverse it to start at actual start point
-            path.Reverse(); // optional
+            path.Reverse();
             return path;
         }
     }

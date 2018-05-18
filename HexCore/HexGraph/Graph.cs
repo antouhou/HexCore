@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using HexCore.AStar;
 using HexCore.DataStructures;
 using HexCore.Helpers;
@@ -94,15 +95,31 @@ namespace HexCore.HexGraph
             UpdateCoordinatesList();
         }
 
-        public void SetCellBlocked(Coordinate2D cellPosition)
+        public void SetManyCellsBlocked(IEnumerable<Coordinate2D> coordinates)
         {
-            Columns[cellPosition.X][cellPosition.Y].IsBlocked = true;
+            foreach (var coordinate in coordinates)
+            {
+                Columns[coordinate.X][coordinate.Y].IsBlocked = true;
+            }
             UpdateCoordinatesList();
         }
 
-        public void SetCellMovementType(Coordinate2D cellPosition, MovementType newMovementType)
+        public void SetOneCellBlocked(Coordinate2D coordinate)
         {
-            Columns[cellPosition.X][cellPosition.Y].MovementType = newMovementType;
+            SetManyCellsBlocked(new List<Coordinate2D> { coordinate });
+        }
+
+        public void SetManyCellsMovementType(IEnumerable<Coordinate2D> coordinates, MovementType movementType)
+        {
+            foreach (var coordinate in coordinates)
+            {
+                Columns[coordinate.X][coordinate.Y].MovementType = movementType;
+            }
+        }
+
+        public void SetOneCellMovementType(Coordinate2D coordinate, MovementType movementType)
+        {
+            SetManyCellsMovementType(new List<Coordinate2D>() {coordinate}, movementType);
         }
 
         private void UpdateCoordinatesList()

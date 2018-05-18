@@ -63,7 +63,7 @@ namespace HexCore.Helpers
                         return new Coordinate3D(x, y, z);
                     }).ToList();
                 default:
-                    throw new ArgumentOutOfRangeException("offsetType", offsetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(offsetType), offsetType, null);
             }
         }
 
@@ -101,7 +101,7 @@ namespace HexCore.Helpers
                         return new Coordinate2D(col, row);
                     }).ToList();
                 default:
-                    throw new ArgumentOutOfRangeException("offsetType", offsetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(offsetType), offsetType, null);
             }
         }
     }

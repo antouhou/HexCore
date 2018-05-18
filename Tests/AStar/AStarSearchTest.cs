@@ -71,7 +71,7 @@ namespace Tests.AStar
                 Assert.That(row.Count, Is.EqualTo(3));
             }
 
-            graph.SetCellBlocked(new Coordinate2D(1, 1));
+            graph.SetOneCellBlocked(new Coordinate2D(1, 1));
             Assert.That(graph.Columns[1][1].IsBlocked, Is.True);
 
             // Same as in prevoius test
@@ -104,7 +104,7 @@ namespace Tests.AStar
             }
 
             // Let's block 0,1 and move our starting point to bottom left
-            graph.SetCellBlocked(new Coordinate2D(0, 1));
+            graph.SetOneCellBlocked(new Coordinate2D(0, 1));
             startOddR = new Coordinate2D(0, 2);
             start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
 
@@ -147,7 +147,7 @@ namespace Tests.AStar
                 Assert.That(row.Count, Is.EqualTo(3));
             }
 
-            graph.SetCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
+            graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
             Assert.That(graph.Columns[1][1].MovementType.Name, Is.EqualTo(MovementTypes.Water.Name));
 
             // And we expect to achieve same result - even through 1,1 is not blocked
@@ -182,7 +182,7 @@ namespace Tests.AStar
             }
 
             // Let's make 0,1 water too and move our starting point to bottom left
-            graph.SetCellMovementType(new Coordinate2D(0, 1), MovementTypes.Water);
+            graph.SetOneCellMovementType(new Coordinate2D(0, 1), MovementTypes.Water);
             Assert.That(graph.Columns[0][1].MovementType.Name, Is.EqualTo(MovementTypes.Water.Name));
             startOddR = new Coordinate2D(0, 2);
             start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
@@ -222,8 +222,8 @@ namespace Tests.AStar
                 Assert.That(row.Count, Is.EqualTo(3));
             }
 
-            graph.SetCellBlocked(new Coordinate2D(1, 2));
-            graph.SetCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
+            graph.SetOneCellBlocked(new Coordinate2D(1, 2));
+            graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
             Assert.That(graph.Columns[1][1].MovementType.Name, Is.EqualTo(MovementTypes.Water.Name));
             Assert.That(graph.Columns[1][2].IsBlocked, Is.True);
 
@@ -244,13 +244,98 @@ namespace Tests.AStar
             var expectedPath =
                 CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
 
-            List<Coordinate3D> path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
             var restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
             var restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
 
             Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
-            for (int i = 0; i < expectedPath.Count; i++)
+            for (var i = 0; i < expectedPath.Count; i++)
+            {
+                Assert.That(path[i], Is.EqualTo(expectedPath[i]));
+            }
+        }
+
+        [Test]
+        public void ShouldFindShortestPathOnBiggerGraph()
+        {
+            // This test wouldn't be that different from previous ones, except size of the graph
+            // Not so square anymore! 7 columns, 10 rows.
+            var graph = new Graph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+
+            // First, let's do simple test - from 5,6 to 1,2 without obstacles
+            var startOddR = new Coordinate2D(5, 6);
+            var goalOddR = new Coordinate2D(1, 2);
+            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
+            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+
+            // We expect algo to go up by diagonal and then turn left
+            var expectedOffsetPath = new List<Coordinate2D>
+            {
+                // Go up and left
+                new Coordinate2D(4, 5),
+                new Coordinate2D(4, 4),
+                new Coordinate2D(3, 3),
+                new Coordinate2D(3, 2),
+                // And now just left until the goal is reached
+                new Coordinate2D(2, 2),
+                goalOddR
+            };
+            var expectedPath =
+                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+
+            List<Coordinate3D> path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+
+            Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
+            for (var i = 0; i < expectedPath.Count; i++)
+            {
+                Assert.That(path[i], Is.EqualTo(expectedPath[i]));
+            }
+
+            // Good! Now let's block some of them, and also let's add a lake in the middle.
+            graph.SetManyCellsBlocked(new List<Coordinate2D>()
+            {
+                new Coordinate2D(4, 6),
+                new Coordinate2D(4, 5),
+                new Coordinate2D(4, 7),
+                new Coordinate2D(5, 5)
+            });
+            graph.SetManyCellsMovementType(new List<Coordinate2D>
+            {
+                new Coordinate2D(3, 2),
+                new Coordinate2D(4, 2),
+                new Coordinate2D(2, 2),
+                new Coordinate2D(1, 3),
+                new Coordinate2D(2, 3),
+                new Coordinate2D(3, 3)
+            }, MovementTypes.Water);
+            
+            //Let's see what's going to happen!
+            expectedOffsetPath = new List<Coordinate2D>
+            {
+                // Avoiding obstacles
+                new Coordinate2D(6, 5),
+                new Coordinate2D(6, 4),
+                // Going parallel to the bank
+                new Coordinate2D(5, 4),
+                new Coordinate2D(4, 4),
+                new Coordinate2D(3, 4),
+                new Coordinate2D(2, 4),
+                // Now we are going to cross the water, since it's shortest available solution from this point 
+                new Coordinate2D(1, 3),
+                // And we are here.
+                goalOddR
+            };
+            expectedPath =
+                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+
+            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+
+            var restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
+            var restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
+            
+            Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
+            for (var i = 0; i < expectedPath.Count; i++)
             {
                 Assert.That(path[i], Is.EqualTo(expectedPath[i]));
             }
