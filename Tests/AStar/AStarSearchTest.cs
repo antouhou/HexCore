@@ -302,8 +302,8 @@ namespace Tests.AStar
             });
             graph.SetManyCellsMovementType(new List<Coordinate2D>
             {
-                new Coordinate2D(3, 2),
                 new Coordinate2D(4, 2),
+                new Coordinate2D(3, 2),
                 new Coordinate2D(2, 2),
                 new Coordinate2D(1, 3),
                 new Coordinate2D(2, 3),
@@ -334,6 +334,37 @@ namespace Tests.AStar
 
             var restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
             var restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
+            
+            Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
+            for (var i = 0; i < expectedPath.Count; i++)
+            {
+                Assert.That(path[i], Is.EqualTo(expectedPath[i]));
+            }
+            
+            // Now let's check water movement type - it should prefer going through the water rather than the ground
+            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Water);
+            
+            expectedOffsetPath = new List<Coordinate2D>
+            {
+                // Avoiding obstacles
+                new Coordinate2D(6, 6),
+                new Coordinate2D(6, 5),
+                new Coordinate2D(6, 4),
+                // Head right to the water
+                new Coordinate2D(5, 3),
+                new Coordinate2D(5, 2),
+                // Swim
+                new Coordinate2D(4, 2),
+                new Coordinate2D(3, 2),
+                new Coordinate2D(2, 2),
+                // And we are here.
+                goalOddR
+            };
+            expectedPath =
+                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+
+            restoredExpected = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, expectedPath);
+            restoredActual = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, path);
             
             Assert.That(path.Count, Is.EqualTo(expectedPath.Count));
             for (var i = 0; i < expectedPath.Count; i++)
