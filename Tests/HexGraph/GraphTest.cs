@@ -202,7 +202,7 @@ namespace Tests.HexGraph
         }
         
         [Test]
-        public void ShouldGetCorrectMovementArea()
+        public void ShouldGetCorrectMovableArea()
         {
             var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             var center = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(3,2));
@@ -210,30 +210,33 @@ namespace Tests.HexGraph
             var expectedMovableArea2D = new List<Coordinate2D>
             {
                 // Closest circle
-                new Coordinate2D(2,2),
-                new Coordinate2D(2,1),
-                new Coordinate2D(3,1),
                 new Coordinate2D(4,2),
-                new Coordinate2D(3,3),
+                new Coordinate2D(3,1),
+                new Coordinate2D(2,1),
+                new Coordinate2D(2,2),
                 new Coordinate2D(2,3),
+                new Coordinate2D(3,3),
                 // Second circle
-                new Coordinate2D(1,2),
-                new Coordinate2D(1,1),
-                new Coordinate2D(2,0),
-                new Coordinate2D(3,0),
-                new Coordinate2D(4,0),
-                new Coordinate2D(4,1),
                 new Coordinate2D(5,2),
+                new Coordinate2D(4,1),
                 new Coordinate2D(4,3),
-                new Coordinate2D(4,4),
-                new Coordinate2D(3,4),
-                new Coordinate2D(2,4),
+                new Coordinate2D(4,0),
+                new Coordinate2D(3,0),
+                new Coordinate2D(2,0),
+                new Coordinate2D(1,1),
+                new Coordinate2D(1,2),
                 new Coordinate2D(1,3),
+                new Coordinate2D(2,4),
+                new Coordinate2D(3,4),
+                new Coordinate2D(4,4),
             };
             var expectedMovableArea =
                 CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
             
-            var movableArea = graph.GetMovableArea(center, 2);
+            // 1 is center
+            var movableArea = graph.GetMovableArea(center, 3);
+
+            var movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
             
             Assert.That(movableArea.Count, Is.EqualTo(expectedMovableArea.Count));
             Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
