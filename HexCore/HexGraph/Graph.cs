@@ -94,20 +94,20 @@ namespace HexCore.HexGraph
             UpdateCoordinatesList();
         }
 
-        public void SetManyCellsBlocked(IEnumerable<Coordinate2D> coordinates, bool isBlocked)
+        public void SetManyCellsBlocked(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
         {
             foreach (var coordinate in coordinates)
             {
-                var cellState = GetCellStateByCoordinate2D(coordinate);
+                var cellState = GetCellStateByCoordinate3D(coordinate);
                 cellState.IsBlocked = isBlocked;
             }
 
             UpdateCoordinatesList();
         }
 
-        public void SetOneCellBlocked(Coordinate2D coordinate, bool isBlocked)
+        public void SetOneCellBlocked(Coordinate3D coordinate, bool isBlocked)
         {
-            SetManyCellsBlocked(new List<Coordinate2D> {coordinate}, isBlocked);
+            SetManyCellsBlocked(new List<Coordinate3D> {coordinate}, isBlocked);
         }
 
         public void SetManyCellsMovementType(IEnumerable<Coordinate2D> coordinates, MovementType movementType)

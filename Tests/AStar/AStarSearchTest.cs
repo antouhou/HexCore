@@ -44,13 +44,13 @@ namespace Tests.AStar
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Good! Now let's block some of them, and also let's add a lake in the middle.
-            graph.SetManyCellsBlocked(new List<Coordinate2D>
+            graph.SetManyCellsBlocked(CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, new List<Coordinate2D>
             {
                 new Coordinate2D(4, 6),
                 new Coordinate2D(4, 5),
                 new Coordinate2D(4, 7),
                 new Coordinate2D(5, 5)
-            }, true);
+            }), true);
             graph.SetManyCellsMovementType(new List<Coordinate2D>
             {
                 new Coordinate2D(4, 2),
@@ -176,7 +176,7 @@ namespace Tests.AStar
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
 
-            graph.SetOneCellBlocked(new Coordinate2D(1, 2), true);
+            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(1, 2)), true);
             graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
             Assert.That(graph.Columns[1][1].MovementType, Is.EqualTo(MovementTypes.Water));
             Assert.That(graph.Columns[1][2].IsBlocked, Is.True);
@@ -211,7 +211,7 @@ namespace Tests.AStar
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
 
-            graph.SetOneCellBlocked(new Coordinate2D(1, 1), true);
+            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(1, 1)), true);
             Assert.That(graph.Columns[1][1].IsBlocked, Is.True);
 
             // Same as in prevoius test
@@ -237,7 +237,7 @@ namespace Tests.AStar
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's block 0,1 and move our starting point to bottom left
-            graph.SetOneCellBlocked(new Coordinate2D(0, 1), true);
+            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(0, 1)), true);
             startOddR = new Coordinate2D(0, 2);
             start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
 

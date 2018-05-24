@@ -104,7 +104,7 @@ namespace Tests.HexGraph
             }, MovementTypes.Water);
             
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
-            graph.SetOneCellBlocked(new Coordinate2D(2,1), true);
+            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(2,1)), true);
 
             // 2,4 isn't accessible because the only path to it thorough the water
             expectedMovableArea2D.Remove(new Coordinate2D(2, 4));
@@ -122,8 +122,7 @@ namespace Tests.HexGraph
             movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
 
             Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
-        }
-       
+        }       
 
         [Test]
         public void ShouldGetCorrectNeighbors()
@@ -155,13 +154,12 @@ namespace Tests.HexGraph
             Assert.That(neighbors, Is.EqualTo(expectedNeighbors));
         }
 
-
         [Test]
         public void ShouldMaintainCellStatesOnResize()
         {
             var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             Assert.False(graph.Columns[0][1].IsBlocked);
-            graph.SetOneCellBlocked(new Coordinate2D(0, 1), true);
+            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(0, 1)), true);
             Assert.True(graph.Columns[0][1].IsBlocked);
             graph.Resize(2, 2);
             Assert.True(graph.Columns[0][1].IsBlocked);
