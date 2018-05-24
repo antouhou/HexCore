@@ -33,7 +33,7 @@ namespace HexCore.Helpers
                 case OffsetTypes.OddRowsRight:
                     return offsetCoords.Select(point =>
                     {
-                        var x = point.X - (point.Y - (point.Y % 2)) / 2;
+                        var x = point.X - (point.Y - point.Y % 2) / 2;
                         var z = point.Y;
                         var y = -x - z;
                         return new Coordinate3D(x, y, z);
@@ -41,7 +41,7 @@ namespace HexCore.Helpers
                 case OffsetTypes.EvenRowsRight:
                     return offsetCoords.Select(point =>
                     {
-                        var x = point.X - (point.Y + (point.Y % 2)) / 2;
+                        var x = point.X - (point.Y + point.Y % 2) / 2;
                         var z = point.Y;
                         var y = -x - z;
                         return new Coordinate3D(x, y, z);
@@ -50,7 +50,7 @@ namespace HexCore.Helpers
                     return offsetCoords.Select(point =>
                     {
                         var x = point.X;
-                        var z = point.Y - (point.X - (point.X % 2)) / 2;
+                        var z = point.Y - (point.X - point.X % 2) / 2;
                         var y = -x - z;
                         return new Coordinate3D(x, y, z);
                     }).ToList();
@@ -58,7 +58,7 @@ namespace HexCore.Helpers
                     return offsetCoords.Select(point =>
                     {
                         var x = point.X;
-                        var z = point.Y - (point.X + (point.X % 2)) / 2;
+                        var z = point.Y - (point.X + point.X % 2) / 2;
                         var y = -x - z;
                         return new Coordinate3D(x, y, z);
                     }).ToList();
@@ -75,14 +75,14 @@ namespace HexCore.Helpers
                 case OffsetTypes.OddRowsRight:
                     return cubeCoordinates.Select(cube =>
                     {
-                        var col = cube.X + (cube.Z - (cube.Z % 2)) / 2;
+                        var col = cube.X + (cube.Z - cube.Z % 2) / 2;
                         var row = cube.Z;
                         return new Coordinate2D(col, row);
                     }).ToList();
                 case OffsetTypes.EvenRowsRight:
                     return cubeCoordinates.Select(cube =>
                     {
-                        var col = cube.X + (cube.Z + (cube.Z % 2)) / 2;
+                        var col = cube.X + (cube.Z + cube.Z % 2) / 2;
                         var row = cube.Z;
                         return new Coordinate2D(col, row);
                     }).ToList();
@@ -90,14 +90,14 @@ namespace HexCore.Helpers
                     return cubeCoordinates.Select(cube =>
                     {
                         var col = cube.X;
-                        var row = cube.Z + (cube.Z - (cube.Z % 2)) / 2;
+                        var row = cube.Z + (cube.Z - cube.Z % 2) / 2;
                         return new Coordinate2D(col, row);
                     }).ToList();
                 case OffsetTypes.EvenColumnsDown:
                     return cubeCoordinates.Select(cube =>
                     {
                         var col = cube.X;
-                        var row = cube.Z + (cube.Z + (cube.Z % 2)) / 2;
+                        var row = cube.Z + (cube.Z + cube.Z % 2) / 2;
                         return new Coordinate2D(col, row);
                     }).ToList();
                 default:

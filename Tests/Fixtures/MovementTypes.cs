@@ -5,7 +5,7 @@ namespace Tests.Fixtures
 {
     public static class MovementTypes
     {
-        public static readonly MovementType Ground = new MovementType()
+        public static readonly MovementType Ground = new MovementType
         {
             Name = "ground",
             MovementCostTo =
@@ -16,7 +16,7 @@ namespace Tests.Fixtures
             }
         };
 
-        public static readonly MovementType Water = new MovementType()
+        public static readonly MovementType Water = new MovementType
         {
             Name = "water",
             MovementCostTo =
@@ -27,7 +27,7 @@ namespace Tests.Fixtures
             }
         };
 
-        public static readonly MovementType Forest = new MovementType()
+        public static readonly MovementType Forest = new MovementType
         {
             Name = "forest",
             MovementCostTo =

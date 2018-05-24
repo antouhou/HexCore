@@ -32,10 +32,7 @@ namespace HexCore.AStar
             {
                 var current = frontier.Dequeue();
 
-                if (current.Equals(goal))
-                {
-                    break;
-                }
+                if (current.Equals(goal)) break;
 
                 foreach (var next in graph.GetPassableNeighbors(current))
                 {

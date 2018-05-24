@@ -6,8 +6,8 @@ namespace HexCore.HexGraph
     [Serializable]
     public class MovementType
     {
-        public string Name = "";
         public Dictionary<string, int> MovementCostTo = new Dictionary<string, int>();
+        public string Name = "";
 
         public int GetCostTo(string typeName)
         {

@@ -39,14 +39,12 @@ namespace Tests.Helpers
                 // Down right:
                 new Coordinate3D(2, -3, 1),
                 // Down and left:
-                new Coordinate3D(1, -3, 2),
+                new Coordinate3D(1, -3, 2)
             };
 
             Assert.That(cubeCoordinates.Count, Is.EqualTo(expectedCubeCoordiates.Count));
             for (var index = 0; index < expectedCubeCoordiates.Count; index++)
-            {
                 Assert.That(cubeCoordinates[index], Is.EqualTo(expectedCubeCoordiates[index]));
-            }
         }
 
         [Test]
