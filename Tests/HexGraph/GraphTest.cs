@@ -194,11 +194,7 @@ namespace Tests.HexGraph
                 new Coordinate3D(1, -3, +2),
                 new Coordinate3D(2, -4, 2)
             };
-            Assert.That(neighbors.Count, Is.EqualTo(expectedNeighbors.Count));
-            for (var index = 0; index < expectedNeighbors.Count; index++)
-            {
-                Assert.That(neighbors[index], Is.EqualTo(expectedNeighbors[index]));
-            }
+            Assert.That(neighbors, Is.EqualTo(expectedNeighbors));
         }
         
         [Test]
@@ -234,7 +230,7 @@ namespace Tests.HexGraph
                 CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
             
             // 1 is center
-            var movableArea = graph.GetMovableArea(center, 3);
+            var movableArea = graph.GetMovableArea(center, 3, MovementTypes.Ground);
 
             var movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
             

@@ -169,23 +169,33 @@ namespace HexCore.HexGraph
         {
             return GetNeighbors(position, true);
         }
+        
+        public struct Fringe
+        {
+            public Coordinate3D Coordinate;
+            public int CostSoFar;
+        }
 
-        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int distance)
+        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int distance, MovementType movementType)
         {
             // Todo: add movement penalties to this calculation
             var visited = new List<Coordinate3D> {startPosition};
-            var fringes = new List<List<Coordinate3D>> {new List<Coordinate3D> {startPosition}};
+            var fringes = new List<List<Fringe>> {new List<Fringe> { new Fringe() {Coordinate = startPosition, CostSoFar = 0} }};
 
             for (var k = 1; k < distance; k++)
             {
-                var fringe = new List<Coordinate3D>();
-                foreach (var cell in fringes[k - 1])
+                var fringe = new List<Fringe>();
+                foreach (var position in fringes[k - 1])
                 {
-                    foreach (var neighbor in GetPassableNeighbors(cell))
+                    foreach (var neighbor in GetPassableNeighbors(position.Coordinate))
                     {
                         if (visited.Contains(neighbor)) continue;
+                        var cellState = GetCellStateByCoordinate3D(neighbor);
+                        var movementCostToNeighbor = movementType.GetCostTo(cellState.MovementType.Name);
+                        var totalCost = position.CostSoFar + movementCostToNeighbor;
+                        if (totalCost > distance) continue;
                         visited.Add(neighbor);
-                        fringe.Add(neighbor);
+                        fringe.Add(new Fringe() { Coordinate = neighbor, CostSoFar = totalCost});
                     }
                 }
 
