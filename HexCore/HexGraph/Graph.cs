@@ -164,7 +164,7 @@ namespace HexCore.HexGraph
             }
         }
 
-        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int distance, MovementType movementType)
+        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int movementPoints, MovementType movementType)
         {
             var visited = new List<Coordinate3D> {startPosition};
             var fringes = new List<List<Fringe>>
@@ -172,21 +172,23 @@ namespace HexCore.HexGraph
                 new List<Fringe> {new Fringe {Coordinate = startPosition, CostSoFar = 0}}
             };
 
-            for (var k = 1; k < distance; k++)
+            for (var k = 0; k < movementPoints; k++)
             {
-                var fringe = new List<Fringe>();
-                foreach (var position in fringes[k - 1])
-                foreach (var neighbor in GetPassableNeighbors(position.Coordinate))
+                var newFringes = new List<Fringe>();
+                foreach (var currentFringe in fringes[k])
                 {
-                    if (visited.Contains(neighbor)) continue;
-                    var movementCostToNeighbor = GetMovementCost(neighbor, movementType);
-                    var totalCost = position.CostSoFar + movementCostToNeighbor;
-                    if (totalCost > distance) continue;
-                    visited.Add(neighbor);
-                    fringe.Add(new Fringe {Coordinate = neighbor, CostSoFar = totalCost});
+                    foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
+                    {
+                        if (visited.Contains(neighbor)) continue;
+                        var movementCostToNeighbor = GetMovementCost(neighbor, movementType);
+                        var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
+                        if (newCost > movementPoints) continue;
+                        visited.Add(neighbor);
+                        newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = newCost});
+                    }
                 }
 
-                fringes.Add(fringe);
+                fringes.Add(newFringes);
             }
 
             // So start position won't be included in the area

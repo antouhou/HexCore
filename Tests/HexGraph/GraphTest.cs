@@ -88,14 +88,42 @@ namespace Tests.HexGraph
             var expectedMovableArea =
                 CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
 
-            // 1 is center
-            var movableArea = graph.GetMovableArea(center, 3, MovementTypes.Ground);
+            var movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
 
             var movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
 
             Assert.That(movableArea.Count, Is.EqualTo(expectedMovableArea.Count));
             Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
+            
+            // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
+            // access it, since going to 1,3 will cost more than movement points we have.
+            graph.SetManyCellsMovementType(new List<Coordinate2D>
+            {
+                new Coordinate2D(2, 3),
+                new Coordinate2D(1, 3),
+            }, MovementTypes.Water);
+            
+            // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
+            graph.SetOneCellBlocked(new Coordinate2D(2,1), true);
+
+            // 2,4 isn't accessible because the only path to it thorough the water
+            expectedMovableArea2D.Remove(new Coordinate2D(2, 4));
+            // 1,3 isn't accessible because it is water
+            expectedMovableArea2D.Remove(new Coordinate2D(1, 3));
+            // 2,1 and 2,0 isn't accessible because 2,1 is blocked
+            expectedMovableArea2D.Remove(new Coordinate2D(2, 1));
+            expectedMovableArea2D.Remove(new Coordinate2D(2, 0));
+
+            expectedMovableArea =
+                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
+
+            movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
+
+            movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
+
+            Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
         }
+       
 
         [Test]
         public void ShouldGetCorrectNeighbors()
@@ -112,8 +140,6 @@ namespace Tests.HexGraph
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1);
             var cubeTarget = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, offsetTarget);
-            // Correctness of convertion is target for CoordinateConverter test
-            // var expectedCubeTarget = new CubeCoordinate(2, -3, 1);
             var neighbors = graph.GetNeighbors(cubeTarget, false).ToList();
             // Neighbors for cube coordinates should be:
             // Cube(+1, -1, 0), Cube(+1, 0, -1), Cube(0, +1, -1), Cube(-1, +1, 0), Cube(-1, 0, +1), Cube(0, -1, +1),
