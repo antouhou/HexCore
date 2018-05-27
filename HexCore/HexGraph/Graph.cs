@@ -10,6 +10,8 @@ namespace HexCore.HexGraph
     [Serializable]
     public class Graph : IWeightedGraph
     {
+        private static readonly Random _random = new Random();
+
         // Possible directions to detect neighbors        
         private readonly List<Coordinate3D> _directions = new List<Coordinate3D>
         {
@@ -28,6 +30,7 @@ namespace HexCore.HexGraph
         private List<Coordinate3D> _blocked;
 
         private List<Coordinate3D> _cubeCoordinates;
+        private List<Coordinate3D> _emptyCells;
         private int _height;
         private int _width;
 
@@ -47,6 +50,18 @@ namespace HexCore.HexGraph
         {
             var cellState = GetCellStateByCoordinate3D(coordinate);
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
+        }
+
+        public bool IsThereEmptyCell()
+        {
+            return _emptyCells.Count > 0;
+        }
+
+        public Coordinate3D GetRandomEmptyCoordinate3D()
+        {
+            if (IsThereEmptyCell()) return _emptyCells[_random.Next(_emptyCells.Count)];
+
+            throw new InvalidOperationException("Can't get random empty cell; No empty cells left");
         }
 
         private void ResizeColumn(int columnNumber, int newSize)
@@ -128,6 +143,7 @@ namespace HexCore.HexGraph
         {
             _cubeCoordinates = GetAllCellsCubeCoordinates().ToList();
             _blocked = GetBlockedCells().ToList();
+            _emptyCells = GetEmptyCells().ToList();
         }
 
         public IEnumerable<Coordinate2D> GetAllCellsOffsetPosition()
@@ -143,6 +159,11 @@ namespace HexCore.HexGraph
         private IEnumerable<Coordinate3D> GetBlockedCells()
         {
             return Columns.SelectMany(col => col).Where(cell => cell.IsBlocked).Select(cell => cell.Coordinate3);
+        }
+
+        private IEnumerable<Coordinate3D> GetEmptyCells()
+        {
+            return Columns.SelectMany(col => col).Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3);
         }
 
         private bool IsInBounds(Coordinate3D coordinate)
