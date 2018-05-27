@@ -11,6 +11,9 @@ namespace Tests.HexGraph
     [TestFixture]
     public class GraphTest
     {
+        private readonly CoordinateConverter
+            _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
+
         [Test]
         public void AllCellsShouldHaveCorrectPositions()
         {
@@ -60,7 +63,7 @@ namespace Tests.HexGraph
         public void ShouldGetCorrectMovableArea()
         {
             var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            var center = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(3, 2));
+            var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
 
             var expectedMovableArea2D = new List<Coordinate2D>
             {
@@ -86,15 +89,15 @@ namespace Tests.HexGraph
                 new Coordinate2D(4, 4)
             };
             var expectedMovableArea =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovableArea2D);
 
             var movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
 
-            var movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
+            var movableArea2D = _coordinateConverterOrr.ConvertManyCubeToOffset(movableArea);
 
             Assert.That(movableArea.Count, Is.EqualTo(expectedMovableArea.Count));
             Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
-            
+
             // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
             // access it, since going to 1,3 will cost more than movement points we have.
             graph.SetManyCellsMovementType(new List<Coordinate2D>
@@ -102,9 +105,9 @@ namespace Tests.HexGraph
                 new Coordinate2D(2, 3),
                 new Coordinate2D(1, 3),
             }, MovementTypes.Water);
-            
+
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
-            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(2,1)), true);
+            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1)), true);
 
             // 2,4 isn't accessible because the only path to it thorough the water
             expectedMovableArea2D.Remove(new Coordinate2D(2, 4));
@@ -115,14 +118,14 @@ namespace Tests.HexGraph
             expectedMovableArea2D.Remove(new Coordinate2D(2, 0));
 
             expectedMovableArea =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedMovableArea2D);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovableArea2D);
 
             movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
 
-            movableArea2D = CoordinateConverter.ConvertManyCubeToOffset(OffsetTypes.OddRowsRight, movableArea);
+            movableArea2D = _coordinateConverterOrr.ConvertManyCubeToOffset(movableArea);
 
             Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
-        }       
+        }
 
         [Test]
         public void ShouldGetCorrectNeighbors()
@@ -138,7 +141,7 @@ namespace Tests.HexGraph
 
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1);
-            var cubeTarget = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, offsetTarget);
+            var cubeTarget = _coordinateConverterOrr.ConvertOneOffsetToCube(offsetTarget);
             var neighbors = graph.GetNeighbors(cubeTarget, false).ToList();
             // Neighbors for cube coordinates should be:
             // Cube(+1, -1, 0), Cube(+1, 0, -1), Cube(0, +1, -1), Cube(-1, +1, 0), Cube(-1, 0, +1), Cube(0, -1, +1),
@@ -159,7 +162,7 @@ namespace Tests.HexGraph
         {
             var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             Assert.False(graph.Columns[0][1].IsBlocked);
-            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(0, 1)), true);
+            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)), true);
             Assert.True(graph.Columns[0][1].IsBlocked);
             graph.Resize(2, 2);
             Assert.True(graph.Columns[0][1].IsBlocked);

@@ -11,6 +11,8 @@ namespace Tests.AStar
     [TestFixture]
     public class AStarSearchTest
     {
+        private readonly CoordinateConverter _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
+        
         [Test]
         public void ShouldFindShortestPathOnBiggerGraph()
         {
@@ -21,8 +23,8 @@ namespace Tests.AStar
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
             var startOddR = new Coordinate2D(5, 6);
             var goalOddR = new Coordinate2D(1, 2);
-            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
-            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
 
             // We expect algo to go up by diagonal and then turn left
             var expectedOffsetPath = new List<Coordinate2D>
@@ -37,14 +39,14 @@ namespace Tests.AStar
                 goalOddR
             };
             var expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Good! Now let's block some of them, and also let's add a lake in the middle.
-            graph.SetManyCellsBlocked(CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, new List<Coordinate2D>
+            graph.SetManyCellsBlocked(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
             {
                 new Coordinate2D(4, 6),
                 new Coordinate2D(4, 5),
@@ -79,7 +81,7 @@ namespace Tests.AStar
                 goalOddR
             };
             expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
@@ -105,7 +107,7 @@ namespace Tests.AStar
                 goalOddR
             };
             expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -126,8 +128,8 @@ namespace Tests.AStar
 
             var startOddR = new Coordinate2D(2, 2);
             var goalOddR = new Coordinate2D(0, 0);
-            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
-            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
 
             var expectedOffsetPath = new List<Coordinate2D>
             {
@@ -139,7 +141,7 @@ namespace Tests.AStar
                 goalOddR
             };
             var expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
@@ -149,7 +151,7 @@ namespace Tests.AStar
             graph.SetOneCellMovementType(new Coordinate2D(0, 1), MovementTypes.Water);
             Assert.That(graph.Columns[0][1].MovementType, Is.EqualTo(MovementTypes.Water));
             startOddR = new Coordinate2D(0, 2);
-            start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
+            start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
 
             // What's different from previous test - even if 0,1 is water, if we go from the bottom left
             // to the top left - go through water still we preferable - path length will be only two cells, but because
@@ -161,7 +163,7 @@ namespace Tests.AStar
                 goalOddR
             };
             expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
@@ -176,15 +178,15 @@ namespace Tests.AStar
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
 
-            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(1, 2)), true);
+            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 2)), true);
             graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
             Assert.That(graph.Columns[1][1].MovementType, Is.EqualTo(MovementTypes.Water));
             Assert.That(graph.Columns[1][2].IsBlocked, Is.True);
 
             var startOddR = new Coordinate2D(2, 2);
             var goalOddR = new Coordinate2D(0, 0);
-            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
-            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
 
             // Now we have two shortest paths - 1,1, 1,0, 0,0 costs 4, since there is a penalty on 1,1
             // And 2,1, 2,0, 1,0 0,0, costs 4 too. It's 1 cell longer, but there is no penalties.
@@ -196,7 +198,7 @@ namespace Tests.AStar
                 goalOddR
             };
             var expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
@@ -211,14 +213,14 @@ namespace Tests.AStar
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
 
-            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(1, 1)), true);
+            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)), true);
             Assert.That(graph.Columns[1][1].IsBlocked, Is.True);
 
             // Same as in prevoius test
             var startOddR = new Coordinate2D(2, 2);
             var goalOddR = new Coordinate2D(0, 0);
-            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
-            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
 
             var expectedOffsetPath = new List<Coordinate2D>
             {
@@ -230,16 +232,16 @@ namespace Tests.AStar
                 goalOddR
             };
             var expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's block 0,1 and move our starting point to bottom left
-            graph.SetOneCellBlocked(CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, new Coordinate2D(0, 1)), true);
+            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)), true);
             startOddR = new Coordinate2D(0, 2);
-            start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
+            start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
 
             expectedOffsetPath = new List<Coordinate2D>
             {
@@ -254,7 +256,7 @@ namespace Tests.AStar
                 goalOddR
             };
             expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
 
@@ -276,8 +278,8 @@ namespace Tests.AStar
             var startOddR = new Coordinate2D(2, 2);
             // To top left
             var goalOddR = new Coordinate2D(0, 0);
-            var start = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, startOddR);
-            var goal = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, goalOddR);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
 
             // Start point is excluded from the path
             var expectedOffsetPath = new List<Coordinate2D>
@@ -290,7 +292,7 @@ namespace Tests.AStar
                 goalOddR
             };
             var expectedPath =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight, expectedOffsetPath);
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             // For the simplest test we assume that all cells have type ground, as well as a unit
             var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);

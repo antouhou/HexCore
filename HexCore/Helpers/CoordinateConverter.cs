@@ -6,8 +6,35 @@ using HexCore.HexGraph;
 
 namespace HexCore.Helpers
 {
-    public static class CoordinateConverter
+    public class CoordinateConverter
     {
+        private readonly OffsetTypes _offsetType;
+
+        public CoordinateConverter(OffsetTypes offsetType)
+        {
+            _offsetType = offsetType;
+        }
+
+        public Coordinate3D ConvertOneOffsetToCube(Coordinate2D offsetCoordinate)
+        {
+            return ConvertOneOffsetToCube(_offsetType, offsetCoordinate);
+        }
+
+        public Coordinate2D ConvertOneCubeToOffset(Coordinate3D coordinate3D)
+        {
+            return ConvertOneCubeToOffset(_offsetType, coordinate3D);
+        }
+
+        public List<Coordinate2D> ConvertManyCubeToOffset(List<Coordinate3D> cubeCoordinates)
+        {
+            return ConvertManyCubeToOffset(_offsetType, cubeCoordinates);
+        }
+
+        public List<Coordinate3D> ConvertManyOffsetToCube(List<Coordinate2D> offsetCoordinates)
+        {
+            return ConvertManyOffsetToCube(_offsetType, offsetCoordinates);
+        }
+
         public static Coordinate3D ConvertOneOffsetToCube(OffsetTypes offsetType, Coordinate2D offsetCoordinate)
         {
             var cubeCoordinates = ConvertManyOffsetToCube(offsetType, new List<Coordinate2D> {offsetCoordinate});
