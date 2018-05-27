@@ -164,7 +164,8 @@ namespace HexCore.HexGraph
             }
         }
 
-        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int movementPoints, MovementType movementType)
+        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int movementPoints,
+            MovementType movementType)
         {
             var visited = new List<Coordinate3D> {startPosition};
             var fringes = new List<List<Fringe>>
@@ -176,16 +177,14 @@ namespace HexCore.HexGraph
             {
                 var newFringes = new List<Fringe>();
                 foreach (var currentFringe in fringes[k])
+                foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
                 {
-                    foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
-                    {
-                        if (visited.Contains(neighbor)) continue;
-                        var movementCostToNeighbor = GetMovementCost(neighbor, movementType);
-                        var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
-                        if (newCost > movementPoints) continue;
-                        visited.Add(neighbor);
-                        newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = newCost});
-                    }
+                    if (visited.Contains(neighbor)) continue;
+                    var movementCostToNeighbor = GetMovementCost(neighbor, movementType);
+                    var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
+                    if (newCost > movementPoints) continue;
+                    visited.Add(neighbor);
+                    newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = newCost});
                 }
 
                 fringes.Add(newFringes);

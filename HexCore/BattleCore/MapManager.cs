@@ -6,8 +6,8 @@ namespace HexCore.BattleCore
 {
     public class MapManager
     {
-        public List<int> Units;
         public Graph Graph;
+        public List<int> Units;
 
         public List<Coordinate3D> GetMovableArea(Unit unit)
         {

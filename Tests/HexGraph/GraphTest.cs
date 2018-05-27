@@ -103,7 +103,7 @@ namespace Tests.HexGraph
             graph.SetManyCellsMovementType(new List<Coordinate2D>
             {
                 new Coordinate2D(2, 3),
-                new Coordinate2D(1, 3),
+                new Coordinate2D(1, 3)
             }, MovementTypes.Water);
 
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
