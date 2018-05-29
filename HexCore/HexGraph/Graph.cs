@@ -10,7 +10,7 @@ namespace HexCore.HexGraph
     [Serializable]
     public class Graph : IWeightedGraph
     {
-        private static readonly Random _random = new Random();
+        private static readonly Random Random = new Random();
 
         // Possible directions to detect neighbors        
         private readonly List<Coordinate3D> _directions = new List<Coordinate3D>
@@ -41,6 +41,16 @@ namespace HexCore.HexGraph
             Resize(width, height);
         }
 
+        public List<Coordinate3D> GetAllCoordinate3Ds()
+        {
+            return _cubeCoordinates;
+        }
+
+        public List<Coordinate3D> GetAllEmptyCellsCoordinate3Ds()
+        {
+            return _emptyCells;
+        }
+
         public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
         {
             return GetNeighbors(position, true);
@@ -57,11 +67,18 @@ namespace HexCore.HexGraph
             return _emptyCells.Count > 0;
         }
 
-        public Coordinate3D GetRandomEmptyCoordinate3D()
+        public Coordinate3D? GetRandomEmptyCoordinate3D()
         {
-            if (IsThereEmptyCell()) return _emptyCells[_random.Next(_emptyCells.Count)];
-
-            throw new InvalidOperationException("Can't get random empty cell; No empty cells left");
+            /*
+             * After having some thoughts on what is better - to return null or to throw an error,
+             * I decided to go with returning null - since to me, it looks like it's an ordinary situation,
+             * rather than an exception.
+             * For example, if you can't get an empty cell it's may be a good idea to empty some cells and
+             * call that method again.
+             * (Thanks to this thread on StackOverflow: https://softwareengineering.stackexchange.com/questions/159096/return-magic-value-throw-exception-or-return-false-on-failure)
+             */
+            if (IsThereEmptyCell()) return _emptyCells[Random.Next(_emptyCells.Count)];
+            return null;
         }
 
         private void ResizeColumn(int columnNumber, int newSize)
@@ -216,7 +233,7 @@ namespace HexCore.HexGraph
             return visited;
         }
 
-        private CellState GetCellStateByCoordinate3D(Coordinate3D coordinate3D)
+        public CellState GetCellStateByCoordinate3D(Coordinate3D coordinate3D)
         {
             var coordinate2D = CoordinateConverter.ConvertOneCubeToOffset(_offsetType, coordinate3D);
             return GetCellStateByCoordinate2D(coordinate2D);

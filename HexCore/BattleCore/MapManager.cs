@@ -7,12 +7,11 @@ namespace HexCore.BattleCore
     public class MapManager
     {
         public Graph Graph;
-        public List<UnitState> Units;
+        public List<UnitState> Units = new List<UnitState>();
 
-        public MapManager(Graph graph, List<UnitState> units)
+        public MapManager(Graph graph)
         {
             Graph = graph;
-            Units = units;
         }
 
         public List<Coordinate3D> GetMovableArea(UnitState unit)
@@ -26,7 +25,7 @@ namespace HexCore.BattleCore
             return possibleMovementArea.Contains(coordinate3D);
         }
 
-        public bool MoveUnitTo(Coordinate3D coordinate3D, UnitState unit)
+        public bool MoveUnitTo(UnitState unit, Coordinate3D coordinate3D)
         {
             if (!IsUnitAbleToMoveTo(unit, coordinate3D)) return false;
             Graph.SetOneCellBlocked(coordinate3D, true);
@@ -37,8 +36,10 @@ namespace HexCore.BattleCore
 
         public bool AddUnit(UnitState unit)
         {
-            if (!Graph.IsThereEmptyCell()) return false;
-            unit.Coordinate3D = Graph.GetRandomEmptyCoordinate3D();
+            var randomEmptyCell = Graph.GetRandomEmptyCoordinate3D();
+            if (randomEmptyCell == null) return false;
+            unit.Coordinate3D = randomEmptyCell.Value;
+            Graph.SetOneCellBlocked(unit.Coordinate3D, true);
             Units.Add(unit);
             return true;
         }
@@ -47,6 +48,11 @@ namespace HexCore.BattleCore
         {
             Graph.SetOneCellBlocked(unit.Coordinate3D, false);
             Units.Remove(unit);
+        }
+
+        public bool IsCellBlocked(Coordinate3D cellCoordinate)
+        {
+            return Graph.GetCellStateByCoordinate3D(cellCoordinate).IsBlocked;
         }
     }
 }

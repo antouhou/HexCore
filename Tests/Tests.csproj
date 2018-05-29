@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AStar\AStarSearchTest.cs" />
+    <Compile Include="BattleCore\MapManagerTest.cs" />
     <Compile Include="BattleCore\UnitTest.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
     <Compile Include="Helpers\CoordinateConverterTest.cs" />
