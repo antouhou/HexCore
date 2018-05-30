@@ -41,16 +41,6 @@ namespace HexCore.HexGraph
             Resize(width, height);
         }
 
-        public List<Coordinate3D> GetAllCoordinate3Ds()
-        {
-            return _cubeCoordinates;
-        }
-
-        public List<Coordinate3D> GetAllEmptyCellsCoordinate3Ds()
-        {
-            return _emptyCells;
-        }
-
         public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
         {
             return GetNeighbors(position, true);
@@ -62,7 +52,17 @@ namespace HexCore.HexGraph
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }
 
-        public bool IsThereEmptyCell()
+        public List<Coordinate3D> GetAllCoordinate3Ds()
+        {
+            return _cubeCoordinates;
+        }
+
+        public List<Coordinate3D> GetAllEmptyCellsCoordinate3Ds()
+        {
+            return _emptyCells;
+        }
+
+        private bool IsThereEmptyCell()
         {
             return _emptyCells.Count > 0;
         }

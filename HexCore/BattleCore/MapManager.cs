@@ -6,8 +6,8 @@ namespace HexCore.BattleCore
 {
     public class MapManager
     {
-        public Graph Graph;
-        public List<UnitState> Units = new List<UnitState>();
+        public readonly Graph Graph;
+        public readonly List<UnitState> Units = new List<UnitState>();
 
         public MapManager(Graph graph)
         {
@@ -19,7 +19,7 @@ namespace HexCore.BattleCore
             return Graph.GetMovableArea(unit.Coordinate3D, unit.MovementPoints, unit.MovementType);
         }
 
-        public bool IsUnitAbleToMoveTo(UnitState unit, Coordinate3D coordinate3D)
+        private bool IsUnitAbleToMoveTo(UnitState unit, Coordinate3D coordinate3D)
         {
             var possibleMovementArea = GetMovableArea(unit);
             return possibleMovementArea.Contains(coordinate3D);

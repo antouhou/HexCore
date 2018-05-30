@@ -5,13 +5,12 @@ namespace HexCore.BattleCore
 {
     public class UnitState
     {
+        public readonly int MovementPoints;
+        public readonly MovementType MovementType;
         public Coordinate3D Coordinate3D;
-        public int MovementPoints;
-        public MovementType MovementType;
 
         public UnitState(MovementType movementType, int movementPoints)
         {
-            //Coordinate3D = position;
             MovementPoints = movementPoints;
             MovementType = movementType;
         }
