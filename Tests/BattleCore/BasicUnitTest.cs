@@ -3,7 +3,7 @@
 namespace Tests.BattleCore
 {
     [TestFixture]
-    public class UnitTest
+    public class BasicUnitTest
     {
     }
 }

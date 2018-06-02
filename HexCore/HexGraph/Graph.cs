@@ -13,7 +13,7 @@ namespace HexCore.HexGraph
         private static readonly Random Random = new Random();
 
         // Possible directions to detect neighbors        
-        private readonly List<Coordinate3D> _directions = new List<Coordinate3D>
+        private static readonly List<Coordinate3D> Directions = new List<Coordinate3D>
         {
             new Coordinate3D(+1, -1, 0),
             new Coordinate3D(+1, 0, -1),
@@ -52,6 +52,7 @@ namespace HexCore.HexGraph
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }
 
+        // TODO: Check if it possible to do something with generics
         public List<Coordinate3D> GetAllCoordinate3Ds()
         {
             return _cubeCoordinates;
@@ -195,14 +196,46 @@ namespace HexCore.HexGraph
 
         public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
         {
-            foreach (var direction in _directions)
+            foreach (var direction in Directions)
             {
                 var next = position + direction;
                 if (IsInBounds(next) && !(onlyPassable && IsBlocked(next))) yield return next;
             }
         }
 
-        public List<Coordinate3D> GetMovableArea(Coordinate3D startPosition, int movementPoints,
+        public List<Coordinate3D> GetRange(Coordinate3D startPosition, int radius)
+        {
+            var visited = new List<Coordinate3D> {startPosition};
+            var fringes = new List<List<Fringe>>
+            {
+                new List<Fringe> {new Fringe {Coordinate = startPosition, CostSoFar = 0}}
+            };
+
+            for (var currentRange = 0; currentRange < radius; currentRange++)
+            {
+                var newFringes = new List<Fringe>();
+                foreach (var currentFringe in fringes[currentRange])
+                foreach (var neighbor in GetNeighbors(currentFringe.Coordinate, false))
+                {
+                    if (visited.Contains(neighbor)) continue;
+                    visited.Add(neighbor);
+                    newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = 0});
+                }
+
+                fringes.Add(newFringes);
+            }
+
+            // So start position won't be included in the range
+            visited.Remove(startPosition);
+            return visited;
+        }
+
+        public bool IsCellBlocked(Coordinate3D cellCoordinate)
+        {
+            return GetCellStateByCoordinate3D(cellCoordinate).IsBlocked;
+        }
+
+        public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
             MovementType movementType)
         {
             var visited = new List<Coordinate3D> {startPosition};
@@ -211,10 +244,10 @@ namespace HexCore.HexGraph
                 new List<Fringe> {new Fringe {Coordinate = startPosition, CostSoFar = 0}}
             };
 
-            for (var k = 0; k < movementPoints; k++)
+            for (var currentRangeIndex = 0; currentRangeIndex < movementPoints; currentRangeIndex++)
             {
                 var newFringes = new List<Fringe>();
-                foreach (var currentFringe in fringes[k])
+                foreach (var currentFringe in fringes[currentRangeIndex])
                 foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
                 {
                     if (visited.Contains(neighbor)) continue;
@@ -228,7 +261,7 @@ namespace HexCore.HexGraph
                 fringes.Add(newFringes);
             }
 
-            // So start position won't be included in the area
+            // So start position won't be included in the range
             visited.Remove(startPosition);
             return visited;
         }

@@ -7,52 +7,50 @@ namespace HexCore.BattleCore
     public class MapManager
     {
         public readonly Graph Graph;
-        public readonly List<UnitState> Units = new List<UnitState>();
+        public readonly List<AbstractUnit> Units = new List<AbstractUnit>();
 
         public MapManager(Graph graph)
         {
             Graph = graph;
         }
 
-        public List<Coordinate3D> GetMovableArea(UnitState unit)
+        private bool CanUnitMoveTo(AbstractUnit unit, Coordinate3D coordinate3D)
         {
-            return Graph.GetMovableArea(unit.Coordinate3D, unit.MovementPoints, unit.MovementType);
+            return unit.CanMoveTo(coordinate3D, Graph);
         }
 
-        private bool IsUnitAbleToMoveTo(UnitState unit, Coordinate3D coordinate3D)
+        public bool MoveUnitTo(BasicUnit unit, Coordinate3D coordinate3D)
         {
-            var possibleMovementArea = GetMovableArea(unit);
-            return possibleMovementArea.Contains(coordinate3D);
-        }
-
-        public bool MoveUnitTo(UnitState unit, Coordinate3D coordinate3D)
-        {
-            if (!IsUnitAbleToMoveTo(unit, coordinate3D)) return false;
+            if (!CanUnitMoveTo(unit, coordinate3D)) return false;
             Graph.SetOneCellBlocked(coordinate3D, true);
-            Graph.SetOneCellBlocked(unit.Coordinate3D, false);
-            unit.Coordinate3D = coordinate3D;
+            Graph.SetOneCellBlocked(unit.Position, false);
+            unit.Position = coordinate3D;
             return true;
         }
 
-        public bool AddUnit(UnitState unit)
+        public bool AddUnit(AbstractUnit unit)
         {
             var randomEmptyCell = Graph.GetRandomEmptyCoordinate3D();
             if (randomEmptyCell == null) return false;
-            unit.Coordinate3D = randomEmptyCell.Value;
-            Graph.SetOneCellBlocked(unit.Coordinate3D, true);
+            unit.Position = randomEmptyCell.Value;
+            Graph.SetOneCellBlocked(unit.Position, true);
             Units.Add(unit);
             return true;
         }
 
-        public void RemoveUnit(UnitState unit)
+        public void RemoveUnit(AbstractUnit unit)
         {
-            Graph.SetOneCellBlocked(unit.Coordinate3D, false);
+            Graph.SetOneCellBlocked(unit.Position, false);
             Units.Remove(unit);
         }
 
-        public bool IsCellBlocked(Coordinate3D cellCoordinate)
+        public bool CanAttack(AbstractUnit attackingUnit, BasicUnit attackedUnit)
         {
-            return Graph.GetCellStateByCoordinate3D(cellCoordinate).IsBlocked;
+            return attackingUnit.CanAttack(attackedUnit, Graph);
+        }
+
+        public void Attack(AbstractUnit attackingUnit, BasicUnit attackedUnit)
+        {
         }
     }
 }

@@ -60,12 +60,12 @@ namespace Tests.HexGraph
         }
 
         [Test]
-        public void ShouldGetCorrectMovableArea()
+        public void ShouldGetCorrectMovementRange()
         {
             var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
 
-            var expectedMovableArea2D = new List<Coordinate2D>
+            var expectedMovementRange2D = new List<Coordinate2D>
             {
                 // Closest circle
                 new Coordinate2D(4, 2),
@@ -88,15 +88,13 @@ namespace Tests.HexGraph
                 new Coordinate2D(3, 4),
                 new Coordinate2D(4, 4)
             };
-            var expectedMovableArea =
-                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovableArea2D);
+            var expectedMovementRange =
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovementRange2D);
 
-            var movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
+            var movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
 
-            var movableArea2D = _coordinateConverterOrr.ConvertManyCubeToOffset(movableArea);
-
-            Assert.That(movableArea.Count, Is.EqualTo(expectedMovableArea.Count));
-            Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
+            Assert.That(movementRange.Count, Is.EqualTo(expectedMovementRange.Count));
+            Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
 
             // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
             // access it, since going to 1,3 will cost more than movement points we have.
@@ -110,21 +108,19 @@ namespace Tests.HexGraph
             graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1)), true);
 
             // 2,4 isn't accessible because the only path to it thorough the water
-            expectedMovableArea2D.Remove(new Coordinate2D(2, 4));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 4));
             // 1,3 isn't accessible because it is water
-            expectedMovableArea2D.Remove(new Coordinate2D(1, 3));
+            expectedMovementRange2D.Remove(new Coordinate2D(1, 3));
             // 2,1 and 2,0 isn't accessible because 2,1 is blocked
-            expectedMovableArea2D.Remove(new Coordinate2D(2, 1));
-            expectedMovableArea2D.Remove(new Coordinate2D(2, 0));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 1));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 0));
 
-            expectedMovableArea =
-                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovableArea2D);
+            expectedMovementRange =
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovementRange2D);
 
-            movableArea = graph.GetMovableArea(center, 2, MovementTypes.Ground);
+            movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
 
-            movableArea2D = _coordinateConverterOrr.ConvertManyCubeToOffset(movableArea);
-
-            Assert.That(movableArea, Is.EqualTo(expectedMovableArea));
+            Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
         }
 
         [Test]
@@ -155,6 +151,43 @@ namespace Tests.HexGraph
                 new Coordinate3D(2, -4, 2)
             };
             Assert.That(neighbors, Is.EqualTo(expectedNeighbors));
+        }
+
+        [Test]
+        public void ShouldGetCorrectRange()
+        {
+            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
+
+            var expectedRange2D = new List<Coordinate2D>
+            {
+                // Closest circle
+                new Coordinate2D(4, 2),
+                new Coordinate2D(3, 1),
+                new Coordinate2D(2, 1),
+                new Coordinate2D(2, 2),
+                new Coordinate2D(2, 3),
+                new Coordinate2D(3, 3),
+                // Second circle
+                new Coordinate2D(5, 2),
+                new Coordinate2D(4, 1),
+                new Coordinate2D(4, 3),
+                new Coordinate2D(4, 0),
+                new Coordinate2D(3, 0),
+                new Coordinate2D(2, 0),
+                new Coordinate2D(1, 1),
+                new Coordinate2D(1, 2),
+                new Coordinate2D(1, 3),
+                new Coordinate2D(2, 4),
+                new Coordinate2D(3, 4),
+                new Coordinate2D(4, 4)
+            };
+            var expectedMovementRange =
+                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedRange2D);
+
+            var range = graph.GetRange(center, 2);
+
+            Assert.That(range, Is.EqualTo(expectedMovementRange));
         }
 
         [Test]
