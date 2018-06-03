@@ -58,6 +58,17 @@ namespace Tests.HexGraph
             Assert.That(graph.Columns.Count, Is.EqualTo(3));
             foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
         }
+        
+        [Test]
+        public void ShouldBlockCell()
+        {
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.False);
+            graph.SetOneCellBlocked(new Coordinate3D(0,0,0), true);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.True);
+            graph.SetOneCellBlocked(new Coordinate3D(0,0,0), false);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.False);
+        }
 
         [Test]
         public void ShouldGetCorrectMovementRange()

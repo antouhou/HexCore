@@ -50,5 +50,17 @@ namespace Tests.BattleCore.Unit
             Assert.That(unit3.CanAttack(unit1), Is.True);
             Assert.That(unit3.CanAttack(unit2), Is.True);
         }
+        
+        [Test]
+        public void ShouldNotBeAbleToAttackItself()
+        {
+            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var manager = new MapManager(graph);
+            var unitFactory = new UnitFactory(graph);
+
+            var unit1 = unitFactory.GetUnit(MovementTypes.Ground, 3, 1);
+            manager.AddUnit(unit1);
+            Assert.That(unit1.CanAttack(unit1), Is.False);
+        }
     }
 }
