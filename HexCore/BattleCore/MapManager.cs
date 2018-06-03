@@ -26,7 +26,7 @@ namespace HexCore.BattleCore
 
         public bool AddUnit(AbstractUnitController unit)
         {
-            var randomEmptyCell = Graph.GetRandomEmptyCoordinate3D();
+            var randomEmptyCell = Graph.GetCoordinateOfRandomEmptyCell();
             if (randomEmptyCell == null) return false;
             unit.State.Position = randomEmptyCell.Value;
             Graph.SetOneCellBlocked(unit.State.Position, true);
@@ -38,15 +38,6 @@ namespace HexCore.BattleCore
         {
             Graph.SetOneCellBlocked(unit.State.Position, false);
             Units.Remove(unit);
-        }
-
-        public bool CanAttack(AbstractUnitController attackingUnit, UnitController attackedUnit)
-        {
-            return attackingUnit.CanAttack(attackedUnit);
-        }
-
-        public void Attack(AbstractUnitController attackingUnit, UnitController attackedUnit)
-        {
         }
     }
 }

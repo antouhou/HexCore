@@ -25,14 +25,15 @@ namespace HexCore.HexGraph
 
         private readonly List<MovementType> _movementTypes;
         private readonly OffsetTypes _offsetType;
-        public readonly List<List<CellState>> Columns = new List<List<CellState>>();
 
         private List<Coordinate3D> _blocked;
 
-        private List<Coordinate3D> _cubeCoordinates;
+        private List<Coordinate3D> _allCoordinates;
         private List<Coordinate3D> _emptyCells;
         private int _height;
         private int _width;
+
+        public List<List<CellState>> Columns { get; } = new List<List<CellState>>();
 
         public Graph(int width, int height, OffsetTypes offsetType, List<MovementType> movementTypes)
         {
@@ -48,17 +49,17 @@ namespace HexCore.HexGraph
 
         public int GetMovementCost(Coordinate3D coordinate, MovementType unitMovementType)
         {
-            var cellState = GetCellStateByCoordinate3D(coordinate);
+            var cellState = GetCellState(coordinate);
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }
 
         // TODO: Check if it possible to do something with generics
-        public List<Coordinate3D> GetAllCoordinate3Ds()
+        public List<Coordinate3D> GetAllCellsCoordinates()
         {
-            return _cubeCoordinates;
+            return _allCoordinates;
         }
 
-        public List<Coordinate3D> GetAllEmptyCellsCoordinate3Ds()
+        public List<Coordinate3D> GetAllEmptyCellsCoordinates()
         {
             return _emptyCells;
         }
@@ -68,7 +69,7 @@ namespace HexCore.HexGraph
             return _emptyCells.Count > 0;
         }
 
-        public Coordinate3D? GetRandomEmptyCoordinate3D()
+        public Coordinate3D? GetCoordinateOfRandomEmptyCell()
         {
             /*
              * After having some thoughts on what is better - to return null or to throw an error,
@@ -131,7 +132,7 @@ namespace HexCore.HexGraph
         {
             foreach (var coordinate in coordinates)
             {
-                var cellState = GetCellStateByCoordinate3D(coordinate);
+                var cellState = GetCellState(coordinate);
                 cellState.IsBlocked = isBlocked;
             }
 
@@ -147,7 +148,7 @@ namespace HexCore.HexGraph
         {
             foreach (var coordinate in coordinates)
             {
-                var cellState = GetCellStateByCoordinate2D(coordinate);
+                var cellState = GetCellState(coordinate);
                 cellState.MovementType = movementType;
             }
         }
@@ -159,39 +160,24 @@ namespace HexCore.HexGraph
 
         private void UpdateCoordinatesList()
         {
-            _cubeCoordinates = GetAllCellsCubeCoordinates().ToList();
-            _blocked = GetBlockedCells().ToList();
-            _emptyCells = GetEmptyCells().ToList();
+            _allCoordinates = Columns.SelectMany(col => col).Select(cell => cell.Coordinate3).ToList();
+            _blocked = Columns.SelectMany(col => col).Where(cell => cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
+            _emptyCells = Columns.SelectMany(col => col).Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
         }
 
-        public IEnumerable<Coordinate2D> GetAllCellsOffsetPosition()
+        public IEnumerable<Coordinate2D> GetAllCellsOffsetPositions()
         {
             return Columns.SelectMany(col => col).Select(cell => cell.Coordinate2);
         }
 
-        private IEnumerable<Coordinate3D> GetAllCellsCubeCoordinates()
-        {
-            return Columns.SelectMany(col => col).Select(cell => cell.Coordinate3);
-        }
-
-        private IEnumerable<Coordinate3D> GetBlockedCells()
-        {
-            return Columns.SelectMany(col => col).Where(cell => cell.IsBlocked).Select(cell => cell.Coordinate3);
-        }
-
-        private IEnumerable<Coordinate3D> GetEmptyCells()
-        {
-            return Columns.SelectMany(col => col).Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3);
-        }
-
         private bool IsInBounds(Coordinate3D coordinate)
         {
-            return _cubeCoordinates.Contains(coordinate);
+            return _allCoordinates.Contains(coordinate);
         }
 
-        private bool IsBlocked(Coordinate3D coordinate)
+        public bool IsCellBlocked(Coordinate3D coordinate)
         {
-            return _blocked.Contains(coordinate);
+            return GetCellState(coordinate).IsBlocked;
         }
 
         public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
@@ -199,7 +185,7 @@ namespace HexCore.HexGraph
             foreach (var direction in Directions)
             {
                 var next = position + direction;
-                if (IsInBounds(next) && !(onlyPassable && IsBlocked(next))) yield return next;
+                if (IsInBounds(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
             }
         }
 
@@ -228,11 +214,6 @@ namespace HexCore.HexGraph
             // So start position won't be included in the range
             visited.Remove(startPosition);
             return visited;
-        }
-
-        public bool IsCellBlocked(Coordinate3D cellCoordinate)
-        {
-            return GetCellStateByCoordinate3D(cellCoordinate).IsBlocked;
         }
 
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
@@ -266,13 +247,13 @@ namespace HexCore.HexGraph
             return visited;
         }
 
-        public CellState GetCellStateByCoordinate3D(Coordinate3D coordinate3D)
+        public CellState GetCellState(Coordinate3D coordinate)
         {
-            var coordinate2D = CoordinateConverter.ConvertOneCubeToOffset(_offsetType, coordinate3D);
-            return GetCellStateByCoordinate2D(coordinate2D);
+            var coordinate2D = CoordinateConverter.ConvertOneCubeToOffset(_offsetType, coordinate);
+            return GetCellState(coordinate2D);
         }
 
-        private CellState GetCellStateByCoordinate2D(Coordinate2D coordinate2D)
+        private CellState GetCellState(Coordinate2D coordinate2D)
         {
             return Columns[coordinate2D.X][coordinate2D.Y];
         }

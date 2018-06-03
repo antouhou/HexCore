@@ -21,7 +21,7 @@ namespace Tests.BattleCore
             var unit = unitFactory.GetUnit(MovementTypes.Ground, 2, 1);
             manager.AddUnit(unit);
             Assert.That(manager.Units.Count, Is.EqualTo(1));
-            Assert.Contains(unit.State.Position, graph.GetAllCoordinate3Ds());
+            Assert.Contains(unit.State.Position, graph.GetAllCellsCoordinates());
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Tests.BattleCore
             var unit = unitFactory.GetBasicMeele();
             manager.AddUnit(unit);
             var movementRange = unit.GetMovementRange();
-            var allEmptyCells = manager.Graph.GetAllEmptyCellsCoordinate3Ds();
+            var allEmptyCells = manager.Graph.GetAllEmptyCellsCoordinates();
             var notInMovementRange = allEmptyCells.Except(movementRange).ToList();
             var randomPointNotInMovementRange = notInMovementRange[Random.Next(notInMovementRange.Count)];
             Assert.That(manager.MoveUnitTo(unit, randomPointNotInMovementRange), Is.False);

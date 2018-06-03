@@ -37,5 +37,10 @@ namespace HexCore.BattleCore.Unit
         {
             return GetAttackRange().Contains(unit.State.Position);
         }
+
+        public override void Attack(AbstractUnitController unit)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

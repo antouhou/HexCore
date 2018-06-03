@@ -16,7 +16,7 @@ namespace Tests.Helpers
             var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
             var cubeCoordinates =
                 CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight,
-                    graph.GetAllCellsOffsetPosition());
+                    graph.GetAllCellsOffsetPositions());
             //For odd rows right:
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1

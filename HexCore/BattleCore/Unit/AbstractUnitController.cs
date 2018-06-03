@@ -11,5 +11,6 @@ namespace HexCore.BattleCore.Unit
         public abstract List<Coordinate3D> GetMovementRange();
         public abstract bool CanMoveTo(Coordinate3D position);
         public abstract bool CanAttack(AbstractUnitController unit);
+        public abstract void Attack(AbstractUnitController unit);
     }
 }
