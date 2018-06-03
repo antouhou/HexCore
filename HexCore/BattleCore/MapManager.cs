@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HexCore.BattleCore.Unit;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 
@@ -7,49 +8,44 @@ namespace HexCore.BattleCore
     public class MapManager
     {
         public readonly Graph Graph;
-        public readonly List<AbstractUnit> Units = new List<AbstractUnit>();
+        public readonly List<AbstractUnitController> Units = new List<AbstractUnitController>();
 
         public MapManager(Graph graph)
         {
             Graph = graph;
         }
 
-        private bool CanUnitMoveTo(AbstractUnit unit, Coordinate3D coordinate3D)
+        public bool MoveUnitTo(UnitController unit, Coordinate3D coordinate3D)
         {
-            return unit.CanMoveTo(coordinate3D, Graph);
-        }
-
-        public bool MoveUnitTo(BasicUnit unit, Coordinate3D coordinate3D)
-        {
-            if (!CanUnitMoveTo(unit, coordinate3D)) return false;
+            if (!unit.CanMoveTo(coordinate3D)) return false;
             Graph.SetOneCellBlocked(coordinate3D, true);
-            Graph.SetOneCellBlocked(unit.Position, false);
-            unit.Position = coordinate3D;
+            Graph.SetOneCellBlocked(unit.State.Position, false);
+            unit.State.Position = coordinate3D;
             return true;
         }
 
-        public bool AddUnit(AbstractUnit unit)
+        public bool AddUnit(AbstractUnitController unit)
         {
             var randomEmptyCell = Graph.GetRandomEmptyCoordinate3D();
             if (randomEmptyCell == null) return false;
-            unit.Position = randomEmptyCell.Value;
-            Graph.SetOneCellBlocked(unit.Position, true);
+            unit.State.Position = randomEmptyCell.Value;
+            Graph.SetOneCellBlocked(unit.State.Position, true);
             Units.Add(unit);
             return true;
         }
 
-        public void RemoveUnit(AbstractUnit unit)
+        public void RemoveUnit(AbstractUnitController unit)
         {
-            Graph.SetOneCellBlocked(unit.Position, false);
+            Graph.SetOneCellBlocked(unit.State.Position, false);
             Units.Remove(unit);
         }
 
-        public bool CanAttack(AbstractUnit attackingUnit, BasicUnit attackedUnit)
+        public bool CanAttack(AbstractUnitController attackingUnit, UnitController attackedUnit)
         {
-            return attackingUnit.CanAttack(attackedUnit, Graph);
+            return attackingUnit.CanAttack(attackedUnit);
         }
 
-        public void Attack(AbstractUnit attackingUnit, BasicUnit attackedUnit)
+        public void Attack(AbstractUnitController attackingUnit, UnitController attackedUnit)
         {
         }
     }

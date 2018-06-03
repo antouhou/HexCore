@@ -41,9 +41,10 @@
     <Compile Include="AStar\AStarSearch.cs" />
     <Compile Include="AStar\IWeightedGraph.cs" />
     <Compile Include="BattleCore\Attack.cs" />
-    <Compile Include="BattleCore\AbstractUnit.cs" />
     <Compile Include="BattleCore\MapManager.cs" />
-    <Compile Include="BattleCore\BasicUnit.cs" />
+    <Compile Include="BattleCore\Unit\AbstractUnitController.cs" />
+    <Compile Include="BattleCore\Unit\UnitController.cs" />
+    <Compile Include="BattleCore\Unit\UnitState.cs" />
     <Compile Include="DataStructures\Coordinate3D.cs" />
     <Compile Include="DataStructures\Coordinate2D.cs" />
     <Compile Include="DataStructures\PriorityQueue.cs" />

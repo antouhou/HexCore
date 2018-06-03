@@ -44,8 +44,9 @@
   <ItemGroup>
     <Compile Include="AStar\AStarSearchTest.cs" />
     <Compile Include="BattleCore\MapManagerTest.cs" />
-    <Compile Include="BattleCore\BasicUnitTest.cs" />
+    <Compile Include="BattleCore\Unit\UnitControllerTest.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
+    <Compile Include="Fixtures\UnitFactory.cs" />
     <Compile Include="Helpers\CoordinateConverterTest.cs" />
     <Compile Include="HexGraph\GraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
