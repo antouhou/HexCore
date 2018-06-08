@@ -337,3 +337,4 @@ ASALocalRun/
 *.iml
 out
 gen
+/junit-results.xml
