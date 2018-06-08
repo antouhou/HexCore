@@ -19,11 +19,11 @@ pipeline {
             }
         }
 
-        post {
-            always {
-                sh 'echo "completed"'
-            }
-        }
+    }
 
+    post {
+        always {
+            nunit 'TestResult.xml'
+        }
     }
 }
