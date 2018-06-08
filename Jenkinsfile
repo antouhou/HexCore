@@ -22,7 +22,7 @@ pipeline {
 
     post {
         always {
-            nunit 'TestResult.xml'
+            nunit 'junit-results.xml'
         }
     }
 }
