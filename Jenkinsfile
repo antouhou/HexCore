@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-		sh 'ls'
+		sh 'pwd'
 		sh 'mkdir -p /home/.config/NuGet/ && touch NuGet.Config'
                 sh 'nuget restore'
             }
