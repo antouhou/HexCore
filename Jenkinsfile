@@ -3,14 +3,12 @@ pipeline {
     agent { docker { image 'mono' } }
 
     environment {
-        HOME = '/home'
+        HOME = $PWD
     }
 
     stages {
         stage('Install Dependencies') {
             steps {
-		sh 'pwd'
-		sh 'mkdir -p /home/.config/NuGet/ && touch NuGet.Config'
                 sh 'nuget restore'
             }
         }
