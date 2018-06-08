@@ -15,7 +15,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe Tests/bin/Debug -xml nunit-result.xml'
+                sh 'mono packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe Tests/bin/Debug/Tests.dll
+'
             }
         }
     }
