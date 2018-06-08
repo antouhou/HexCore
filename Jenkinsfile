@@ -22,7 +22,7 @@ pipeline {
 
     post {
         always {
-            nunit 'junit-results.xml'
+            junit 'junit-results.xml'
         }
     }
 }
