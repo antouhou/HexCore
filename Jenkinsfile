@@ -1,9 +1,19 @@
 pipeline {
     agent { docker { image 'mono' } }
     stages {
-        stage('build') {
+        stage('Install Dependencies') {
             steps {
-                sh 'mono --version'
+                sh 'nuget install'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'msbuild'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'echo "Tests should be there"'
             }
         }
     }
