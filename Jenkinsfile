@@ -1,9 +1,15 @@
 pipeline {
+
     agent { docker { image 'mono' } }
+
+    environment {
+        HOME = '/home'
+    }
+
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'nuget install'
+                sh 'nuget restore'
             }
         }
         stage('Build') {
