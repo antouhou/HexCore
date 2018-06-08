@@ -21,7 +21,7 @@ pipeline {
 
         post {
             always {
-                nunit 'TestResult.xml'
+                sh 'echo "completed"'
             }
         }
 
