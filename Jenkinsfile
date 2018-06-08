@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
+		sh 'mkdir .config'
                 sh 'nuget restore'
             }
         }
