@@ -21,9 +21,4 @@ pipeline {
 
     }
 
-    post {
-        always {
-            nunit 'TestResult.xml'
-        }
-    }
 }
