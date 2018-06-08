@@ -2,13 +2,10 @@ pipeline {
 
     agent { docker { image 'mono' } }
 
-    environment {
-        HOME = $PWD
-    }
-
     stages {
         stage('Install Dependencies') {
             steps {
+		sh 'export HOME=$PWD'
                 sh 'nuget restore'
             }
         }
