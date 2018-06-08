@@ -5,8 +5,7 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-		sh 'export HOME=$PWD'
-                sh 'nuget restore'
+                sh 'HOME=$PWD nuget restore'
             }
         }
         stage('Build') {
