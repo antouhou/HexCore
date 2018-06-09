@@ -5,14 +5,14 @@ using HexCore.HexGraph;
 namespace HexCore.BattleCore.Unit
 {
     [Serializable]
-    public class UnitState
+    public class BaseUnitState: IUnitState
     {
         private Attack _attack = new Attack {Range = 1};
         private int _movementPoints;
         private MovementType _movementType;
         private Coordinate3D _position;
 
-        public UnitState(MovementType movementType, int movementPoints)
+        public BaseUnitState(MovementType movementType, int movementPoints)
         {
             _movementType = movementType;
             _movementPoints = movementPoints;

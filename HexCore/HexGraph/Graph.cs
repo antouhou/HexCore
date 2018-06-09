@@ -76,7 +76,7 @@ namespace HexCore.HexGraph
             return _emptyCells.Count > 0;
         }
 
-        public Coordinate3D? GetCoordinateOfRandomEmptyCell()
+        public Coordinate3D? GetRandomEmptyCellCoordinate()
         {
             /*
              * After having some thoughts on what is better - to return null or to throw an error,
@@ -88,6 +88,11 @@ namespace HexCore.HexGraph
              */
             if (IsThereEmptyCell()) return _emptyCells[Random.Next(_emptyCells.Count)];
             return null;
+        }
+
+        public Coordinate3D GetRandomCellCoordinate()
+        {
+            return _allCoordinates[Random.Next(_emptyCells.Count)];
         }
 
         /**
