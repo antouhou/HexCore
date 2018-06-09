@@ -20,26 +20,26 @@ namespace HexCore.BattleCore.Unit
 
         public int MovementPoints
         {
-            get { return _movementPoints; }
-            set { _movementPoints = value; }
+            get => _movementPoints;
+            set => _movementPoints = value;
         }
 
         public MovementType MovementType
         {
-            get { return _movementType; }
-            set { _movementType = value; }
+            get => _movementType;
+            set => _movementType = value;
         }
 
         public Coordinate3D Position
         {
-            get { return _position; }
-            set { _position = value; }
+            get => _position;
+            set => _position = value;
         }
 
         public Attack Attack
         {
-            get { return _attack; }
-            set { _attack = value; }
+            get => _attack;
+            set => _attack = value;
         }
     }
 }

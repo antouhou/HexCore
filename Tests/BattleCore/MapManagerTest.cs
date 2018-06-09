@@ -15,7 +15,7 @@ namespace Tests.BattleCore
         [Test]
         public void ShouldAddUnitsToTheMapIfThereIsAPlaceForThem()
         {
-            var graph = new Graph(2, 2, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(2, 2, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
             var unit = unitFactory.GetUnit(MovementTypes.Ground, 2, 1);
@@ -27,7 +27,7 @@ namespace Tests.BattleCore
         [Test]
         public void ShouldBeAbleToMoveUnitsAroundTheMap()
         {
-            var graph = new Graph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
             var unit = unitFactory.GetUnit(MovementTypes.Ground, 2, 1);
@@ -47,7 +47,7 @@ namespace Tests.BattleCore
         public void ShouldNotAddUnitsToTheMapIfThereIsNoPlaceForThem()
         {
             // 4 units max
-            var graph = new Graph(2, 2, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(2, 2, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
             for (var i = 0; i < 4; i++) Assert.That(manager.AddUnit(unitFactory.GetBasicMeele()), Is.True);
@@ -59,7 +59,7 @@ namespace Tests.BattleCore
         [Test]
         public void ShouldNotMoveUnitOverItsMovementRange()
         {
-            var graph = new Graph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
             var unit = unitFactory.GetBasicMeele();
@@ -75,7 +75,7 @@ namespace Tests.BattleCore
         public void ShouldNotMoveUnitToOtherUnitPosition()
         {
             // With 3x3 graph and movement radius is equal to 3, any unit can move to any position
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
             var unit = unitFactory.GetBasicMeele();

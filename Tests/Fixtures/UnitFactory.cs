@@ -13,16 +13,16 @@ namespace Tests.Fixtures
             _graph = graph;
         }
 
-        public UnitController GetUnit(MovementType movementType, int movementPoint, int attackRange)
+        public UnitBehavior GetUnit(MovementType movementType, int movementPoint, int attackRange)
         {
             var unitState = new UnitState(movementType, movementPoint) {Attack = new Attack {Range = attackRange}};
-            return new UnitController(unitState, _graph);
+            return new UnitBehavior(unitState, _graph);
         }
 
-        public UnitController GetBasicMeele()
+        public UnitBehavior GetBasicMeele()
         {
             var unitState = new UnitState(MovementTypes.Ground, 2) {Attack = new Attack {Range = 1}};
-            return new UnitController(unitState, _graph);
+            return new UnitBehavior(unitState, _graph);
         }
     }
 }

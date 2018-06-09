@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.Helpers;
@@ -15,65 +16,20 @@ namespace Tests.HexGraph
             _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
 
         [Test]
-        public void AllCellsShouldHaveCorrectPositions()
-        {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(6));
-            for (var x = 0;
-                x < graph.Columns.Count;
-                x++)
-            {
-                Assert.That(graph.Columns[x].Count, Is.EqualTo(7));
-                for (var y = 0; y < graph.Columns[x].Count; y++)
-                    Assert.That(graph.Columns[x][y].Coordinate2, Is.EqualTo(new Coordinate2D(x, y)));
-            }
-
-            graph.Resize(4, 5);
-            Assert.That(graph.Columns.Count, Is.EqualTo(4));
-            for (var x = 0;
-                x < graph.Columns.Count;
-                x++)
-            {
-                Assert.That(graph.Columns[x].Count, Is.EqualTo(5));
-                for (var y = 0; y < graph.Columns[x].Count; y++)
-                    Assert.That(graph.Columns[x][y].Coordinate2, Is.EqualTo(new Coordinate2D(x, y)));
-            }
-
-            graph.Resize(7, 8);
-            Assert.That(graph.Columns.Count, Is.EqualTo(7));
-            for (var x = 0;
-                x < graph.Columns.Count;
-                x++)
-            {
-                Assert.That(graph.Columns[x].Count, Is.EqualTo(8));
-                for (var y = 0; y < graph.Columns[x].Count; y++)
-                    Assert.That(graph.Columns[x][y].Coordinate2, Is.EqualTo(new Coordinate2D(x, y)));
-            }
-        }
-
-        [Test]
-        public void ShouldCreateGraph()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
-        }
-        
-        [Test]
         public void ShouldBlockCell()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.False);
-            graph.SetOneCellBlocked(new Coordinate3D(0,0,0), true);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.True);
-            graph.SetOneCellBlocked(new Coordinate3D(0,0,0), false);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0,0,0)), Is.False);
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
+            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
+            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
         }
 
         [Test]
         public void ShouldGetCorrectMovementRange()
         {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
 
             var expectedMovementRange2D = new List<Coordinate2D>
@@ -109,11 +65,11 @@ namespace Tests.HexGraph
 
             // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
             // access it, since going to 1,3 will cost more than movement points we have.
-            graph.SetManyCellsMovementType(new List<Coordinate2D>
+            graph.SetManyCellsMovementType(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
             {
                 new Coordinate2D(2, 3),
                 new Coordinate2D(1, 3)
-            }, MovementTypes.Water);
+            }), MovementTypes.Water);
 
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
             graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1)), true);
@@ -137,14 +93,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldGetCorrectNeighbors()
         {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(6));
-            for (var x = 0; x < graph.Columns.Count; x++)
-            {
-                Assert.That(graph.Columns[x].Count, Is.EqualTo(7));
-                for (var y = 0; y < graph.Columns[x].Count; y++)
-                    Assert.That(graph.Columns[x][y].Coordinate2, Is.EqualTo(new Coordinate2D(x, y)));
-            }
+            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1);
@@ -167,7 +116,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldGetCorrectRange()
         {
-            var graph = new Graph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
 
             var expectedRange2D = new List<Coordinate2D>
@@ -202,78 +151,26 @@ namespace Tests.HexGraph
         }
 
         [Test]
-        public void ShouldMaintainCellStatesOnResize()
+        public void ShouldSetMovementTypesToCells()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.False(graph.Columns[0][1].IsBlocked);
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)), true);
-            Assert.True(graph.Columns[0][1].IsBlocked);
-            graph.Resize(2, 2);
-            Assert.True(graph.Columns[0][1].IsBlocked);
-        }
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-        [Test]
-        public void ShouldNotResizeIfNothingChanged()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(3, 3);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
-        }
+            var coordinateToSet = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1));
+            
+            graph.SetOneCellMovementType(coordinateToSet, MovementTypes.Water);
+            Assert.That(graph.GetCellState(coordinateToSet).MovementType, Is.EqualTo(MovementTypes.Water));
 
-        [Test]
-        public void ShouldResizeGraphDown()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(2, 3);
-            Assert.That(graph.Columns.Count, Is.EqualTo(2));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
-        }
-
-
-        [Test]
-        public void ShouldResizeOnlyCellsInEachRow()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(3, 4);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void ShouldResizeOnlyCellsInEachRowDown()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(3, 2);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void ShouldResizeOnlyColsDown()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(2, 3);
-            Assert.That(graph.Columns.Count, Is.EqualTo(2));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
-        }
-
-        [Test]
-        public void ShouldResizeOnlyHeightUp()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(4, 3);
-            Assert.That(graph.Columns.Count, Is.EqualTo(4));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
-        }
-
-        [Test]
-        public void ShouldResizeWholeGraphUp()
-        {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            graph.Resize(4, 5);
-            Assert.That(graph.Columns.Count, Is.EqualTo(4));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(5));
+            var coordinatesToSet = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>()
+            {
+                new Coordinate2D(0, 1),
+                new Coordinate2D(0, 2)
+            });
+            
+            graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
+            foreach (var coordinate in coordinatesToSet)
+            {
+                Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
+            }
         }
     }
 }

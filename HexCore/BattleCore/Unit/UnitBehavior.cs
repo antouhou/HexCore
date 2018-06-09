@@ -6,11 +6,11 @@ using HexCore.HexGraph;
 namespace HexCore.BattleCore.Unit
 {
     [Serializable]
-    public class UnitController : AbstractUnitController
+    public class UnitBehavior : AbstractUnitBehavior
     {
         private readonly Graph _graph;
 
-        public UnitController(UnitState unitState, Graph graph)
+        public UnitBehavior(UnitState unitState, Graph graph)
         {
             State = unitState;
             _graph = graph;
@@ -33,12 +33,12 @@ namespace HexCore.BattleCore.Unit
             return GetMovementRange().Contains(position);
         }
 
-        public override bool CanAttack(AbstractUnitController unit)
+        public override bool CanAttack(AbstractUnitBehavior unit)
         {
             return GetAttackRange().Contains(unit.State.Position);
         }
 
-        public override void Attack(AbstractUnitController unit)
+        public override void Attack(AbstractUnitBehavior unit)
         {
             throw new NotImplementedException();
         }

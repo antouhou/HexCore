@@ -8,14 +8,14 @@ namespace HexCore.BattleCore
     public class MapManager
     {
         public readonly Graph Graph;
-        public readonly List<AbstractUnitController> Units = new List<AbstractUnitController>();
+        public readonly List<AbstractUnitBehavior> Units = new List<AbstractUnitBehavior>();
 
         public MapManager(Graph graph)
         {
             Graph = graph;
         }
 
-        public bool MoveUnitTo(UnitController unit, Coordinate3D coordinate3D)
+        public bool MoveUnitTo(UnitBehavior unit, Coordinate3D coordinate3D)
         {
             if (!unit.CanMoveTo(coordinate3D)) return false;
             Graph.SetOneCellBlocked(coordinate3D, true);
@@ -24,7 +24,7 @@ namespace HexCore.BattleCore
             return true;
         }
 
-        public bool AddUnit(AbstractUnitController unit)
+        public bool AddUnit(AbstractUnitBehavior unit)
         {
             var randomEmptyCell = Graph.GetCoordinateOfRandomEmptyCell();
             if (randomEmptyCell == null) return false;
@@ -34,7 +34,7 @@ namespace HexCore.BattleCore
             return true;
         }
 
-        public void RemoveUnit(AbstractUnitController unit)
+        public void RemoveUnit(AbstractUnitBehavior unit)
         {
             Graph.SetOneCellBlocked(unit.State.Position, false);
             Units.Remove(unit);

@@ -42,8 +42,8 @@
     <Compile Include="AStar\IWeightedGraph.cs" />
     <Compile Include="BattleCore\Attack.cs" />
     <Compile Include="BattleCore\MapManager.cs" />
-    <Compile Include="BattleCore\Unit\AbstractUnitController.cs" />
-    <Compile Include="BattleCore\Unit\UnitController.cs" />
+    <Compile Include="BattleCore\Unit\AbstractUnitBehavior.cs" />
+    <Compile Include="BattleCore\Unit\UnitBehavior.cs" />
     <Compile Include="BattleCore\Unit\UnitState.cs" />
     <Compile Include="DataStructures\Coordinate3D.cs" />
     <Compile Include="DataStructures\Coordinate2D.cs" />
@@ -51,6 +51,8 @@
     <Compile Include="Helpers\CoordinateConverter.cs" />
     <Compile Include="HexGraph\CellState.cs" />
     <Compile Include="HexGraph\Graph.cs" />
+    <Compile Include="HexGraph\GraphFactory.cs" />
+    <Compile Include="HexGraph\GraphUtils.cs" />
     <Compile Include="HexGraph\MovementType.cs" />
     <Compile Include="HexGraph\OffsetTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,7 +60,9 @@
   <ItemGroup>
     <Content Include="AStar\README.md" />
     <Content Include="BattleCore\README.md" />
+    <Content Include="BattleCore\Unit\README.md" />
     <Content Include="DataStructures\README.md" />
+    <Content Include="HexGraph\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

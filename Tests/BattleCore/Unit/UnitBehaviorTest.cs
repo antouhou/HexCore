@@ -8,14 +8,14 @@ using Tests.Fixtures;
 namespace Tests.BattleCore.Unit
 {
     [TestFixture]
-    public class UnitControllerTest
+    public class UnitBehaviorTest
     {
         private readonly CoordinateConverter _coordinateConverter = new CoordinateConverter(OffsetTypes.OddRowsRight);
 
         [Test]
         public void ShouldCalculateWhetherOneUnitCanAttackOtherOrNot()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
 
@@ -50,11 +50,11 @@ namespace Tests.BattleCore.Unit
             Assert.That(unit3.CanAttack(unit1), Is.True);
             Assert.That(unit3.CanAttack(unit2), Is.True);
         }
-        
+
         [Test]
         public void ShouldNotBeAbleToAttackItself()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var manager = new MapManager(graph);
             var unitFactory = new UnitFactory(graph);
 

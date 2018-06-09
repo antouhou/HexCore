@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HexCore.AStar;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 
 namespace HexCore.HexGraph
 {
@@ -23,23 +22,18 @@ namespace HexCore.HexGraph
             new Coordinate3D(0, -1, +1)
         };
 
-        private readonly List<MovementType> _movementTypes;
-        private readonly OffsetTypes _offsetType;
-
-        private List<Coordinate3D> _blocked;
+        private readonly List<CellState> _cellStatesList;
 
         private List<Coordinate3D> _allCoordinates;
+
+        private Dictionary<Coordinate3D, CellState> _cellStatesDictonary;
+
         private List<Coordinate3D> _emptyCells;
-        private int _height;
-        private int _width;
 
-        public List<List<CellState>> Columns { get; } = new List<List<CellState>>();
-
-        public Graph(int width, int height, OffsetTypes offsetType, List<MovementType> movementTypes)
+        public Graph(List<CellState> cellStatesList)
         {
-            _offsetType = offsetType;
-            _movementTypes = movementTypes;
-            Resize(width, height);
+            _cellStatesList = cellStatesList;
+            UpdateCoordinatesList();
         }
 
         public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
@@ -53,7 +47,20 @@ namespace HexCore.HexGraph
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }
 
-        // TODO: Check if it possible to do something with generics
+        public void AddCells(IEnumerable<CellState> newCellStatesList)
+        {
+            _cellStatesList.AddRange(newCellStatesList);
+            UpdateCellStateDictionary();
+            UpdateCoordinatesList();
+        }
+
+        public void RemoveCells(List<Coordinate3D> coordinatesToRemove)
+        {
+            _cellStatesList.RemoveAll(cellState => coordinatesToRemove.Contains(cellState.Coordinate3));
+            UpdateCellStateDictionary();
+            UpdateCoordinatesList();
+        }
+
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
             return _allCoordinates;
@@ -83,50 +90,9 @@ namespace HexCore.HexGraph
             return null;
         }
 
-        private void ResizeColumn(int columnNumber, int newSize)
-        {
-            var column = Columns[columnNumber];
-            if (column.Count > newSize)
-            {
-                column.RemoveRange(newSize, column.Count - newSize);
-                return;
-            }
-
-            if (column.Count >= newSize) return;
-            for (var rowNumber = column.Count; rowNumber < newSize; rowNumber++)
-            {
-                var position = new Coordinate2D(columnNumber, rowNumber);
-                var cubeCoordinate = CoordinateConverter.ConvertOneOffsetToCube(_offsetType, position);
-                column.Add(new CellState(position, false, cubeCoordinate, _movementTypes[0]));
-            }
-        }
-
-        private void AddNewColumn(int size)
-        {
-            var column = new List<CellState>();
-            Columns.Add(column);
-            ResizeColumn(Columns.Count - 1, size);
-        }
-
         /**
          * Resize graph. Mostly used by the editor
          */
-        public void Resize(int width, int height)
-        {
-            if (width > _width)
-                for (var columnNumber = _width; columnNumber < width; columnNumber++)
-                    AddNewColumn(height);
-
-            if (_width > width) Columns.RemoveRange(width, _width - width);
-
-            if (height != _height)
-                for (var columnNumber = 0; columnNumber < Columns.Count; columnNumber++)
-                    ResizeColumn(columnNumber, height);
-
-            _width = width;
-            _height = height;
-            UpdateCoordinatesList();
-        }
 
         public void SetManyCellsBlocked(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
         {
@@ -144,7 +110,7 @@ namespace HexCore.HexGraph
             SetManyCellsBlocked(new List<Coordinate3D> {coordinate}, isBlocked);
         }
 
-        public void SetManyCellsMovementType(IEnumerable<Coordinate2D> coordinates, MovementType movementType)
+        public void SetManyCellsMovementType(IEnumerable<Coordinate3D> coordinates, MovementType movementType)
         {
             foreach (var coordinate in coordinates)
             {
@@ -153,21 +119,21 @@ namespace HexCore.HexGraph
             }
         }
 
-        public void SetOneCellMovementType(Coordinate2D coordinate, MovementType movementType)
+        public void SetOneCellMovementType(Coordinate3D coordinate, MovementType movementType)
         {
-            SetManyCellsMovementType(new List<Coordinate2D> {coordinate}, movementType);
+            SetManyCellsMovementType(new List<Coordinate3D> {coordinate}, movementType);
+        }
+
+        private void UpdateCellStateDictionary()
+        {
+            _cellStatesDictonary = new Dictionary<Coordinate3D, CellState>();
+            foreach (var cellState in _cellStatesList) _cellStatesDictonary.Add(cellState.Coordinate3, cellState);
         }
 
         private void UpdateCoordinatesList()
         {
-            _allCoordinates = Columns.SelectMany(col => col).Select(cell => cell.Coordinate3).ToList();
-            _blocked = Columns.SelectMany(col => col).Where(cell => cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
-            _emptyCells = Columns.SelectMany(col => col).Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
-        }
-
-        public IEnumerable<Coordinate2D> GetAllCellsOffsetPositions()
-        {
-            return Columns.SelectMany(col => col).Select(cell => cell.Coordinate2);
+            _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
+            _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
         }
 
         private bool IsInBounds(Coordinate3D coordinate)
@@ -249,13 +215,7 @@ namespace HexCore.HexGraph
 
         public CellState GetCellState(Coordinate3D coordinate)
         {
-            var coordinate2D = CoordinateConverter.ConvertOneCubeToOffset(_offsetType, coordinate);
-            return GetCellState(coordinate2D);
-        }
-
-        private CellState GetCellState(Coordinate2D coordinate2D)
-        {
-            return Columns[coordinate2D.X][coordinate2D.Y];
+            return _cellStatesDictonary[coordinate];
         }
 
         private struct Fringe

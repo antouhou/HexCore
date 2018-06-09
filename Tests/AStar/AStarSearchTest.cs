@@ -19,7 +19,7 @@ namespace Tests.AStar
         {
             // This test wouldn't be that different from previous ones, except size of the graph
             // Not so square anymore! 7 columns, 10 rows.
-            var graph = new Graph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
+            var graph = GraphFactory.CreateSquareGraph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
             var startOddR = new Coordinate2D(5, 6);
@@ -53,7 +53,7 @@ namespace Tests.AStar
                 new Coordinate2D(4, 7),
                 new Coordinate2D(5, 5)
             }), true);
-            graph.SetManyCellsMovementType(new List<Coordinate2D>
+            graph.SetManyCellsMovementType(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
             {
                 new Coordinate2D(4, 2),
                 new Coordinate2D(3, 2),
@@ -61,7 +61,7 @@ namespace Tests.AStar
                 new Coordinate2D(1, 3),
                 new Coordinate2D(2, 3),
                 new Coordinate2D(3, 3)
-            }, MovementTypes.Water);
+            }), MovementTypes.Water);
 
             //Let's see what's going to happen!
             expectedOffsetPath = new List<Coordinate2D>
@@ -115,14 +115,11 @@ namespace Tests.AStar
         {
             // Everything is like before, but now instead of blocking 1,1 let's make it water to apply some penalties 
             // to our ground moving type
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-            graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
-            Assert.That(graph.Columns[1][1].MovementType, Is.EqualTo(MovementTypes.Water));
+            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)),
+                MovementTypes.Water);
             // And we expect to achieve same result - even through 1,1 is not blocked
-            Assert.That(graph.Columns[1][1].IsBlocked, Is.False);
 
             var startOddR = new Coordinate2D(2, 2);
             var goalOddR = new Coordinate2D(0, 0);
@@ -145,8 +142,8 @@ namespace Tests.AStar
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's make 0,1 water too and move our starting point to bottom left
-            graph.SetOneCellMovementType(new Coordinate2D(0, 1), MovementTypes.Water);
-            Assert.That(graph.Columns[0][1].MovementType, Is.EqualTo(MovementTypes.Water));
+            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)),
+                MovementTypes.Water);
             startOddR = new Coordinate2D(0, 2);
             start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
 
@@ -170,14 +167,11 @@ namespace Tests.AStar
         public void ShouldFindShortestPathWhenThereIsPenaltiesAndObstacles()
         {
             // Now let's make 1,1 water and block 1,2
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 2)), true);
-            graph.SetOneCellMovementType(new Coordinate2D(1, 1), MovementTypes.Water);
-            Assert.That(graph.Columns[1][1].MovementType, Is.EqualTo(MovementTypes.Water));
-            Assert.That(graph.Columns[1][2].IsBlocked, Is.True);
+            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)),
+                MovementTypes.Water);
 
             var startOddR = new Coordinate2D(2, 2);
             var goalOddR = new Coordinate2D(0, 0);
@@ -204,12 +198,9 @@ namespace Tests.AStar
         public void ShouldFindShortestPathWithObstacles()
         {
             // Now let's block center, 1,1
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)), true);
-            Assert.That(graph.Columns[1][1].IsBlocked, Is.True);
 
             // Same as in prevoius test
             var startOddR = new Coordinate2D(2, 2);
@@ -259,9 +250,7 @@ namespace Tests.AStar
         [Test]
         public void ShouldFindShortestPathWithoutObstacles()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            Assert.That(graph.Columns.Count, Is.EqualTo(3));
-            foreach (var row in graph.Columns) Assert.That(row.Count, Is.EqualTo(3));
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // Cube coordinates are not so intuitive when it comes to visualizing them in your head, so let's use 
             // offset ones and convert them to cube. Cube coordinate are used by the algorythm because it's

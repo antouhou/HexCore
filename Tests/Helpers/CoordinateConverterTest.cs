@@ -13,10 +13,8 @@ namespace Tests.Helpers
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
         {
-            var graph = new Graph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.TypesList);
-            var cubeCoordinates =
-                CoordinateConverter.ConvertManyOffsetToCube(OffsetTypes.OddRowsRight,
-                    graph.GetAllCellsOffsetPositions());
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var cubeCoordinates = graph.GetAllCellsCoordinates();
             //For odd rows right:
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1
