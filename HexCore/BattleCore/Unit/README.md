@@ -16,13 +16,13 @@ There are some base requirements for units:
 
 1. Unit needs access to an instance of the `Graph` class. Without it, the unit won't be able to calculate ranges and perform movements.
 
-2. Unit behavior should be a subclass of the `AbstractUnitBehaviour` class. That way all unit behaviors will have a consistent set of methods.
+2. Unit behavior should be a subclass of the `AbstractUnitBehavior` class. That way all unit behaviors will have a consistent set of methods.
 
 3. Unit behavior requires a place to store results of its calculations. So each behavior instance needs its own `UnitState` instance.
 
 4. Unit needs to know its movement type. `MovementType` class describes movement types. It's located in the `HexCore.Graph` namespace.
 
-> There is a class that implements `AbstractUnitBehaviour`, `UnitBehavior`. This class covers most of the use-cases required by a basic game. But for more advanced games you'll want to create your own unit behaviors. "Advanced Usage" section covers this topic.
+> There is a class that implements `AbstractUnitBehavior`, `UnitBehavior`. This class covers most of the use-cases required by a basic game. But for more advanced games you'll want to create your own unit behaviors. "Advanced Usage" section covers this topic.
 
 ### Basic unit tutorial
 
