@@ -4,6 +4,7 @@ using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
 using System;
+using HexCore.BattleCore;
 using HexCore.BattleCore.Unit;
 using System.Linq;
 
@@ -93,8 +94,8 @@ namespace Tests.BattleCore.Unit
             var graph = GraphFactory.CreateSquareGraph(2, 2, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var unitFactory = new BasicUnitFactory(graph);
             for (var i = 0; i < 4; i++) unitFactory.GetBasicMeele();
-            var unitState = new BaseUnitState(MovementTypes.Ground, 2) { Position = graph.GetRandomCellCoordinate() };
-            Assert.Throws<InvalidOperationException>(() => new BasicUnitBehavior<BaseUnitState>(unitState, graph));
+            var unitState = new BasicUnitState(MovementTypes.Ground, 2) { Position = graph.GetRandomCellCoordinate() };
+            Assert.Throws<InvalidOperationException>(() => new BasicUnitBehavior(unitState, graph));
         }
 
         [Test]
@@ -122,6 +123,24 @@ namespace Tests.BattleCore.Unit
             unit.MoveTo(randomPointInMovementRange);
             var unit2 = unitFactory.GetBasicMeele();
             Assert.That(unit2.MoveTo(randomPointInMovementRange), Is.False);
+        }
+
+        [Test]
+        public void ShouldBeCompatibleWithOtherImplementationsOfIUnitBehavior()
+        {
+            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            
+            var unit1 = new BasicUnitBehavior(new BasicUnitState(MovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
+            }, graph);
+            var unit2 = new CustomUnitBehavior(new CustomUnitState(MovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
+            }, graph);
+
+            Assert.True(unit2.CanAttack(unit1));
+            Assert.True(unit1.CanAttack(unit2));
         }
     }
 }

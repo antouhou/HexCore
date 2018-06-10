@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="AStar\AStarSearchTest.cs" />
     <Compile Include="BattleCore\Unit\UnitBehaviorTest.cs" />
+    <Compile Include="Fixtures\CustomUnitBehavior.cs" />
+    <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
     <Compile Include="Fixtures\BasicUnitFactory.cs" />
     <Compile Include="Helpers\CoordinateConverterTest.cs" />

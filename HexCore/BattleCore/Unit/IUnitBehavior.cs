@@ -3,14 +3,14 @@ using HexCore.DataStructures;
 
 namespace HexCore.BattleCore.Unit
 {
-    public interface IUnitBehavior<TUnitState>
+    public interface IUnitBehavior<out TUnitState>
     {
         List<Coordinate3D> GetAttackRange();
         List<Coordinate3D> GetMovementRange();
         bool CanMoveTo(Coordinate3D position);
-        bool CanAttack(IUnitBehavior<TUnitState> unit);
+        bool CanAttack(IUnitBehavior<IUnitState> unit);
         bool MoveTo(Coordinate3D coordinate3D);
-        void Attack(IUnitBehavior<TUnitState> unit);
+        void Attack(IUnitBehavior<IUnitState> unit);
         TUnitState State { get; }
     }
 }

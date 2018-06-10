@@ -14,33 +14,33 @@ namespace Tests.Fixtures
             _graph = graph;
         }
 
-        public BasicUnitBehavior<BaseUnitState> GetUnit(MovementType movementType, int movementPoint, int attackRange)
+        public BasicUnitBehavior GetUnit(MovementType movementType, int movementPoint, int attackRange)
         {
             var position = _graph.GetRandomEmptyCellCoordinate();
             if (position == null)
             {
                 throw new InvalidOperationException("Can't add more units to graph; Graph is full");
             }
-            var unitState = new BaseUnitState(movementType, movementPoint)
+            var unitState = new BasicUnitState(movementType, movementPoint)
             {
                 Attack = new Attack {Range = attackRange}, Position = position.Value
             };
-            return new BasicUnitBehavior<BaseUnitState>(unitState, _graph);
+            return new BasicUnitBehavior(unitState, _graph);
             
         }
 
-        public BasicUnitBehavior<BaseUnitState> GetBasicMeele()
+        public BasicUnitBehavior GetBasicMeele()
         {
             var position = _graph.GetRandomEmptyCellCoordinate();
             if (position == null)
             {
                 throw new InvalidOperationException("Can't add more units to graph; Graph is full");
             }
-            var unitState = new BaseUnitState(MovementTypes.Ground, 2)
+            var unitState = new BasicUnitState(MovementTypes.Ground, 2)
             {
                 Attack = new Attack {Range = 1}, Position = position.Value
             };
-            return new BasicUnitBehavior<BaseUnitState>(unitState, _graph);
+            return new BasicUnitBehavior(unitState, _graph);
         }
     }
 }

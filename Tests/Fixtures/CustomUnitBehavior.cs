@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using HexCore.BattleCore.Unit;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 
-namespace HexCore.BattleCore.Unit
+namespace Tests.Fixtures
 {
-    [Serializable]
-    public class BasicUnitBehavior : IUnitBehavior<BasicUnitState>
+    public class CustomUnitBehavior: IUnitBehavior<CustomUnitState>
     {
         private readonly Graph _graph;
 
-        public BasicUnitBehavior(BasicUnitState unitState, Graph graph)
+        public CustomUnitBehavior(CustomUnitState unitState, Graph graph)
         {
             if (graph.IsCellBlocked(unitState.Position))
             {
@@ -21,11 +21,11 @@ namespace HexCore.BattleCore.Unit
             _graph.SetOneCellBlocked(State.Position, true);
         }
 
-        public BasicUnitState State { get; }
+        public CustomUnitState State { get; }
 
         public List<Coordinate3D> GetAttackRange()
         {
-            return _graph.GetRange(State.Position, State.Attack.Range);
+            return _graph.GetAllCellsCoordinates();
         }
 
         public List<Coordinate3D> GetMovementRange()

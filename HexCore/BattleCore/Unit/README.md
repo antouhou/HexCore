@@ -39,3 +39,5 @@ public class Game {
     private readonly Graph _graph = new Graph(4, 4);
 }
 ```
+
+### Advanced usage
