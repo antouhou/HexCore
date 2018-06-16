@@ -338,3 +338,6 @@ ASALocalRun/
 out
 gen
 /junit-results.xml
+/coverage.report
+/nunit-results.xml
+/output.mlpd
