@@ -15,3 +15,17 @@ The second part is BattleCore library that implements a battlefield:
 - Units: 
   - Movement;
   - Attack
+
+## Docs
+
+- Basics
+  - Hexagonal Grid Graph
+  - Finding neighbors
+  - Finding ranges
+  - Pathfinding
+- Battle engine
+  - Units
+    - Movement
+    - Attacks
+    - Abilities
+
