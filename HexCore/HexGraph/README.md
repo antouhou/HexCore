@@ -14,13 +14,14 @@ The main class that you'll be interested in is `Graph`.
 There is a factory class, `GraphFactory`, that will produce graphs for you. You just need to specify graph size:
 
 ```c#
-    var simpleGraph = GraphFactory.createSquareGraph(height: 2, width: 3);
+    var simpleGraph = GraphFactory.createSquareGraph(height: 3, width: 4);
 ```
 
 This will create graph that looks like this:
 ```
-   ⬡⬡⬡
-  ⬡⬡⬡
+   ⬡⬡⬡⬡
+  ⬡⬡⬡⬡
+   ⬡⬡⬡⬡
 ```
 This is square graph with odd rows placed right. `GraphFactory` can do more, check [its documentation](./GRAPH_FACTORY_README.md).
 
