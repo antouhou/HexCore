@@ -10,18 +10,25 @@ namespace HexCore.BattleCore.Unit
     {
         private readonly Graph _graph;
 
+        public BasicUnitState State { get; }
+        public BasicUnitAttack Attack { get; }
+        private BasicUnitDefense Defense { get; }
+
         public BasicUnitBehavior(BasicUnitState unitState, Graph graph)
         {
             if (graph.IsCellBlocked(unitState.Position))
             {
                 throw new InvalidOperationException("Can't initialize unit; Provided position is not empty");
             }
+
             State = unitState;
+            // TODO: move to constructor
+            Defense = new BasicUnitDefense();
+            // TODO: same as above
+            Attack = new BasicUnitAttack();
             _graph = graph;
             _graph.SetOneCellBlocked(State.Position, true);
         }
-
-        public BasicUnitState State { get; }
 
         public List<Coordinate3D> GetAttackRange()
         {
@@ -42,10 +49,16 @@ namespace HexCore.BattleCore.Unit
         {
             return GetAttackRange().Contains(unit.State.Position);
         }
-        
-        public int GetAttackPower()
+
+        public double GetAttackPower()
         {
-            return 1;
+            return 2.0;
+        }
+
+        public AttackResult RecieveAttack(BasicUnitAttack attack, double attackPower)
+        {
+            var damageTaken = attackPower - Defense.GetBlockedDamageAmount(attack, attackPower);
+            return new AttackResult {totalDamage = damageTaken};
         }
 
         public bool MoveTo(Coordinate3D coordinate3D)
@@ -55,12 +68,6 @@ namespace HexCore.BattleCore.Unit
             _graph.SetOneCellBlocked(State.Position, false);
             State.Position = coordinate3D;
             return true;
-
-        }
-
-        public void Attack(IUnitBehavior<IUnitState> unit)
-        {
-            throw new NotImplementedException();
         }
     }
 }

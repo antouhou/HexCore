@@ -23,12 +23,12 @@ This will create graph that looks like this:
   ⬡⬡⬡⬡
    ⬡⬡⬡⬡
 ```
-This is square graph with odd rows placed right. `GraphFactory` can do more, check [its documentation](./GRAPH_FACTORY_README.md).
+This is a square graph with odd rows placed right. `GraphFactory` can do more, check [its documentation](./GRAPH_FACTORY_README.md).
 
 
 ### Advanced usage
 
-If `GraphFactory` isn't enough for you, you can create your own graphs without using it.
+If `GraphFactory` isn't enough for your needs, you can create your own graphs without using it.
 All you need to create a graph is a list of 
 `CellState` instances. `CellState` instances keep track of internal cell state, and consist of
 three fields and one method. These are: 

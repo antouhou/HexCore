@@ -8,6 +8,5 @@ namespace HexCore.BattleCore.Unit
         int MovementPoints { get; set; }
         MovementType MovementType { get; set; }
         Coordinate3D Position { get; set; }
-        Attack Attack { get; set; }
     }
 }

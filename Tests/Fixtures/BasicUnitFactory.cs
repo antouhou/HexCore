@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Net.Mime;
 using HexCore.BattleCore;
 using HexCore.BattleCore.Unit;
+using HexCore.DataStructures;
 using HexCore.HexGraph;
 
 namespace Tests.Fixtures
@@ -14,14 +16,15 @@ namespace Tests.Fixtures
             _graph = graph;
         }
 
-        public BasicUnitBehavior GetUnit(MovementType movementType, int movementPoint, int attackRange)
+        public BasicUnitBehavior GetBasicUnit(MovementType movementType = null, int movementRange = 3, int attackRange = 1)
         {
+            if (movementType == null) movementType = BasicMovementTypes.Ground;
             var position = _graph.GetRandomEmptyCellCoordinate();
             if (position == null)
             {
                 throw new InvalidOperationException("Can't add more units to graph; Graph is full");
             }
-            var unitState = new BasicUnitState(movementType, movementPoint)
+            var unitState = new BasicUnitState(movementType, movementRange)
             {
                 Attack = new Attack {Range = attackRange}, Position = position.Value
             };

@@ -14,7 +14,7 @@ namespace HexCore.AStar
         // Returns a distance to the goal.
         private static double Heuristic(Coordinate3D a, Coordinate3D b)
         {
-            return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2;
+            return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2.0;
         }
 
         public static List<Coordinate3D> FindPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,

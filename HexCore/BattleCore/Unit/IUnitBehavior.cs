@@ -10,7 +10,6 @@ namespace HexCore.BattleCore.Unit
         bool CanMoveTo(Coordinate3D position);
         bool CanAttack(IUnitBehavior<IUnitState> unit);
         bool MoveTo(Coordinate3D coordinate3D);
-        void Attack(IUnitBehavior<IUnitState> unit);
         TUnitState State { get; }
     }
 }
