@@ -157,7 +157,14 @@ namespace Tests.BattleCore.Unit
                 Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
             }, graph);
 
-            var attackResult = unit2.RecieveAttack(unit1.Attack, unit1.GetAttackPower());
+            Assert.AreEqual(unit2.HealthPoints, 3.0);
+            Assert.AreEqual(unit1.GetAttackPower(), 2.0);
+            Assert.AreEqual(unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()), 1.0);
+            var attackResult = unit1.PerformAttack(unit2);
+            // HP - (attackPower - blokedDamage)
+            Assert.AreEqual(unit2.HealthPoints, 2.0);
+            Assert.AreEqual(attackResult.HPLeft, unit2.HealthPoints);
+            Assert.AreEqual(attackResult.totalDamageAmount, unit1.GetAttackPower() - unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()));
         }
     }
 }

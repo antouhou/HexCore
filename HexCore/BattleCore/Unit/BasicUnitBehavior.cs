@@ -12,7 +12,8 @@ namespace HexCore.BattleCore.Unit
 
         public BasicUnitState State { get; }
         public BasicUnitAttack Attack { get; }
-        private BasicUnitDefense Defense { get; }
+        public BasicUnitDefense Defense { get; }
+        public double HealthPoints { get; set; }
 
         public BasicUnitBehavior(BasicUnitState unitState, Graph graph)
         {
@@ -26,6 +27,8 @@ namespace HexCore.BattleCore.Unit
             Defense = new BasicUnitDefense();
             // TODO: same as above
             Attack = new BasicUnitAttack();
+            // TODO
+            HealthPoints = 3;
             _graph = graph;
             _graph.SetOneCellBlocked(State.Position, true);
         }
@@ -55,10 +58,16 @@ namespace HexCore.BattleCore.Unit
             return 2.0;
         }
 
-        public AttackResult RecieveAttack(BasicUnitAttack attack, double attackPower)
+        public AttackResult PerformAttack(BasicUnitBehavior attackedUnitBehavior)
         {
-            var damageTaken = attackPower - Defense.GetBlockedDamageAmount(attack, attackPower);
-            return new AttackResult {totalDamage = damageTaken};
+            var attackPower = GetAttackPower();
+            var damageDealt = attackPower - attackedUnitBehavior.Defense.GetBlockedDamageAmount(Attack, attackPower);
+            attackedUnitBehavior.HealthPoints -= damageDealt;
+            return new AttackResult
+            {
+                totalDamageAmount = damageDealt, 
+                HPLeft = attackedUnitBehavior.HealthPoints
+            };
         }
 
         public bool MoveTo(Coordinate3D coordinate3D)
