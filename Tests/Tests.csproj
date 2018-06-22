@@ -54,7 +54,6 @@
     <Compile Include="Fixtures\CustomUnitBehavior.cs" />
     <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
-    <Compile Include="Fixtures\BasicUnitFactory.cs" />
     <Compile Include="Helpers\CoordinateConverterTest.cs" />
     <Compile Include="HexGraph\GraphFactoryTest.cs" />
     <Compile Include="HexGraph\GraphTest.cs" />

@@ -1,5 +1,5 @@
-﻿using HexCore.HexGraph;
-using HexCore.DataStructures;
+﻿using HexCore.DataStructures;
+using HexCore.HexGraph;
 
 namespace HexCore.BattleCore.Unit
 {

@@ -1,12 +1,13 @@
-﻿using HexCore.DataStructures;
+﻿using System;
+using System.Linq;
+using HexCore.BattleCore;
+using HexCore.BattleCore.Unit;
+using HexCore.BattleCore.Unit.BasicImplementation;
+using HexCore.DataStructures;
 using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
-using System;
-using HexCore.BattleCore;
-using HexCore.BattleCore.Unit;
-using System.Linq;
 
 namespace Tests.BattleCore.Unit
 {
@@ -15,6 +16,79 @@ namespace Tests.BattleCore.Unit
     {
         private static readonly Random Random = new Random();
         private readonly CoordinateConverter _coordinateConverter = new CoordinateConverter(OffsetTypes.OddRowsRight);
+
+        [Test]
+        public void ShouldAddUnitsToTheMapIfThereIsAPlaceForThem()
+        {
+            var graph = GraphFactory.CreateSquareGraph(2, 2);
+            var unitFactory = new BasicUnitFactory(graph);
+            var unit = unitFactory.GetBasicUnit(movementRange: 2);
+            Assert.Contains(unit.State.Position, graph.GetAllCellsCoordinates());
+        }
+
+        [Test]
+        public void ShouldBeAbleToMoveAroundTheMap()
+        {
+            var graph = GraphFactory.CreateSquareGraph(10, 10);
+            var unitFactory = new BasicUnitFactory(graph);
+            var unit = unitFactory.GetBasicUnit(movementRange: 2);
+            var movementRange = unit.GetMovementRange();
+            var randomPointInUnitsMovementRange = movementRange[Random.Next(movementRange.Count)];
+
+            Assert.That(unit.State.Position, Is.Not.EqualTo(randomPointInUnitsMovementRange));
+            Assert.That(graph.IsCellBlocked(randomPointInUnitsMovementRange), Is.False);
+
+            Assert.That(unit.MoveTo(randomPointInUnitsMovementRange), Is.True);
+            Assert.That(unit.State.Position, Is.EqualTo(randomPointInUnitsMovementRange));
+            Assert.That(graph.IsCellBlocked(randomPointInUnitsMovementRange), Is.True);
+        }
+
+        [Test]
+        public void ShouldBeAbleToPerformAttack()
+        {
+            var graph = GraphFactory.CreateSquareGraph(3, 3);
+
+            var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1},
+                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
+            }, graph);
+            var unit2 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1},
+                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
+            }, graph);
+
+            Assert.AreEqual(unit2.HealthPoints, 3.0);
+            Assert.AreEqual(unit1.GetAttackPower(), 2.0);
+            Assert.AreEqual(unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()), 1.0);
+            var attackResult = unit1.PerformAttack(unit2);
+            // HP - (attackPower - blokedDamage)
+            Assert.AreEqual(unit2.HealthPoints, 2.0);
+            Assert.AreEqual(attackResult.HPLeft, unit2.HealthPoints);
+            Assert.AreEqual(attackResult.totalDamageAmount,
+                unit1.GetAttackPower() - unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()));
+        }
+
+        [Test]
+        public void ShouldBeCompatibleWithOtherImplementationsOfIUnitBehavior()
+        {
+            var graph = GraphFactory.CreateSquareGraph(3, 3);
+
+            var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1},
+                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
+            }, graph);
+            var unit2 = new CustomUnitBehavior(new CustomUnitState(BasicMovementTypes.Ground, 1)
+            {
+                Attack = new Attack {Range = 1},
+                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
+            }, graph);
+
+            Assert.True(unit2.CanAttack(unit1));
+            Assert.True(unit1.CanAttack(unit2));
+        }
 
         [Test]
         public void ShouldCalculateWhetherOneUnitCanAttackOtherOrNot()
@@ -60,43 +134,6 @@ namespace Tests.BattleCore.Unit
             var unit1 = unitFactory.GetBasicUnit();
             Assert.That(unit1.CanAttack(unit1), Is.False);
         }
-        
-        [Test]
-        public void ShouldAddUnitsToTheMapIfThereIsAPlaceForThem()
-        {
-            var graph = GraphFactory.CreateSquareGraph(2, 2);
-            var unitFactory = new BasicUnitFactory(graph);
-            var unit = unitFactory.GetBasicUnit(movementRange: 2);
-            Assert.Contains(unit.State.Position, graph.GetAllCellsCoordinates());
-        }
-
-        [Test]
-        public void ShouldBeAbleToMoveAroundTheMap()
-        {
-            var graph = GraphFactory.CreateSquareGraph(10, 10);
-            var unitFactory = new BasicUnitFactory(graph);
-            var unit = unitFactory.GetBasicUnit(movementRange: 2);
-            var movementRange = unit.GetMovementRange();
-            var randomPointInUnitsMovementRange = movementRange[Random.Next(movementRange.Count)];
-
-            Assert.That(unit.State.Position, Is.Not.EqualTo(randomPointInUnitsMovementRange));
-            Assert.That(graph.IsCellBlocked(randomPointInUnitsMovementRange), Is.False);
-
-            Assert.That(unit.MoveTo(randomPointInUnitsMovementRange), Is.True);
-            Assert.That(unit.State.Position, Is.EqualTo(randomPointInUnitsMovementRange));
-            Assert.That(graph.IsCellBlocked(randomPointInUnitsMovementRange), Is.True);
-        }
-
-        [Test]
-        public void ShouldThrowExecptionIfPositionAssignedToUnitAlreadyTaken()
-        {
-            // 4 units max
-            var graph = GraphFactory.CreateSquareGraph(2, 2);
-            var unitFactory = new BasicUnitFactory(graph);
-            for (var i = 0; i < 4; i++) unitFactory.GetBasicMeele();
-            var unitState = new BasicUnitState(BasicMovementTypes.Ground, 2) { Position = graph.GetRandomCellCoordinate() };
-            Assert.Throws<InvalidOperationException>(() => new BasicUnitBehavior(unitState, graph));
-        }
 
         [Test]
         public void ShouldNotMoveOverItsMovementRange()
@@ -126,45 +163,15 @@ namespace Tests.BattleCore.Unit
         }
 
         [Test]
-        public void ShouldBeCompatibleWithOtherImplementationsOfIUnitBehavior()
+        public void ShouldThrowExecptionIfPositionAssignedToUnitAlreadyTaken()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
-            
-            var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
-            {
-                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
-            }, graph);
-            var unit2 = new CustomUnitBehavior(new CustomUnitState(BasicMovementTypes.Ground, 1)
-            {
-                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
-            }, graph);
-
-            Assert.True(unit2.CanAttack(unit1));
-            Assert.True(unit1.CanAttack(unit2));
-        }
-        
-        [Test]
-        public void ShouldBeAbleToPerformAttack()
-        {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
-            
-            var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
-            {
-                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
-            }, graph);
-            var unit2 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
-            {
-                Attack = new Attack {Range = 1}, Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
-            }, graph);
-
-            Assert.AreEqual(unit2.HealthPoints, 3.0);
-            Assert.AreEqual(unit1.GetAttackPower(), 2.0);
-            Assert.AreEqual(unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()), 1.0);
-            var attackResult = unit1.PerformAttack(unit2);
-            // HP - (attackPower - blokedDamage)
-            Assert.AreEqual(unit2.HealthPoints, 2.0);
-            Assert.AreEqual(attackResult.HPLeft, unit2.HealthPoints);
-            Assert.AreEqual(attackResult.totalDamageAmount, unit1.GetAttackPower() - unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()));
+            // 4 units max
+            var graph = GraphFactory.CreateSquareGraph(2, 2);
+            var unitFactory = new BasicUnitFactory(graph);
+            for (var i = 0; i < 4; i++) unitFactory.GetBasicMeele();
+            var unitState =
+                new BasicUnitState(BasicMovementTypes.Ground, 2) {Position = graph.GetRandomCellCoordinate()};
+            Assert.Throws<InvalidOperationException>(() => new BasicUnitBehavior(unitState, graph));
         }
     }
 }

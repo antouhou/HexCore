@@ -1,6 +1,6 @@
-﻿namespace HexCore.BattleCore.Unit
+﻿namespace HexCore.BattleCore.Unit.BasicImplementation
 {
-    public class BasicUnitDefense: IUnitDefense<BasicUnitAttack>
+    public class BasicUnitDefense : IUnitDefense<BasicUnitAttack>
     {
         private const double Defense = 1;
 

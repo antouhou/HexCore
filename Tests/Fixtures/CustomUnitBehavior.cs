@@ -6,16 +6,14 @@ using HexCore.HexGraph;
 
 namespace Tests.Fixtures
 {
-    public class CustomUnitBehavior: IUnitBehavior<CustomUnitState>
+    public class CustomUnitBehavior : IUnitBehavior<CustomUnitState>
     {
         private readonly Graph _graph;
 
         public CustomUnitBehavior(CustomUnitState unitState, Graph graph)
         {
             if (graph.IsCellBlocked(unitState.Position))
-            {
                 throw new InvalidOperationException("Can't initialize unit; Provided position is not empty");
-            }
             State = unitState;
             _graph = graph;
             _graph.SetOneCellBlocked(State.Position, true);
@@ -42,11 +40,6 @@ namespace Tests.Fixtures
         {
             return GetAttackRange().Contains(unit.State.Position);
         }
-        
-        public int GetAttackPower()
-        {
-            return 1;
-        }
 
         public bool MoveTo(Coordinate3D coordinate3D)
         {
@@ -55,7 +48,11 @@ namespace Tests.Fixtures
             _graph.SetOneCellBlocked(State.Position, false);
             State.Position = coordinate3D;
             return true;
+        }
 
+        public int GetAttackPower()
+        {
+            return 1;
         }
 
         public void Attack(IUnitBehavior<IUnitState> unit)

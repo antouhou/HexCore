@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.Helpers;
@@ -156,21 +155,19 @@ namespace Tests.HexGraph
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             var coordinateToSet = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1));
-            
+
             graph.SetOneCellMovementType(coordinateToSet, MovementTypes.Water);
             Assert.That(graph.GetCellState(coordinateToSet).MovementType, Is.EqualTo(MovementTypes.Water));
 
-            var coordinatesToSet = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>()
+            var coordinatesToSet = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
             {
                 new Coordinate2D(0, 1),
                 new Coordinate2D(0, 2)
             });
-            
+
             graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
             foreach (var coordinate in coordinatesToSet)
-            {
                 Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
-            }
         }
     }
 }

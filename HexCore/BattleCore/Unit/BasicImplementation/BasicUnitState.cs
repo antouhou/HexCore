@@ -2,10 +2,10 @@
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 
-namespace HexCore.BattleCore.Unit
+namespace HexCore.BattleCore.Unit.BasicImplementation
 {
     [Serializable]
-    public class BasicUnitState: IUnitState
+    public class BasicUnitState : IUnitState
     {
         private Attack _attack = new Attack {Range = 1};
         private int _movementPoints;
@@ -16,6 +16,12 @@ namespace HexCore.BattleCore.Unit
         {
             _movementType = movementType;
             _movementPoints = movementPoints;
+        }
+
+        public Attack Attack
+        {
+            get => _attack;
+            set => _attack = value;
         }
 
         public int MovementPoints
@@ -34,12 +40,6 @@ namespace HexCore.BattleCore.Unit
         {
             get => _position;
             set => _position = value;
-        }
-
-        public Attack Attack
-        {
-            get => _attack;
-            set => _attack = value;
         }
     }
 }

@@ -12,9 +12,9 @@ namespace HexCore.HexGraph
         {
             var offsetCoordinates =
                 CoordinateConverter.ConvertManyCubeToOffset(offsetType, graph.GetAllCellsCoordinates());
-            
+
             var coordinatesInitialized = offsetCoordinates.Count > 0;
-            
+
             var width = coordinatesInitialized ? offsetCoordinates.Select(item => item.X).Max() + 1 : 0;
             var height = coordinatesInitialized ? offsetCoordinates.Select(item => item.Y).Max() + 1 : 0;
 

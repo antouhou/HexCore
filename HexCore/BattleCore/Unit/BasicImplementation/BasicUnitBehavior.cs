@@ -3,24 +3,17 @@ using System.Collections.Generic;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 
-namespace HexCore.BattleCore.Unit
+namespace HexCore.BattleCore.Unit.BasicImplementation
 {
     [Serializable]
     public class BasicUnitBehavior : IUnitBehavior<BasicUnitState>
     {
         private readonly Graph _graph;
 
-        public BasicUnitState State { get; }
-        public BasicUnitAttack Attack { get; }
-        public BasicUnitDefense Defense { get; }
-        public double HealthPoints { get; set; }
-
         public BasicUnitBehavior(BasicUnitState unitState, Graph graph)
         {
             if (graph.IsCellBlocked(unitState.Position))
-            {
                 throw new InvalidOperationException("Can't initialize unit; Provided position is not empty");
-            }
 
             State = unitState;
             // TODO: move to constructor
@@ -32,6 +25,12 @@ namespace HexCore.BattleCore.Unit
             _graph = graph;
             _graph.SetOneCellBlocked(State.Position, true);
         }
+
+        public BasicUnitAttack Attack { get; }
+        public BasicUnitDefense Defense { get; }
+        public double HealthPoints { get; set; }
+
+        public BasicUnitState State { get; }
 
         public List<Coordinate3D> GetAttackRange()
         {
@@ -53,6 +52,15 @@ namespace HexCore.BattleCore.Unit
             return GetAttackRange().Contains(unit.State.Position);
         }
 
+        public bool MoveTo(Coordinate3D coordinate3D)
+        {
+            if (!CanMoveTo(coordinate3D)) return false;
+            _graph.SetOneCellBlocked(coordinate3D, true);
+            _graph.SetOneCellBlocked(State.Position, false);
+            State.Position = coordinate3D;
+            return true;
+        }
+
         public double GetAttackPower()
         {
             return 2.0;
@@ -65,18 +73,9 @@ namespace HexCore.BattleCore.Unit
             attackedUnitBehavior.HealthPoints -= damageDealt;
             return new AttackResult
             {
-                totalDamageAmount = damageDealt, 
+                totalDamageAmount = damageDealt,
                 HPLeft = attackedUnitBehavior.HealthPoints
             };
-        }
-
-        public bool MoveTo(Coordinate3D coordinate3D)
-        {
-            if (!CanMoveTo(coordinate3D)) return false;
-            _graph.SetOneCellBlocked(coordinate3D, true);
-            _graph.SetOneCellBlocked(State.Position, false);
-            State.Position = coordinate3D;
-            return true;
         }
     }
 }
