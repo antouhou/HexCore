@@ -2,7 +2,7 @@
 {
     public struct AttackResult
     {
-        public double totalDamageAmount;
-        public double HPLeft;
+        public double TotalDamageAmount;
+        public double HpLeft;
     }
 }

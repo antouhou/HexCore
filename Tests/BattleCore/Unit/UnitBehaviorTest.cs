@@ -65,8 +65,8 @@ namespace Tests.BattleCore.Unit
             var attackResult = unit1.PerformAttack(unit2);
             // HP - (attackPower - blokedDamage)
             Assert.AreEqual(unit2.HealthPoints, 2.0);
-            Assert.AreEqual(attackResult.HPLeft, unit2.HealthPoints);
-            Assert.AreEqual(attackResult.totalDamageAmount,
+            Assert.AreEqual(attackResult.HpLeft, unit2.HealthPoints);
+            Assert.AreEqual(attackResult.TotalDamageAmount,
                 unit1.GetAttackPower() - unit2.Defense.GetBlockedDamageAmount(unit1.Attack, unit1.GetAttackPower()));
         }
 

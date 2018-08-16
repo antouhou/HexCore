@@ -73,8 +73,8 @@ namespace HexCore.BattleCore.Unit.BasicImplementation
             attackedUnitBehavior.HealthPoints -= damageDealt;
             return new AttackResult
             {
-                totalDamageAmount = damageDealt,
-                HPLeft = attackedUnitBehavior.HealthPoints
+                TotalDamageAmount = damageDealt,
+                HpLeft = attackedUnitBehavior.HealthPoints
             };
         }
     }

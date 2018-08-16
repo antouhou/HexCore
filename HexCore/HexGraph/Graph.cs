@@ -223,6 +223,11 @@ namespace HexCore.HexGraph
             return _cellStatesDictonary[coordinate];
         }
 
+        public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, MovementType unitMovementType)
+        {
+            return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);
+        }
+
         private struct Fringe
         {
             public Coordinate3D Coordinate;

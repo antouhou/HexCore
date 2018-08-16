@@ -41,7 +41,7 @@ namespace Tests.AStar
             };
             var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
@@ -82,12 +82,12 @@ namespace Tests.AStar
             };
             expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Now let's check water movement type - it should prefer going through the water rather than the ground
-            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Water);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Water);
 
             expectedOffsetPath = new List<Coordinate2D>
             {
@@ -137,7 +137,7 @@ namespace Tests.AStar
             };
             var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
@@ -158,7 +158,7 @@ namespace Tests.AStar
             };
             expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -189,7 +189,7 @@ namespace Tests.AStar
             };
             var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -219,7 +219,7 @@ namespace Tests.AStar
             };
             var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
@@ -242,7 +242,7 @@ namespace Tests.AStar
             };
             expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
-            path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -276,7 +276,7 @@ namespace Tests.AStar
             var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
 
             // For the simplest test we assume that all cells have type ground, as well as a unit
-            var path = AStarSearch.FindPath(graph, start, goal, MovementTypes.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
             Assert.That(path, Is.EqualTo(expectedPath));
         }
     }

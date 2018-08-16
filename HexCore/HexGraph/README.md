@@ -25,6 +25,9 @@ This will create graph that looks like this:
 ```
 This is a square graph with odd rows placed right. `GraphFactory` can do more, check [its documentation](./GRAPH_FACTORY_README.md).
 
+### Pathfinding
+
+Pathfinding done through another class, 
 
 ### Advanced usage
 

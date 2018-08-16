@@ -17,7 +17,7 @@ namespace HexCore.AStar
             return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2.0;
         }
 
-        public static List<Coordinate3D> FindPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,
+        public static List<Coordinate3D> FindShortestPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,
             MovementType unitMovementType)
         {
             var costSoFar = new Dictionary<Coordinate3D, int>();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.Helpers;
@@ -168,6 +169,26 @@ namespace Tests.HexGraph
             graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
+        }
+
+        [Test]
+        public void ShouldBeAbleToFindingShortestPath()
+        {
+            // Note: this method uses AStarSearch class inside.
+            // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
+            // returns something meaningful.
+            var graph = GraphFactory.CreateSquareGraph(height: 3, width: 3);
+            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 0));
+            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 2));
+            var shortesPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
+            var expectedShortestPath = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>()
+            {
+                new Coordinate2D(1, 0),
+                new Coordinate2D(1, 1),
+                new Coordinate2D(2, 2)
+            });
+          
+            Assert.That(shortesPath, Is.EqualTo(expectedShortestPath));
         }
     }
 }
