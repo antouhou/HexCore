@@ -25,9 +25,19 @@ This will create graph that looks like this:
 ```
 This is a square graph with odd rows placed right. `GraphFactory` can do more, check [its documentation](./GRAPH_FACTORY_README.md).
 
-### Pathfinding
+### Pathfinding and ranges
 
-Pathfinding done through another class, 
+`Graph` class hash everything you can need for finding paths and ranges.
+
+To get shortest path from A to B, simply call `graph.getShortestPath(coordinateA, coordinateB, movementType);`. If you
+don't have any movement types, you can use default ones. A movement type is needed for applying movement penalties.
+Imagine a situation, when your unit has far lower movement range in the water than on the ground. In this case, the shortest 
+path would include as few water cells as possible.
+
+To get range, call `graph.getRange(center, radius)`
+
+To get movement range for a unit, call `graph.GetMovementRange(center, radius, movementType)`. This metthod will apply
+movement penalties for different movement types.
 
 ### Advanced usage
 
