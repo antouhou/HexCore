@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AStar\AStarSearchTest.cs" />
+    <Compile Include="BattleCore\BattlefieldManagerTest.cs" />
     <Compile Include="BattleCore\Unit\UnitBehaviorTest.cs" />
     <Compile Include="Fixtures\CustomUnitBehavior.cs" />
     <Compile Include="Fixtures\CustomUnitState.cs" />
