@@ -42,6 +42,8 @@
     <Compile Include="AStar\IWeightedGraph.cs" />
     <Compile Include="BattleCore\Attack.cs" />
     <Compile Include="BattleCore\BattlefieldManager.cs" />
+    <Compile Include="BattleCore\Pawn.cs" />
+    <Compile Include="BattleCore\Team.cs" />
     <Compile Include="BattleCore\Unit\AttackResult.cs" />
     <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitAttack.cs" />
     <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitBehavior.cs" />
