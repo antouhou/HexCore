@@ -13,4 +13,5 @@ namespace HexCore.BattleCore
             Cost = cost;
         }
     }
+    
 }
