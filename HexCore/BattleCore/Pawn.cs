@@ -1,4 +1,5 @@
-﻿using HexCore.DataStructures;
+﻿using System.Collections.Generic;
+using HexCore.DataStructures;
 using HexCore.HexGraph;
 
 namespace HexCore.BattleCore
@@ -11,6 +12,7 @@ namespace HexCore.BattleCore
         public int MovementPoints { get; }
         public MovementType MovementType { get; }
         public int PhysicalAttackRange { get; }
+        public List<Ability> Abilities { get; } = new List<Ability>();
 
         public Pawn(string id, Coordinate3D position, MovementType movementType, int movementPoints, int physicalAttackRange, string teamId)
         {

@@ -7,15 +7,20 @@ namespace HexCore.BattleCore
 {
     public class BattlefieldManager
     {
-        private readonly Graph _graph;
+        public readonly Graph Graph;
         private readonly List<Team> _teams = new List<Team>();
         private bool _isBattleStarted = false;
         private bool _isBattleFinished = false;
 
         public BattlefieldManager(Graph map, IEnumerable<Team> teams)
         {
-            _graph = map;
+            Graph = map;
             AddTeams(teams);
+        }
+
+        public List<Pawn> GetAllPawns()
+        {
+            return _teams.SelectMany(team => team.GetAllPawns()).ToList();
         }
         
         public void AddTeams(IEnumerable<Team> teams)
@@ -52,67 +57,51 @@ namespace HexCore.BattleCore
             return _isBattleFinished;
         }
 
-        public List<Coordinate3D> GetPawnMovementRange(string teamId, string pawnId)
+        public List<Coordinate3D> GetPawnMovementRange(Pawn pawn)
         {
-            var pawn = GetPawnById(teamId, pawnId);
             // TODO: maybe it's a good idea to have some pawn parameters immutable, and have an `Effects` property, 
             // which will modify pawn's params. Also it's good to have something like pawn.clearAllEffects();
-            return _graph.GetMovementRange(pawn.Position, pawn.MovementPoints, pawn.MovementType);
+            return Graph.GetMovementRange(pawn.Position, pawn.MovementPoints, pawn.MovementType);
         }
 
-        public void MovePawn(string teamId, string unitId, Coordinate3D newPosition)
+        public bool MovePawn(Pawn pawn, Coordinate3D newPosition)
         {
             // TODO: check if it's that team's turn now
-            var pawn = GetPawnById(teamId, unitId);
-            if (!CanMoveTo(pawn, newPosition)) return;
+            // Also check if there is such pawn at the battlefield
+            if (!CanMoveTo(pawn, newPosition))
+            {
+                return false;
+            }
             
-            _graph.SetOneCellBlocked(pawn.Position, false);
+            Graph.SetOneCellBlocked(pawn.Position, false);
             pawn.Position = newPosition;
-            _graph.SetOneCellBlocked(pawn.Position, true);
+            Graph.SetOneCellBlocked(pawn.Position, true);
+            return true;
         }
 
-        public Team GetTeamById(string teamId)
+        public List<Pawn> GetAllAttackablePawnsByPawn(Pawn pawn)
         {
-            var team = _teams.Single(t => t.Id == teamId);
-            // TODO: check if there is such a team
-            return team;
-        }
-
-        public Pawn GetPawnById(string teamId, string pawnId)
-        {
-            return GetTeamById(teamId).GetPawnById(pawnId);
-        }
-
-        public List<Pawn> GetAllAttackablePawnsByPawn(string teamId, string pawnId)
-        {
-            var pawn = GetPawnById(teamId, pawnId);
-            var attackRange = _graph.GetRange(pawn.Position, pawn.PhysicalAttackRange);
-            // TODO: complete this method
-            var pawns = new List<Pawn>();
+            var pawns = GetAllPawnsInRange(pawn.Position, pawn.PhysicalAttackRange).ToList();
             return pawns;
         }
-        
-        public void RemoveUnit() {}
 
         public bool CanMoveTo(Pawn pawn, Coordinate3D position)
         {
-            var movementRange = GetPawnMovementRange(pawn.TeamId, pawn.Id);
+            var movementRange = GetPawnMovementRange(pawn);
             return movementRange.Contains(position);
         }
 
         public bool CanAttack(Pawn attackingPawn, Pawn targetPawn)
         {
             // TODO: redo all pawns to use only pawn id
-            var attackablePawns = GetAllAttackablePawnsByPawn(attackingPawn.TeamId, attackingPawn.Id);
+            var attackablePawns = GetAllAttackablePawnsByPawn(attackingPawn);
             // TODO: this won't work because of equality of pawns
             return attackablePawns.Contains(targetPawn);
         }
 
-        public int PerformPhysicalAttack(string attackingTeamId, string attackingPawnId, string defendingTeamId, string defendingPawnId)
+        public int PerformPhysicalAttack(Pawn attackingPawn, Pawn targetPawn)
         {
-            var attackingPawn = GetPawnById(attackingTeamId, attackingPawnId);
-            var defendingPawn = GetPawnById(defendingTeamId, defendingPawnId);
-            if (CanAttack(attackingPawn, defendingPawn))
+            if (CanAttack(attackingPawn, targetPawn))
             {
                 // TODO: Here we need to calculate attacking pawn's power and defending pawn's defence
                 return 1;
@@ -121,22 +110,36 @@ namespace HexCore.BattleCore
             // TODO: probably should throw in this case
             return 0;
         }
+
+        public IEnumerable<Pawn> GetAllPawnsInRange(Coordinate3D center, int radius)
+        {
+            var range = Graph.GetRange(center, radius);
+            var pawns = GetAllPawns();
+            var pawnsInRange = pawns.Where(pawn => range.Contains(pawn.Position));
+            return pawnsInRange;
+        }
+
+        public IEnumerable<Pawn> GetPossibleAbilityTargets(Pawn pawn, Ability ability)
+        {
+            // TODO: Check that pawn has an ability
+            var pawns = GetAllPawnsInRange(pawn.Position, ability.Range);
+            // TODO: Filter pawns
+            return pawns;
+        }
+
+        public int UseAbility(Pawn caster, Ability ability, Pawn target)
+        {
+            return 1;
+            // Get caster bonus
+            // Apply to ability's power
+            // Apply damage/effect to the target
+            // TODO
+        }
         
-        public void UseAbility() {}
-        
+        public void RemovePawn() {}
         public void EndTurn() {}
         
         public void SaveBattleState() {}
         public void LoadBattleState() {}
-    }
-
-    public class Ability
-    {
-        
-    }
-
-    public class MeeleAttack
-    {
-        
     }
 }

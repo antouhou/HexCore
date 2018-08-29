@@ -19,6 +19,11 @@ namespace HexCore.BattleCore
            _pawns.AddRange(pawns);
         }
 
+        public List<Pawn> GetAllPawns()
+        {
+            return _pawns;
+        }
+
         public Pawn GetPawnById(string pawnId)
         {
             var pawn = _pawns.Single(p => p.Id == pawnId);
