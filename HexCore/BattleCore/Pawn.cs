@@ -13,6 +13,7 @@ namespace HexCore.BattleCore
         public MovementType MovementType { get; }
         public int PhysicalAttackRange { get; }
         public List<Ability> Abilities { get; } = new List<Ability>();
+        public int HealthPoints = 2;
 
         public Pawn(string id, Coordinate3D position, MovementType movementType, int movementPoints, int physicalAttackRange, string teamId)
         {

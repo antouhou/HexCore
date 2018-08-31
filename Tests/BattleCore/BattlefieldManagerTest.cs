@@ -83,9 +83,16 @@ namespace Tests.BattleCore
 //            var blueMeleePath = battlefieldManager.Graph.GetShortestPath(blueMelee.Position, ccorr.ConvertOneOffsetToCube(new Coordinate2D(4,4)), blueMelee.MovementType);
 //            var blueRangePath = battlefieldManager.Graph.GetShortestPath(blueRange.Position, ccorr.ConvertOneOffsetToCube(new Coordinate2D(5,3)), blueRange.MovementType);
 //            var blueMagePath = battlefieldManager.Graph.GetShortestPath(blueMage.Position, ccorr.ConvertOneOffsetToCube(new Coordinate2D(4,3)), blueMage.MovementType);
+
+            var initialPosition = ccorr.ConvertOneOffsetToCube(new Coordinate2D(0, 1));
+            var moveTo = ccorr.ConvertOneOffsetToCube(new Coordinate2D(4, 4));
             
+            Assert.That(redMelee.Position, Is.EqualTo(initialPosition));
             var isMoved = battlefieldManager.MovePawn(redMelee, ccorr.ConvertOneOffsetToCube(new Coordinate2D { X = 4, Y = 4}));
             Assert.IsTrue(isMoved);
+            Assert.That(redMelee.Position, Is.EqualTo(moveTo));
+            Assert.IsTrue(battlefieldManager.Graph.GetCellState(moveTo).IsBlocked);
+            Assert.IsFalse(battlefieldManager.Graph.GetCellState(initialPosition).IsBlocked);
             
             // battlefieldManager.MovePawn(redRange, ccorr.ConvertOneOffsetToCube(new Coordinate2D { X = 5, Y = 3}));
             // battlefieldManager.MovePawn(redMage, ccorr.ConvertOneOffsetToCube(new Coordinate2D { X = 4, Y = 3}));
@@ -102,16 +109,29 @@ namespace Tests.BattleCore
             var attackablePawns = battlefieldManager.GetAllAttackablePawnsByPawn(redMelee);
             
             Assert.IsTrue(attackablePawns.Contains(blueMelee));
+            Assert.That(blueMelee.HealthPoints, Is.EqualTo(2));
             
             var attackResult = battlefieldManager.PerformPhysicalAttack(redMelee, blueMelee);
+
+            Assert.That(attackResult.DamageDealt, Is.EqualTo(1));
+            Assert.IsTrue(attackResult.IsTargetPawnStillAlive);
+            Assert.That(blueMelee.HealthPoints, Is.EqualTo(1));
+
+            // Attack back
+            attackResult = battlefieldManager.PerformPhysicalAttack(blueMelee, redMelee);
+            attackResult = battlefieldManager.PerformPhysicalAttack(redMelee, blueMelee);
             
+            Assert.That(attackResult.DamageDealt, Is.EqualTo(1));
+            Assert.That(blueMelee.HealthPoints, Is.EqualTo(0));
+            Assert.IsFalse(attackResult.IsTargetPawnStillAlive);
+
             // Now we need the mage to cast a damaging spell
             // First, we need to understand range
-            
+
             // TODO: let's do it without mages first.
 //            var possibleAbilityTargets = battlefieldManager.GetPossibleAbilityTargets(blueMage, fireBall);
 //            var castResult = battlefieldManager.UseAbility(blueMage, fireBall, redMage);
-            
+
             // Do all remaining actions until one of the teams wins.
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
@@ -93,22 +94,25 @@ namespace HexCore.BattleCore
 
         public bool CanAttack(Pawn attackingPawn, Pawn targetPawn)
         {
-            // TODO: redo all pawns to use only pawn id
             var attackablePawns = GetAllAttackablePawnsByPawn(attackingPawn);
-            // TODO: this won't work because of equality of pawns
             return attackablePawns.Contains(targetPawn);
         }
 
-        public int PerformPhysicalAttack(Pawn attackingPawn, Pawn targetPawn)
+        public AttackResult PerformPhysicalAttack(Pawn attackingPawn, Pawn targetPawn)
         {
-            if (CanAttack(attackingPawn, targetPawn))
-            {
-                // TODO: Here we need to calculate attacking pawn's power and defending pawn's defence
-                return 1;
-            }
+            if (!CanAttack(attackingPawn, targetPawn))
+                throw new InvalidOperationException("Can't attack the given target");
+            var damageDealt = 1;
+            var damageBlocked = 0;
+            targetPawn.HealthPoints -= (damageDealt - damageBlocked);
+            var isTargetStillAlive = targetPawn.HealthPoints > 0;
 
-            // TODO: probably should throw in this case
-            return 0;
+            if (!isTargetStillAlive)
+            {
+                RemovePawn(targetPawn);
+            }
+            
+            return new AttackResult(1, isTargetStillAlive);
         }
 
         public IEnumerable<Pawn> GetAllPawnsInRange(Coordinate3D center, int radius)
@@ -135,11 +139,28 @@ namespace HexCore.BattleCore
             // Apply damage/effect to the target
             // TODO
         }
+
+        public void RemovePawn(Pawn pawn)
+        {
+            
+        }
         
-        public void RemovePawn() {}
         public void EndTurn() {}
         
         public void SaveBattleState() {}
         public void LoadBattleState() {}
+    }
+
+
+    public struct AttackResult
+    {
+        public readonly int DamageDealt;
+        public readonly bool IsTargetPawnStillAlive;
+
+        public AttackResult(int damageDealt, bool isTargetPawnStillAlive)
+        {
+            DamageDealt = damageDealt;
+            IsTargetPawnStillAlive = isTargetPawnStillAlive;
+        }
     }
 }
