@@ -1,5 +1,4 @@
 ﻿using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
@@ -10,9 +9,6 @@ namespace Tests.HexGraph
     public class GraphUtilsTest
 
     {
-        private readonly CoordinateConverter
-            _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
-
         [Test]
         public void AllCellsShouldHaveCorrectPositions()
         {
@@ -22,12 +18,11 @@ namespace Tests.HexGraph
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
-            var kek = _coordinateConverterOrr.ConvertManyCubeToOffset(graph.GetAllCellsCoordinates());
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
 
             width = 4;
             height = 5;
@@ -38,7 +33,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
 
             width = 7;
             height = 8;
@@ -49,7 +44,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -67,7 +62,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -85,7 +80,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -104,18 +99,18 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
         public void ShouldMaintainCellStatesOnResize()
         {
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
-            Assert.False(graph.IsCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1))));
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)), true);
-            Assert.True(graph.IsCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1))));
+            Assert.False(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
+            graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
+            Assert.True(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
             GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, 2, 2, MovementTypes.Ground);
-            Assert.True(graph.IsCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1))));
+            Assert.True(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
         }
 
         [Test]
@@ -131,7 +126,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -149,7 +144,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -167,7 +162,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -186,7 +181,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
     }
 }

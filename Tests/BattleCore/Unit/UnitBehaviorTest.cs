@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
 using HexCore.BattleCore;
-using HexCore.BattleCore.Unit;
 using HexCore.BattleCore.Unit.BasicImplementation;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
@@ -15,7 +13,6 @@ namespace Tests.BattleCore.Unit
     public class UnitBehaviorTest
     {
         private static readonly Random Random = new Random();
-        private readonly CoordinateConverter _coordinateConverter = new CoordinateConverter(OffsetTypes.OddRowsRight);
 
         [Test]
         public void ShouldAddUnitsToTheMapIfThereIsAPlaceForThem()
@@ -51,12 +48,12 @@ namespace Tests.BattleCore.Unit
             var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
             {
                 Attack = new Attack {Range = 1},
-                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
+                Position = new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()
             }, graph);
             var unit2 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
             {
                 Attack = new Attack {Range = 1},
-                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
+                Position = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D()
             }, graph);
 
             Assert.AreEqual(unit2.HealthPoints, 3.0);
@@ -78,12 +75,12 @@ namespace Tests.BattleCore.Unit
             var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
             {
                 Attack = new Attack {Range = 1},
-                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1))
+                Position = new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()
             }, graph);
             var unit2 = new CustomUnitBehavior(new CustomUnitState(BasicMovementTypes.Ground, 1)
             {
                 Attack = new Attack {Range = 1},
-                Position = _coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(1, 1))
+                Position = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D()
             }, graph);
 
             Assert.True(unit2.CanAttack(unit1));
@@ -103,9 +100,9 @@ namespace Tests.BattleCore.Unit
             // With 3x3 map and attack range is equal to 3 he always can attack anyone on the map, even from the corners
             var unit3 = unitFactory.GetBasicUnit(attackRange: 3);
 
-            unit1.MoveTo(_coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 0)));
-            unit2.MoveTo(_coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(0, 1)));
-            unit3.MoveTo(_coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(2, 2)));
+            unit1.MoveTo(new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D());
+            unit2.MoveTo(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D());
+            unit3.MoveTo(new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D());
 
             Assert.That(unit1.CanAttack(unit2), Is.True);
             Assert.That(unit2.CanAttack(unit1), Is.True);
@@ -115,7 +112,7 @@ namespace Tests.BattleCore.Unit
             Assert.That(unit3.CanAttack(unit2), Is.True);
 
             // Now let's move unit 1 from unit 2
-            unit1.MoveTo(_coordinateConverter.ConvertOneOffsetToCube(new Coordinate2D(2, 1)));
+            unit1.MoveTo(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D());
 
             Assert.That(unit1.CanAttack(unit2), Is.False);
             Assert.That(unit2.CanAttack(unit1), Is.False);

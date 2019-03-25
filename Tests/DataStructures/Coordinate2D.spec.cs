@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
 
-namespace Tests.Helpers
+namespace Tests.DataStructures
 {
     [TestFixture]
-    public class CoordinateConverterTest
+    public class Coordinate2D_spec
     {
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
@@ -19,7 +18,7 @@ namespace Tests.Helpers
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1
             //Right: X + 1, Y - 1;
-            var expectedCubeCoordiates = new List<Coordinate3D>
+            var expectedCubeCoordinates = new List<Coordinate3D>
             {
                 new Coordinate3D(0, 0, 0),
                 // Down right:
@@ -40,18 +39,9 @@ namespace Tests.Helpers
                 new Coordinate3D(1, -3, 2)
             };
 
-            Assert.That(cubeCoordinates.Count, Is.EqualTo(expectedCubeCoordiates.Count));
-            for (var index = 0; index < expectedCubeCoordiates.Count; index++)
-                Assert.That(cubeCoordinates[index], Is.EqualTo(expectedCubeCoordiates[index]));
-        }
-
-        [Test]
-        public void ShouldBeAbleToRestoreOffsetCoordinate()
-        {
-            var offsetCoord = new Coordinate2D(2, 3);
-            var cubeCoord = CoordinateConverter.ConvertOneOffsetToCube(OffsetTypes.OddRowsRight, offsetCoord);
-            var restoredOffset = CoordinateConverter.ConvertOneCubeToOffset(OffsetTypes.OddRowsRight, cubeCoord);
-            Assert.That(offsetCoord, Is.EqualTo(restoredOffset));
+            Assert.That(cubeCoordinates.Count, Is.EqualTo(expectedCubeCoordinates.Count));
+            for (var index = 0; index < expectedCubeCoordinates.Count; index++)
+                Assert.That(cubeCoordinates[index], Is.EqualTo(expectedCubeCoordinates[index]));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
@@ -9,9 +8,6 @@ namespace Tests.HexGraph
     [TestFixture]
     public class GraphFactoryTest
     {
-        private readonly CoordinateConverter
-            _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
-
         [Test]
         public void ShouldCreateSquareGraphWithOptionalParameters()
         {
@@ -24,7 +20,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
 
         [Test]
@@ -39,7 +35,7 @@ namespace Tests.HexGraph
             for (var y = 0; y < height; y++)
                 Assert.That(
                     graph.GetAllCellsCoordinates()
-                        .Contains(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(x, y))), Is.True);
+                        .Contains(new Coordinate2D(x, y, OffsetTypes.OddRowsRight).To3D()), Is.True);
         }
     }
 }

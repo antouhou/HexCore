@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using HexCore.AStar;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
@@ -11,9 +10,6 @@ namespace Tests.AStar
     [TestFixture]
     public class AStarSearchTest
     {
-        private readonly CoordinateConverter
-            _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
-
         [Test]
         public void ShouldFindShortestPathOnBiggerGraph()
         {
@@ -22,65 +18,65 @@ namespace Tests.AStar
             var graph = GraphFactory.CreateSquareGraph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
-            var startOddR = new Coordinate2D(5, 6);
-            var goalOddR = new Coordinate2D(1, 2);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
+            var startOddR = new Coordinate2D(5, 6, OffsetTypes.OddRowsRight);
+            var goalOddR = new Coordinate2D(1, 2, OffsetTypes.OddRowsRight);
+            var start = startOddR.To3D();
+            var goal = goalOddR.To3D();
 
             // We expect algo to go up by diagonal and then turn left
             var expectedOffsetPath = new List<Coordinate2D>
             {
                 // Go up and left
-                new Coordinate2D(4, 5),
-                new Coordinate2D(4, 4),
-                new Coordinate2D(3, 3),
-                new Coordinate2D(3, 2),
+                new Coordinate2D(4, 5, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 2, OffsetTypes.OddRowsRight),
                 // And now just left until the goal is reached
-                new Coordinate2D(2, 2),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
                 goalOddR
             };
-            var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Good! Now let's block some of them, and also let's add a lake in the middle.
-            graph.SetManyCellsBlocked(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
+            graph.SetManyCellsBlocked(Coordinate2D.To3D(new List<Coordinate2D>
             {
-                new Coordinate2D(4, 6),
-                new Coordinate2D(4, 5),
-                new Coordinate2D(4, 7),
-                new Coordinate2D(5, 5)
+                new Coordinate2D(4, 6, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 5, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 7, OffsetTypes.OddRowsRight),
+                new Coordinate2D(5, 5, OffsetTypes.OddRowsRight)
             }), true);
-            graph.SetManyCellsMovementType(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
+            graph.SetManyCellsMovementType(Coordinate2D.To3D(new List<Coordinate2D>
             {
-                new Coordinate2D(4, 2),
-                new Coordinate2D(3, 2),
-                new Coordinate2D(2, 2),
-                new Coordinate2D(1, 3),
-                new Coordinate2D(2, 3),
-                new Coordinate2D(3, 3)
+                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 3, OffsetTypes.OddRowsRight)
             }), MovementTypes.Water);
 
             //Let's see what's going to happen!
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Avoiding obstacles
-                new Coordinate2D(6, 6),
-                new Coordinate2D(6, 5),
-                new Coordinate2D(6, 4),
+                new Coordinate2D(6, 6, OffsetTypes.OddRowsRight),
+                new Coordinate2D(6, 5, OffsetTypes.OddRowsRight),
+                new Coordinate2D(6, 4, OffsetTypes.OddRowsRight),
                 // Going parallel to the bank
-                new Coordinate2D(5, 4),
-                new Coordinate2D(4, 4),
-                new Coordinate2D(3, 4),
-                new Coordinate2D(2, 4),
+                new Coordinate2D(5, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 4, OffsetTypes.OddRowsRight),
                 // Now we are going to cross the water, since it's shortest available solution from this point 
-                new Coordinate2D(1, 3),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
                 // And we are here.
                 goalOddR
             };
-            expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
@@ -92,20 +88,20 @@ namespace Tests.AStar
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Avoiding obstacles
-                new Coordinate2D(6, 6),
-                new Coordinate2D(6, 5),
-                new Coordinate2D(6, 4),
+                new Coordinate2D(6, 6, OffsetTypes.OddRowsRight),
+                new Coordinate2D(6, 5, OffsetTypes.OddRowsRight),
+                new Coordinate2D(6, 4, OffsetTypes.OddRowsRight),
                 // Head right to the water
-                new Coordinate2D(5, 3),
-                new Coordinate2D(5, 2),
+                new Coordinate2D(5, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(5, 2, OffsetTypes.OddRowsRight),
                 // Swim
-                new Coordinate2D(4, 2),
-                new Coordinate2D(3, 2),
-                new Coordinate2D(2, 2),
+                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
                 // And we are here.
                 goalOddR
             };
-            expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -117,35 +113,35 @@ namespace Tests.AStar
             // to our ground moving type
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)),
+            graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 MovementTypes.Water);
             // And we expect to achieve same result - even through 1,1 is not blocked
 
-            var startOddR = new Coordinate2D(2, 2);
-            var goalOddR = new Coordinate2D(0, 0);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
+            var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
+            var goalOddR = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
+            var start = startOddR.To3D();
+            var goal = goalOddR.To3D();
 
             var expectedOffsetPath = new List<Coordinate2D>
             {
                 // But this time we can't go to 1,1, since there is movement penalty. Instead, we are going to the left - 1,2 first
-                new Coordinate2D(1, 2),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
                 // From there we can move up and right
-                new Coordinate2D(0, 1),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
                 // And from there we can go to our final goal.
                 goalOddR
             };
-            var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's make 0,1 water too and move our starting point to bottom left
-            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)),
+            graph.SetOneCellMovementType(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
                 MovementTypes.Water);
-            startOddR = new Coordinate2D(0, 2);
-            start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            startOddR = new Coordinate2D(0, 2, OffsetTypes.OddRowsRight);
+            start = startOddR.To3D();
 
             // What's different from previous test - even if 0,1 is water, if we go from the bottom left
             // to the top left - go through water still we preferable - path length will be only two cells, but because
@@ -153,10 +149,10 @@ namespace Tests.AStar
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Going up to the water
-                new Coordinate2D(0, 1),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
                 goalOddR
             };
-            expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
@@ -169,25 +165,25 @@ namespace Tests.AStar
             // Now let's make 1,1 water and block 1,2
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 2)), true);
-            graph.SetOneCellMovementType(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)),
+            graph.SetOneCellBlocked(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(), true);
+            graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 MovementTypes.Water);
 
-            var startOddR = new Coordinate2D(2, 2);
-            var goalOddR = new Coordinate2D(0, 0);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
+            var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
+            var goalOddR = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
+            var start = startOddR.To3D();
+            var goal = goalOddR.To3D();
 
             // Now we have two shortest paths - 1,1, 1,0, 0,0 costs 4, since there is a penalty on 1,1
             // And 2,1, 2,0, 1,0 0,0, costs 4 too. It's 1 cell longer, but there is no penalties.
             // We are expecting to take path 1 because of the heuristics - it's leades to our goal a bit more stright.
             var expectedOffsetPath = new List<Coordinate2D>
             {
-                new Coordinate2D(1, 1),
-                new Coordinate2D(1, 0),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 goalOddR
             };
-            var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
@@ -200,47 +196,47 @@ namespace Tests.AStar
             // Now let's block center, 1,1
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(1, 1)), true);
+            graph.SetOneCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(), true);
 
             // Same as in prevoius test
-            var startOddR = new Coordinate2D(2, 2);
-            var goalOddR = new Coordinate2D(0, 0);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
+            var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
+            var goalOddR = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
+            var start = startOddR.To3D();
+            var goal = goalOddR.To3D();
 
             var expectedOffsetPath = new List<Coordinate2D>
             {
                 // But this time we can't go to 1,1, since it's blocked. Instead, we are going to the left - 1,2 first
-                new Coordinate2D(1, 2),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
                 // From there we can move up and right
-                new Coordinate2D(0, 1),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
                 // And from there we can go to our final goal.
                 goalOddR
             };
-            var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's block 0,1 and move our starting point to bottom left
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 1)), true);
-            startOddR = new Coordinate2D(0, 2);
-            start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
+            graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
+            startOddR = new Coordinate2D(0, 2, OffsetTypes.OddRowsRight);
+            start = startOddR.To3D();
 
             expectedOffsetPath = new List<Coordinate2D>
             {
                 // Now we need to go through all corners - first let's go to the bottom right
-                new Coordinate2D(1, 2),
-                new Coordinate2D(2, 2),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
                 // Up to the top right
-                new Coordinate2D(2, 1),
-                new Coordinate2D(2, 0),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
                 // And from there we can go left until we reach our goal
-                new Coordinate2D(1, 0),
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 goalOddR
             };
-            expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);
 
@@ -257,23 +253,23 @@ namespace Tests.AStar
             // much easier to operate them when in comes to actual algorythms
 
             // From bottom right 
-            var startOddR = new Coordinate2D(2, 2);
+            var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
             // To top left
-            var goalOddR = new Coordinate2D(0, 0);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(startOddR);
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(goalOddR);
+            var goalOddR = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
+            var start = startOddR.To3D();
+            var goal = goalOddR.To3D();
 
             // Start point is excluded from the path
             var expectedOffsetPath = new List<Coordinate2D>
             {
                 // From 2, 2 we move to 1,1, which is central
-                new Coordinate2D(1, 1),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
                 // From 1,1 we move to 1,0, since there is no direct connection between 1,1 and 0,0
-                new Coordinate2D(1, 0),
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 // And then moving to our goal.
                 goalOddR
             };
-            var expectedPath = _coordinateConverterOrr.ConvertManyOffsetToCube(expectedOffsetPath);
+            var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             // For the simplest test we assume that all cells have type ground, as well as a unit
             var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypes.Ground);

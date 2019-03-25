@@ -54,10 +54,11 @@
     <Compile Include="AStar\AStarSearchTest.cs" />
     <Compile Include="BattleCore\BattlefieldManagerTest.cs" />
     <Compile Include="BattleCore\Unit\UnitBehaviorTest.cs" />
+      <Compile Include="DataStructures\Coordinate2D.spec.cs"/>
+      <Compile Include="DataStructures\Coordinate3D.spec.cs"/>
     <Compile Include="Fixtures\CustomUnitBehavior.cs" />
     <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
-    <Compile Include="Helpers\CoordinateConverterTest.cs" />
     <Compile Include="HexGraph\GraphFactoryTest.cs" />
     <Compile Include="HexGraph\GraphTest.cs" />
     <Compile Include="HexGraph\GraphUtilsTest.cs" />

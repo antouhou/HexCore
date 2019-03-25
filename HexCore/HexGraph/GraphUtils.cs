@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 
 namespace HexCore.HexGraph
 {
@@ -11,7 +10,7 @@ namespace HexCore.HexGraph
             MovementType defaultMovementType)
         {
             var offsetCoordinates =
-                CoordinateConverter.ConvertManyCubeToOffset(offsetType, graph.GetAllCellsCoordinates());
+                Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
 
             var coordinatesInitialized = offsetCoordinates.Count > 0;
 
@@ -20,15 +19,15 @@ namespace HexCore.HexGraph
 
             if (width > newWidth)
             {
-                var coordinatesToRemove = CoordinateConverter.ConvertManyOffsetToCube(offsetType,
-                    offsetCoordinates.Where(coordinate => coordinate.X >= newWidth).ToList());
+                var coordinatesToRemove =
+                    Coordinate2D.To3D(offsetCoordinates.Where(coordinate => coordinate.X >= newWidth).ToList());
                 graph.RemoveCells(coordinatesToRemove);
             }
 
             if (height > newHeight)
             {
-                var coordinatesToRemove = CoordinateConverter.ConvertManyOffsetToCube(offsetType,
-                    offsetCoordinates.Where(coordinate => coordinate.Y >= newHeight).ToList());
+                var coordinatesToRemove =
+                    Coordinate2D.To3D(offsetCoordinates.Where(coordinate => coordinate.Y >= newHeight).ToList());
                 graph.RemoveCells(coordinatesToRemove);
             }
 
@@ -61,8 +60,8 @@ namespace HexCore.HexGraph
             var newCells = new List<CellState>();
             for (var y = oldY; y < newY; y++)
             {
-                var position = new Coordinate2D(x, y);
-                var cubeCoordinate = CoordinateConverter.ConvertOneOffsetToCube(offsetType, position);
+                var position = new Coordinate2D(x, y, OffsetTypes.OddRowsRight);
+                var cubeCoordinate = position.To3D();
                 newCells.Add(new CellState(false, cubeCoordinate, defaultMovementType));
             }
 

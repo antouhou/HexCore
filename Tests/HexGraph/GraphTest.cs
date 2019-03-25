@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
-using HexCore.Helpers;
 using HexCore.HexGraph;
 using NUnit.Framework;
 using Tests.Fixtures;
@@ -12,8 +10,25 @@ namespace Tests.HexGraph
     [TestFixture]
     public class GraphTest
     {
-        private readonly CoordinateConverter
-            _coordinateConverterOrr = new CoordinateConverter(OffsetTypes.OddRowsRight);
+        [Test]
+        public void ShouldBeAbleToFindingShortestPath()
+        {
+            // Note: this method uses AStarSearch class inside.
+            // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
+            // returns something meaningful.
+            var graph = GraphFactory.CreateSquareGraph(height: 3, width: 3);
+            var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
+            var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
+            var shortesPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
+            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>()
+            {
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight)
+            });
+
+            Assert.That(shortesPath, Is.EqualTo(expectedShortestPath));
+        }
 
         [Test]
         public void ShouldBlockCell()
@@ -30,33 +45,33 @@ namespace Tests.HexGraph
         public void ShouldGetCorrectMovementRange()
         {
             var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
-            var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
+            var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedMovementRange2D = new List<Coordinate2D>
             {
                 // Closest circle
-                new Coordinate2D(4, 2),
-                new Coordinate2D(3, 1),
-                new Coordinate2D(2, 1),
-                new Coordinate2D(2, 2),
-                new Coordinate2D(2, 3),
-                new Coordinate2D(3, 3),
+                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 3, OffsetTypes.OddRowsRight),
                 // Second circle
-                new Coordinate2D(5, 2),
-                new Coordinate2D(4, 1),
-                new Coordinate2D(4, 3),
-                new Coordinate2D(4, 0),
-                new Coordinate2D(3, 0),
-                new Coordinate2D(2, 0),
-                new Coordinate2D(1, 1),
-                new Coordinate2D(1, 2),
-                new Coordinate2D(1, 3),
-                new Coordinate2D(2, 4),
-                new Coordinate2D(3, 4),
-                new Coordinate2D(4, 4)
+                new Coordinate2D(5, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight)
             };
             var expectedMovementRange =
-                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovementRange2D);
+                Coordinate2D.To3D(expectedMovementRange2D);
 
             var movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
 
@@ -65,25 +80,24 @@ namespace Tests.HexGraph
 
             // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
             // access it, since going to 1,3 will cost more than movement points we have.
-            graph.SetManyCellsMovementType(_coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
+            graph.SetManyCellsMovementType(Coordinate2D.To3D(new List<Coordinate2D>
             {
-                new Coordinate2D(2, 3),
-                new Coordinate2D(1, 3)
+                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight)
             }), MovementTypes.Water);
 
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
-            graph.SetOneCellBlocked(_coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1)), true);
+            graph.SetOneCellBlocked(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D(), true);
 
             // 2,4 isn't accessible because the only path to it thorough the water
-            expectedMovementRange2D.Remove(new Coordinate2D(2, 4));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 4, OffsetTypes.OddRowsRight));
             // 1,3 isn't accessible because it is water
-            expectedMovementRange2D.Remove(new Coordinate2D(1, 3));
+            expectedMovementRange2D.Remove(new Coordinate2D(1, 3, OffsetTypes.OddRowsRight));
             // 2,1 and 2,0 isn't accessible because 2,1 is blocked
-            expectedMovementRange2D.Remove(new Coordinate2D(2, 1));
-            expectedMovementRange2D.Remove(new Coordinate2D(2, 0));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight));
+            expectedMovementRange2D.Remove(new Coordinate2D(2, 0, OffsetTypes.OddRowsRight));
 
-            expectedMovementRange =
-                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedMovementRange2D);
+            expectedMovementRange = Coordinate2D.To3D(expectedMovementRange2D);
 
             movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
 
@@ -96,8 +110,8 @@ namespace Tests.HexGraph
             var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // Column 2, row 1
-            var offsetTarget = new Coordinate2D(2, 1);
-            var cubeTarget = _coordinateConverterOrr.ConvertOneOffsetToCube(offsetTarget);
+            var offsetTarget = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight);
+            var cubeTarget = offsetTarget.To3D();
             var neighbors = graph.GetNeighbors(cubeTarget, false).ToList();
             // Neighbors for cube coordinates should be:
             // Cube(+1, -1, 0), Cube(+1, 0, -1), Cube(0, +1, -1), Cube(-1, +1, 0), Cube(-1, 0, +1), Cube(0, -1, +1),
@@ -117,33 +131,33 @@ namespace Tests.HexGraph
         public void ShouldGetCorrectRange()
         {
             var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
-            var center = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(3, 2));
+            var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedRange2D = new List<Coordinate2D>
             {
                 // Closest circle
-                new Coordinate2D(4, 2),
-                new Coordinate2D(3, 1),
-                new Coordinate2D(2, 1),
-                new Coordinate2D(2, 2),
-                new Coordinate2D(2, 3),
-                new Coordinate2D(3, 3),
+                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 3, OffsetTypes.OddRowsRight),
                 // Second circle
-                new Coordinate2D(5, 2),
-                new Coordinate2D(4, 1),
-                new Coordinate2D(4, 3),
-                new Coordinate2D(4, 0),
-                new Coordinate2D(3, 0),
-                new Coordinate2D(2, 0),
-                new Coordinate2D(1, 1),
-                new Coordinate2D(1, 2),
-                new Coordinate2D(1, 3),
-                new Coordinate2D(2, 4),
-                new Coordinate2D(3, 4),
-                new Coordinate2D(4, 4)
+                new Coordinate2D(5, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight)
             };
             var expectedMovementRange =
-                _coordinateConverterOrr.ConvertManyOffsetToCube(expectedRange2D);
+                Coordinate2D.To3D(expectedRange2D);
 
             var range = graph.GetRange(center, 2);
 
@@ -155,40 +169,20 @@ namespace Tests.HexGraph
         {
             var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
-            var coordinateToSet = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 1));
+            var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
 
             graph.SetOneCellMovementType(coordinateToSet, MovementTypes.Water);
             Assert.That(graph.GetCellState(coordinateToSet).MovementType, Is.EqualTo(MovementTypes.Water));
 
-            var coordinatesToSet = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>
+            var coordinatesToSet = Coordinate2D.To3D(new List<Coordinate2D>
             {
-                new Coordinate2D(0, 1),
-                new Coordinate2D(0, 2)
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 2, OffsetTypes.OddRowsRight)
             });
 
             graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
-        }
-
-        [Test]
-        public void ShouldBeAbleToFindingShortestPath()
-        {
-            // Note: this method uses AStarSearch class inside.
-            // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
-            // returns something meaningful.
-            var graph = GraphFactory.CreateSquareGraph(height: 3, width: 3);
-            var start = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(0, 0));
-            var goal = _coordinateConverterOrr.ConvertOneOffsetToCube(new Coordinate2D(2, 2));
-            var shortesPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
-            var expectedShortestPath = _coordinateConverterOrr.ConvertManyOffsetToCube(new List<Coordinate2D>()
-            {
-                new Coordinate2D(1, 0),
-                new Coordinate2D(1, 1),
-                new Coordinate2D(2, 2)
-            });
-          
-            Assert.That(shortesPath, Is.EqualTo(expectedShortestPath));
         }
     }
 }
