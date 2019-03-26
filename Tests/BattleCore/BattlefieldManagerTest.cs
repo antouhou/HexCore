@@ -91,7 +91,8 @@ namespace Tests.BattleCore
             var moveTo = new Coordinate2D(4, 4, OffsetTypes.OddRowsRight).To3D();
 
             Assert.That(redMelee.Position, Is.EqualTo(initialPosition));
-            var isMoved = battlefieldManager.MovePawn(redMelee, new Coordinate2D {X = 4, Y = 4}.To3D());
+            var isMoved =
+                battlefieldManager.MovePawn(redMelee, new Coordinate2D(4, 4, OffsetTypes.OddRowsRight).To3D());
             Assert.IsTrue(isMoved);
             Assert.That(redMelee.Position, Is.EqualTo(moveTo));
             Assert.IsTrue(battlefieldManager.Graph.GetCellState(moveTo).IsBlocked);
@@ -101,7 +102,7 @@ namespace Tests.BattleCore
             // battlefieldManager.MovePawn(redMage, new Coordinate2D { X = 4, Y = 3}));
 
             // Now red's team turn should be over; Time to move blue team
-            isMoved = battlefieldManager.MovePawn(blueMelee, new Coordinate2D {X = 5, Y = 4}.To3D());
+            isMoved = battlefieldManager.MovePawn(blueMelee, new Coordinate2D(5, 4, OffsetTypes.OddRowsRight).To3D());
             Assert.IsTrue(isMoved);
 
             // battlefieldManager.MovePawn(blueRange, new Coordinate2D { X = 4, Y = 5}));

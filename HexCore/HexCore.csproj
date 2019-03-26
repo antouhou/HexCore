@@ -57,6 +57,7 @@
     <Compile Include="BattleCore\Unit\IUnitState.cs" />
     <Compile Include="DataStructures\Coordinate3D.cs" />
     <Compile Include="DataStructures\Coordinate2D.cs" />
+      <Compile Include="DataStructures\OffsetTypes.cs"/>
     <Compile Include="DataStructures\PriorityQueue.cs" />
     <Compile Include="HexGraph\BasicMovementTypes.cs" />
     <Compile Include="HexGraph\CellState.cs" />
@@ -64,7 +65,6 @@
     <Compile Include="HexGraph\GraphFactory.cs" />
     <Compile Include="HexGraph\GraphUtils.cs" />
     <Compile Include="HexGraph\MovementType.cs" />
-    <Compile Include="HexGraph\OffsetTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

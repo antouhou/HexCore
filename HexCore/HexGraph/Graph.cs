@@ -26,7 +26,7 @@ namespace HexCore.HexGraph
 
         private List<Coordinate3D> _allCoordinates;
 
-        private Dictionary<Coordinate3D, CellState> _cellStatesDictonary;
+        private Dictionary<Coordinate3D, CellState> _cellStatesDictionary;
 
         private List<Coordinate3D> _emptyCells;
 
@@ -131,8 +131,8 @@ namespace HexCore.HexGraph
 
         private void UpdateCellStateDictionary()
         {
-            _cellStatesDictonary = new Dictionary<Coordinate3D, CellState>();
-            foreach (var cellState in _cellStatesList) _cellStatesDictonary.Add(cellState.Coordinate3, cellState);
+            _cellStatesDictionary = new Dictionary<Coordinate3D, CellState>();
+            foreach (var cellState in _cellStatesList) _cellStatesDictionary.Add(cellState.Coordinate3, cellState);
         }
 
         private void UpdateCoordinatesList()
@@ -220,7 +220,7 @@ namespace HexCore.HexGraph
 
         public CellState GetCellState(Coordinate3D coordinate)
         {
-            return _cellStatesDictonary[coordinate];
+            return _cellStatesDictionary[coordinate];
         }
 
         public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, MovementType unitMovementType)

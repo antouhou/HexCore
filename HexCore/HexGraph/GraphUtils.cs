@@ -12,10 +12,10 @@ namespace HexCore.HexGraph
             var offsetCoordinates =
                 Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
 
-            var coordinatesInitialized = offsetCoordinates.Count > 0;
+            var areCoordinatesInitialized = offsetCoordinates.Count > 0;
 
-            var width = coordinatesInitialized ? offsetCoordinates.Select(item => item.X).Max() + 1 : 0;
-            var height = coordinatesInitialized ? offsetCoordinates.Select(item => item.Y).Max() + 1 : 0;
+            var width = areCoordinatesInitialized ? offsetCoordinates.Select(item => item.X).Max() + 1 : 0;
+            var height = areCoordinatesInitialized ? offsetCoordinates.Select(item => item.Y).Max() + 1 : 0;
 
             if (width > newWidth)
             {
