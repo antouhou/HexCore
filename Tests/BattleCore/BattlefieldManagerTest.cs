@@ -32,7 +32,7 @@ namespace Tests.BattleCore
             // team.GetAllUnitsIds();
             // ?? team.GetAllUnitsPositions();  
 
-            var fireBall = new Ability(range: 2, basePower: 1);
+            var fireBall = new Ability(2, 1);
 
             var redMelee = new Pawn("red_meele", new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
                 BasicMovementTypes.Ground, 6, 1, "red_team");
@@ -40,7 +40,7 @@ namespace Tests.BattleCore
                 BasicMovementTypes.Ground, 3, 2, "red_team");
             var redMage = new Pawn("red_mage", new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D(),
                 BasicMovementTypes.Ground, 3, 1, "red_team");
-            var redTeam = new Team(new List<Pawn> {redMelee, /*redRange, redMage*/}, "red_team");
+            var redTeam = new Team(new List<Pawn> {redMelee /*redRange, redMage*/}, "red_team");
 
 
             var blueMelee = new Pawn("blue_meele", new Coordinate2D(9, 8, OffsetTypes.OddRowsRight).To3D(),

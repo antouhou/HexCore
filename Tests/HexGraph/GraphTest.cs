@@ -20,7 +20,7 @@ namespace Tests.HexGraph
             var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
             var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
             var shortesPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
-            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>()
+            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),

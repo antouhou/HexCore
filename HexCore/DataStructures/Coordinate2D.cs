@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HexCore.HexGraph;
 
 namespace HexCore.DataStructures
 {
     [Serializable]
     public struct Coordinate2D
     {
-        public int X, Y;
+        public readonly int X, Y;
         private readonly OffsetTypes _offsetType;
 
         public Coordinate3D To3D()

@@ -1,5 +1,4 @@
 using HexCore.DataStructures;
-using HexCore.HexGraph;
 using NUnit.Framework;
 
 namespace Tests.DataStructures
