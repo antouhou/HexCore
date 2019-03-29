@@ -1,18 +1,13 @@
-using NUnitLite.Tests.GameExample;
-
 namespace Tests.GameExample.Effects
 {
     public class Heal : IEffect
     {
-        public Heal(uint duration)
+        public Heal()
         {
-            Duration = duration;
             Attributes = new Attributes(hp: 3);
         }
 
         public Attributes Attributes { get; }
-
-        public uint Duration { get; }
 
         public Attributes GetCasterBonus(Attributes casterAttributes)
         {

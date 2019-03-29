@@ -60,10 +60,13 @@
     <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
       <Compile Include="GameExample\Abilities\Ability.cs"/>
+      <Compile Include="GameExample\Abilities\AreaAbility.cs"/>
+      <Compile Include="GameExample\Abilities\DirectionalAbility.cs"/>
+      <Compile Include="GameExample\Abilities\IAbility.cs"/>
       <Compile Include="GameExample\Attributes.cs"/>
       <Compile Include="GameExample\BattleManager.cs"/>
       <Compile Include="GameExample\Effects\DefenceUp.cs"/>
-      <Compile Include="GameExample\Effects\Effect.cs"/>
+      <Compile Include="GameExample\Effects\IEffect.cs"/>
       <Compile Include="GameExample\Effects\Fire.cs"/>
       <Compile Include="GameExample\Effects\Heal.cs"/>
       <Compile Include="GameExample\Game.cs"/>

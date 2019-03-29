@@ -1,7 +1,7 @@
 using System;
 using HexCore.HexGraph;
 
-namespace NUnitLite.Tests.GameExample
+namespace Tests.GameExample
 {
     [Serializable]
     public class Attributes

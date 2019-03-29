@@ -1,18 +1,13 @@
-using NUnitLite.Tests.GameExample;
-
 namespace Tests.GameExample.Effects
 {
     public class DefenceUp : IEffect
     {
-        public DefenceUp(uint duration)
+        public DefenceUp()
         {
-            Duration = duration;
             Attributes = new Attributes(defense: 1);
         }
 
         public Attributes Attributes { get; }
-
-        public uint Duration { get; }
 
         public Attributes GetCasterBonus(Attributes casterAttributes)
         {

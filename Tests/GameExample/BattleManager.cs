@@ -1,10 +1,10 @@
 using System;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
-using NUnitLite.Tests.GameExample.UnitTypes;
 using Tests.GameExample.Abilities;
+using Tests.GameExample.Pawns;
 
-namespace NUnitLite.Tests.GameExample
+namespace Tests.GameExample
 {
     public class BattleManager
     {

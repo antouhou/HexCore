@@ -1,4 +1,4 @@
-namespace NUnitLite.Tests.GameExample.UnitTypes
+namespace Tests.GameExample.Pawns
 {
     public class Pawn
     {

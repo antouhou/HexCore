@@ -1,11 +1,10 @@
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 using NUnit.Framework;
-using NUnitLite.Tests.GameExample;
-using NUnitLite.Tests.GameExample.UnitTypes;
 using Tests.Fixtures;
 using Tests.GameExample.Abilities;
 using Tests.GameExample.Effects;
+using Tests.GameExample.Pawns;
 
 namespace Tests.GameExample
 {
@@ -23,15 +22,23 @@ namespace Tests.GameExample
          *     Using ability:
          *         battleManager.useAbility(unit, ability, target)
          *         Ability should have:
-         *             - Range
-         *             - Area
+         *             - Range for casting
+         *             - Area of effect application:
+         *                 - Should be not just a specific number, but a shape of 3D Coords instead, with Coordinate3D(0,0,0)
+         *                 being the center, and all other cells (may consider excluding 0,0,0 from the list, but if included,
+         *                 it allows more ineteresting shapes, such as a circle around the selected target, but excluding
+         *                 the exact target coordinate, i.e, if the range of casting is 0, and shape is a circle, caster
+         *                 can cast it only in itself, but the effect will be applied only to pawns surronuding caster,
+         *                 exluding himself)
+         *                 todo: this won't work for directional abilities, as shape always will be pointing towards a certain direction
+         *                 So, we have to consider following abilities: directional, singular, area and maybe shape.
+         *             - Duration (0 for one-time effect, more for lasting effect)
+         *                 - Applies right after the use
          *             - Possible targets (enemy, ally, empty, everyone)
          *             - Should have an Effect that applied to the target (or targets in range)
          *                     Effect can have:
-         *                         - Duration (0 for one-time effect, more for lasting effect)
-         *                             - Effect applies instantly after the use
          *                         - Stat change (can be change of any stat unit have - defence, attack, movementType, hp)
-         *                         - Have type (generic - no special bonuses/defences, and so on)
+         *                         - Method for calculating caster and target bonuses and penalties based on their attributes
          *     Units should be able to perform a physical attack:
          *         battleManager.attack(attacker, target)
          *
@@ -58,15 +65,16 @@ namespace Tests.GameExample
             var battleManager = new BattleManager(map);
 
             // Create abilities and effects
-            var heal = new Ability("Heal", new Heal(1));
-            var defenseUp = new Ability("Defence Up", new DefenceUp(3));
-            var fireBall = new Ability("Fire Ball", new Fire(1));
+            var heal = new AreaAbility("Heal", new Heal());
+            var defenseUp = new AreaAbility("Defence Up", new DefenceUp());
+            var fireBall = new AreaAbility("Fire Ball", new Fire());
+            var fireBlast = new DirectionalAbility("Fire blast", new Fire());
 
             // Create unit types
             var meleeType = new PawnType("Melee", new Attributes(MovementTypes.Ground, 3, 2, 10, 0, 0, 3, 1),
-                new Ability[] { });
+                new IAbility[] { });
             var rangeType = new PawnType("Ranger", new Attributes(MovementTypes.Ground, 3, 2, 8, 0, 0, 3, 2),
-                new Ability[] { });
+                new IAbility[] { });
             var mageType = new PawnType("Mage", new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
                 new[] {fireBall});
             var supportType = new PawnType("Support", new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),

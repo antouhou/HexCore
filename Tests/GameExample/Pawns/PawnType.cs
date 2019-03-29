@@ -1,12 +1,12 @@
 using System;
 using Tests.GameExample.Abilities;
 
-namespace NUnitLite.Tests.GameExample.UnitTypes
+namespace Tests.GameExample.Pawns
 {
     [Serializable]
     public class PawnType
     {
-        public PawnType(string name, Attributes attributes, Ability[] abilities)
+        public PawnType(string name, Attributes attributes, IAbility[] abilities)
         {
         }
 
