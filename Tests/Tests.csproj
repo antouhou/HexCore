@@ -59,7 +59,6 @@
     <Compile Include="Fixtures\CustomUnitBehavior.cs" />
     <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
-      <Compile Include="GameExample\Abilities\Ability.cs"/>
       <Compile Include="GameExample\Abilities\AreaAbility.cs"/>
       <Compile Include="GameExample\Abilities\DirectionalAbility.cs"/>
       <Compile Include="GameExample\Abilities\IAbility.cs"/>

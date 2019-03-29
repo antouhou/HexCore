@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 using Tests.GameExample.Abilities;
@@ -25,13 +25,13 @@ namespace Tests.GameExample
             return Spawn(pawn, position.To3D());
         }
 
-        public bool Spawn(ValueTuple<Pawn, Coordinate3D>[] pawns)
+        public bool Spawn(IEnumerable<(Pawn, Coordinate3D)> pawns)
         {
             var res = false;
             // Todo: make this atomic, i.e. check that all pawns can be spawn before spawning them
-            foreach (var pawn in pawns)
+            foreach (var (pawn, position) in pawns)
             {
-                res = Spawn(pawn.Item1, pawn.Item2);
+                res = Spawn(pawn, position);
                 if (!res) return false;
             }
 
@@ -53,7 +53,7 @@ namespace Tests.GameExample
             return true;
         }
 
-        public bool UseAbility(Pawn caster, Ability ability, Coordinate3D target)
+        public bool UseAbility(Pawn caster, IAbility ability, Coordinate3D target)
         {
             return true;
         }

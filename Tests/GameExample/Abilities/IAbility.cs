@@ -13,5 +13,9 @@ namespace Tests.GameExample.Abilities
         // Caster and target positions are required for directional abilities, as to calculate direction
         // you need to know where the caster is and where he is facing
         Coordinate3D[] GetApplicableArea(Coordinate3D casterPosition, Coordinate3D targetPosition);
+
+        Attributes GetCasterBonus(Attributes casterAttributes);
+
+        Attributes GetTargetBonus(Attributes targetAttributes);
     }
 }
