@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
@@ -8,43 +9,57 @@ using Tests.Fixtures;
 namespace Tests.HexGraph
 {
     [TestFixture]
+    [TestOf(typeof(Graph))]
     public class GraphTest
     {
         [Test]
-        public void ShouldBeAbleToFindingShortestPath()
+        public void GetLine_ShouldGetCorrectDirectionFromOneCoordinateToAnother()
         {
-            // Note: this method uses AStarSearch class inside.
-            // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
-            // returns something meaningful.
-            var graph = GraphFactory.CreateSquareGraph(height: 3, width: 3);
-            var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
-            var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
-            var shortesPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
-            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var start = new Coordinate3D(1, -3, 2);
+
+            var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 2);
+            var expectedDirection = new List<Coordinate3D>
             {
-                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
-                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
-                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight)
+                new Coordinate3D(1, -2, 1),
+                new Coordinate3D(1, -1, 0)
+            };
+            Assert.That(direction.ToList(), Is.EqualTo(expectedDirection));
+        }
+
+        [Test]
+        public void GetLine_ShouldNotIncludeCoordinatesOutsideOfGraph()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var start = new Coordinate3D(1, -3, 2);
+
+            var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 5);
+            var expectedDirection = new List<Coordinate3D>
+            {
+                new Coordinate3D(1, -2, 1),
+                new Coordinate3D(1, -1, 0)
+            };
+            Assert.That(direction.ToList(), Is.EqualTo(expectedDirection));
+        }
+
+        [Test]
+        public void GetLine_ShouldThrowIfCoordinateIsNotDirection()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var start = new Coordinate3D(1, -3, 2);
+
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+            {
+                 var dir = graph.GetLine(start, new Coordinate3D(2, 3, 4), 2);
+                 dir.ToList();
             });
-
-            Assert.That(shortesPath, Is.EqualTo(expectedShortestPath));
+            Assert.That(exception.Message, Is.EqualTo("Invalid direction"));
         }
 
         [Test]
-        public void ShouldBlockCell()
+        public void GetMovementRange_ShouldGetCorrectMovementRange()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
-            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
-            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
-            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
-        }
-
-        [Test]
-        public void ShouldGetCorrectMovementRange()
-        {
-            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedMovementRange2D = new List<Coordinate2D>
@@ -105,9 +120,9 @@ namespace Tests.HexGraph
         }
 
         [Test]
-        public void ShouldGetCorrectNeighbors()
+        public void GetNeighbours_ShouldGetCorrectNeighbors()
         {
-            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight);
@@ -128,9 +143,9 @@ namespace Tests.HexGraph
         }
 
         [Test]
-        public void ShouldGetCorrectRange()
+        public void GetRange_ShouldGetCorrectRange()
         {
-            var graph = GraphFactory.CreateSquareGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedRange2D = new List<Coordinate2D>
@@ -165,9 +180,29 @@ namespace Tests.HexGraph
         }
 
         [Test]
-        public void ShouldSetMovementTypesToCells()
+        public void GetShortestPath_ShouldBeAbleToFindingShortesetPath()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            // Note: this method uses AStarSearch class inside.
+            // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
+            // returns something meaningful.
+            var graph = GraphFactory.CreateRectangularGraph(height: 3, width: 3);
+            var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
+            var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
+            var shortestPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
+            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>
+            {
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight)
+            });
+
+            Assert.That(shortestPath, Is.EqualTo(expectedShortestPath));
+        }
+
+        [Test]
+        public void SetManyCellsMovementType_ShouldSetMovementTypesToCells()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
 
@@ -183,6 +218,17 @@ namespace Tests.HexGraph
             graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
+        }
+
+        [Test]
+        public void SetOneCellBlocked_ShouldBlockCell()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
+            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
+            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
+            Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
         }
     }
 }

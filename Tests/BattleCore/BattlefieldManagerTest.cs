@@ -15,7 +15,7 @@ namespace Tests.BattleCore
             //This is an integration test for battlefild, aimed to help to design structure and interfaces.
 
             // 1. Let's initialize the map:
-            var map = GraphFactory.CreateSquareGraph(height: 10, width: 10);
+            var map = GraphFactory.CreateRectangularGraph(height: 10, width: 10);
 
             // 2. Let's create some units. Let's consider one meele, one ranged and one mage on each side.
             // We also need to manage different teams.

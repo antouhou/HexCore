@@ -8,10 +8,10 @@ namespace HexCore.BattleCore
 {
     public class BattlefieldManager
     {
-        public readonly Graph Graph;
         private readonly List<Team> _teams = new List<Team>();
-        private bool _isBattleStarted = false;
-        private bool _isBattleFinished = false;
+        public readonly Graph Graph;
+        private bool _isBattleFinished;
+        private bool _isBattleStarted;
 
         public BattlefieldManager(Graph map, IEnumerable<Team> teams)
         {
@@ -23,7 +23,7 @@ namespace HexCore.BattleCore
         {
             return _teams.SelectMany(team => team.GetAllPawns()).ToList();
         }
-        
+
         public void AddTeams(IEnumerable<Team> teams)
         {
             // TODO: check if pawn ids and positions don't conflict
@@ -69,11 +69,8 @@ namespace HexCore.BattleCore
         {
             // TODO: check if it's that team's turn now
             // Also check if there is such pawn at the battlefield
-            if (!CanMoveTo(pawn, newPosition))
-            {
-                return false;
-            }
-            
+            if (!CanMoveTo(pawn, newPosition)) return false;
+
             Graph.SetOneCellBlocked(pawn.Position, false);
             pawn.Position = newPosition;
             Graph.SetOneCellBlocked(pawn.Position, true);
@@ -104,14 +101,11 @@ namespace HexCore.BattleCore
                 throw new InvalidOperationException("Can't attack the given target");
             var damageDealt = 1;
             var damageBlocked = 0;
-            targetPawn.HealthPoints -= (damageDealt - damageBlocked);
+            targetPawn.HealthPoints -= damageDealt - damageBlocked;
             var isTargetStillAlive = targetPawn.HealthPoints > 0;
 
-            if (!isTargetStillAlive)
-            {
-                RemovePawn(targetPawn);
-            }
-            
+            if (!isTargetStillAlive) RemovePawn(targetPawn);
+
             return new AttackResult(1, isTargetStillAlive);
         }
 
@@ -142,13 +136,19 @@ namespace HexCore.BattleCore
 
         public void RemovePawn(Pawn pawn)
         {
-            
         }
-        
-        public void EndTurn() {}
-        
-        public void SaveBattleState() {}
-        public void LoadBattleState() {}
+
+        public void EndTurn()
+        {
+        }
+
+        public void SaveBattleState()
+        {
+        }
+
+        public void LoadBattleState()
+        {
+        }
     }
 
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HexCore.HexGraph;
 
 namespace HexCore.DataStructures
 {
@@ -56,6 +55,16 @@ namespace HexCore.DataStructures
         public static Coordinate3D operator -(Coordinate3D a, Coordinate3D b)
         {
             return new Coordinate3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+
+        public static Coordinate3D operator *(Coordinate3D a, Coordinate3D b)
+        {
+            return new Coordinate3D(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+        }
+
+        public static Coordinate3D operator *(Coordinate3D a, int scalar)
+        {
+            return new Coordinate3D(a.X * scalar, a.Y * scalar, a.Z * scalar);
         }
     }
 }

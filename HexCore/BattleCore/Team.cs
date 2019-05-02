@@ -5,18 +5,19 @@ namespace HexCore.BattleCore
 {
     public class Team
     {
-        private List<Pawn> _pawns = new List<Pawn>();
-        public string Id { get; }
-        
+        private readonly List<Pawn> _pawns = new List<Pawn>();
+
         public Team(IEnumerable<Pawn> units, string id)
         {
             Id = id;
             AddPawns(units);
         }
 
+        public string Id { get; }
+
         public void AddPawns(IEnumerable<Pawn> pawns)
         {
-           _pawns.AddRange(pawns);
+            _pawns.AddRange(pawns);
         }
 
         public List<Pawn> GetAllPawns()

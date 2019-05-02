@@ -12,7 +12,7 @@ namespace Tests.DataStructures
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             var cubeCoordinates = graph.GetAllCellsCoordinates();
             //For odd rows right:
             //Down and right: Y - 1, Z + 1

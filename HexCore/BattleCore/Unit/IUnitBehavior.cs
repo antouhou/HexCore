@@ -8,7 +8,7 @@ namespace HexCore.BattleCore.Unit
         TUnitState State { get; }
         List<Coordinate3D> GetAttackRange();
         List<Coordinate3D> GetMovementRange();
-        
+
         // TODO: Move that to BattleFiledManager class
         bool CanMoveTo(Coordinate3D position);
         bool CanAttack(IUnitBehavior<IUnitState> unit);

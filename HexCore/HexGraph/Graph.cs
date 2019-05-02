@@ -187,6 +187,17 @@ namespace HexCore.HexGraph
             return visited;
         }
 
+        public IEnumerable<Coordinate3D> GetLine(Coordinate3D start, Coordinate3D direction, int length)
+        {
+            if (!Directions.Contains(direction)) throw new InvalidOperationException("Invalid direction");
+
+            for (var currentLength = 1; currentLength < length + 1; currentLength++)
+            {
+                var next = start + direction * currentLength;
+                if (IsInBounds(next)) yield return next;
+            }
+        }
+
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
             MovementType movementType)
         {

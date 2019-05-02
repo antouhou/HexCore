@@ -17,7 +17,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldAddUnitsToTheMapIfThereIsAPlaceForThem()
         {
-            var graph = GraphFactory.CreateSquareGraph(2, 2);
+            var graph = GraphFactory.CreateRectangularGraph(2, 2);
             var unitFactory = new BasicUnitFactory(graph);
             var unit = unitFactory.GetBasicUnit(movementRange: 2);
             Assert.Contains(unit.State.Position, graph.GetAllCellsCoordinates());
@@ -26,7 +26,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldBeAbleToMoveAroundTheMap()
         {
-            var graph = GraphFactory.CreateSquareGraph(10, 10);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10);
             var unitFactory = new BasicUnitFactory(graph);
             var unit = unitFactory.GetBasicUnit(movementRange: 2);
             var movementRange = unit.GetMovementRange();
@@ -43,7 +43,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldBeAbleToPerformAttack()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3);
 
             var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
             {
@@ -70,7 +70,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldBeCompatibleWithOtherImplementationsOfIUnitBehavior()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3);
 
             var unit1 = new BasicUnitBehavior(new BasicUnitState(BasicMovementTypes.Ground, 1)
             {
@@ -90,7 +90,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldCalculateWhetherOneUnitCanAttackOtherOrNot()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3);
             var unitFactory = new BasicUnitFactory(graph);
 
             var unit1 = unitFactory.GetBasicUnit();
@@ -125,7 +125,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldNotBeAbleToAttackItself()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3);
             var unitFactory = new BasicUnitFactory(graph);
 
             var unit1 = unitFactory.GetBasicUnit();
@@ -135,7 +135,7 @@ namespace Tests.BattleCore.Unit
         [Test]
         public void ShouldNotMoveOverItsMovementRange()
         {
-            var graph = GraphFactory.CreateSquareGraph(10, 10);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10);
             var unitFactory = new BasicUnitFactory(graph);
             var unit = unitFactory.GetBasicMeele();
             var movementRange = unit.GetMovementRange();
@@ -149,7 +149,7 @@ namespace Tests.BattleCore.Unit
         public void ShouldNotMoveToOtherUnitPosition()
         {
             // With 3x3 graph and movement radius is equal to 3, any unit can move to any position
-            var graph = GraphFactory.CreateSquareGraph(3, 3);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3);
             var unitFactory = new BasicUnitFactory(graph);
             var unit = unitFactory.GetBasicMeele();
             var movementRange = unit.GetMovementRange();
@@ -163,7 +163,7 @@ namespace Tests.BattleCore.Unit
         public void ShouldThrowExecptionIfPositionAssignedToUnitAlreadyTaken()
         {
             // 4 units max
-            var graph = GraphFactory.CreateSquareGraph(2, 2);
+            var graph = GraphFactory.CreateRectangularGraph(2, 2);
             var unitFactory = new BasicUnitFactory(graph);
             for (var i = 0; i < 4; i++) unitFactory.GetBasicMeele();
             var unitState =

@@ -13,7 +13,8 @@ namespace Tests.HexGraph
         {
             const int width = 4;
             const int height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)
@@ -28,7 +29,7 @@ namespace Tests.HexGraph
         {
             const int width = 4;
             const int height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height);
+            var graph = GraphFactory.CreateRectangularGraph(width, height);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)

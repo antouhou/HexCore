@@ -15,7 +15,7 @@ namespace Tests.AStar
         {
             // This test wouldn't be that different from previous ones, except size of the graph
             // Not so square anymore! 7 columns, 10 rows.
-            var graph = GraphFactory.CreateSquareGraph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(7, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
             var startOddR = new Coordinate2D(5, 6, OffsetTypes.OddRowsRight);
@@ -111,7 +111,7 @@ namespace Tests.AStar
         {
             // Everything is like before, but now instead of blocking 1,1 let's make it water to apply some penalties 
             // to our ground moving type
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 MovementTypes.Water);
@@ -163,7 +163,7 @@ namespace Tests.AStar
         public void ShouldFindShortestPathWhenThereIsPenaltiesAndObstacles()
         {
             // Now let's make 1,1 water and block 1,2
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(), true);
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
@@ -194,7 +194,7 @@ namespace Tests.AStar
         public void ShouldFindShortestPathWithObstacles()
         {
             // Now let's block center, 1,1
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(), true);
 
@@ -246,7 +246,7 @@ namespace Tests.AStar
         [Test]
         public void ShouldFindShortestPathWithoutObstacles()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
 
             // Cube coordinates are not so intuitive when it comes to visualizing them in your head, so let's use 
             // offset ones and convert them to cube. Cube coordinate are used by the algorythm because it's

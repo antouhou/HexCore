@@ -1,6 +1,7 @@
-namespace Tests.GameExample.Abilities
-{
-    public class AreaAbility : IAbility
-    {
-    }
-}
+//namespace Tests.GameExample.Abilities
+//{
+//    public class AreaAbility : IAbility
+//    {
+//    }
+//}
+

@@ -5,7 +5,8 @@ namespace HexCore.HexGraph
 {
     public static class GraphFactory
     {
-        public static Graph CreateSquareGraph(int width, int height, OffsetTypes offsetType = OffsetTypes.OddRowsRight,
+        public static Graph CreateRectangularGraph(int width, int height,
+            OffsetTypes offsetType = OffsetTypes.OddRowsRight,
             MovementType defaultMovementType = null
         )
         {

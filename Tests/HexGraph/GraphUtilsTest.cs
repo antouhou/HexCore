@@ -14,7 +14,8 @@ namespace Tests.HexGraph
         {
             var width = 6;
             var height = 7;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
@@ -52,7 +53,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             height = 4;
 
@@ -70,7 +72,8 @@ namespace Tests.HexGraph
         {
             var width = 4;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             width = 5;
 
@@ -88,7 +91,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 4;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             width = 4;
             height = 5;
@@ -105,7 +109,7 @@ namespace Tests.HexGraph
         [Test]
         public void ShouldMaintainCellStatesOnResize()
         {
-            var graph = GraphFactory.CreateSquareGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
             Assert.False(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
             graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
             Assert.True(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
@@ -118,7 +122,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypes.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
@@ -134,7 +139,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             height = 2;
 
@@ -152,7 +158,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             width = 2;
 
@@ -170,7 +177,8 @@ namespace Tests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateSquareGraph(width, height, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
+                MovementTypes.Ground);
 
             width = 2;
             height = 2;
