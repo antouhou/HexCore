@@ -35,6 +35,14 @@ namespace HexCore.DataStructures
             }
         }
 
+        public static Coordinate3D RotateRight(Coordinate3D center, Coordinate3D position)
+        {
+            var vector = position - center;
+            var rotation = new Coordinate3D(-vector.Z, -vector.X, -vector.Y);
+            var result = rotation + center;
+            return result;
+        }
+
         public static List<Coordinate2D> To2D(IEnumerable<Coordinate3D> coordinate3Ds, OffsetTypes offsetType)
         {
             return coordinate3Ds.Select(coordinate3D => coordinate3D.To2D(offsetType)).ToList();

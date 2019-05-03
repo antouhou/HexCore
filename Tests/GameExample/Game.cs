@@ -29,9 +29,7 @@
 //         *                 it allows more ineteresting shapes, such as a circle around the selected target, but excluding
 //         *                 the exact target coordinate, i.e, if the range of casting is 0, and shape is a circle, caster
 //         *                 can cast it only in itself, but the effect will be applied only to pawns surronuding caster,
-//         *                 exluding himself)
-//         *                 todo: this won't work for directional abilities, as shape always will be pointing towards a certain direction
-//         *                 So, we have to consider following abilities: directional, singular, area and maybe shape.
+//         *                 exluding himself). It is possible to rotate shape through Coordinate3D.RotateRight()
 //         *             - Duration (0 for one-time effect, more for lasting effect)
 //         *                 - Applies right after the use
 //         *             - Possible targets (enemy, ally, empty, everyone)
