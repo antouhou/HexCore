@@ -59,15 +59,10 @@
     <Compile Include="Fixtures\CustomUnitBehavior.cs" />
     <Compile Include="Fixtures\CustomUnitState.cs" />
     <Compile Include="Fixtures\MovementTypes.cs" />
-    <Compile Include="GameExample\Abilities\AreaAbility.cs" />
-    <Compile Include="GameExample\Abilities\DirectionalAbility.cs" />
-    <Compile Include="GameExample\Abilities\IAbility.cs" />
+    <Compile Include="GameExample\Ability.cs" />
     <Compile Include="GameExample\Attributes.cs" />
     <Compile Include="GameExample\BattleManager.cs" />
-    <Compile Include="GameExample\Effects\DefenceUp.cs" />
-    <Compile Include="GameExample\Effects\IEffect.cs" />
-    <Compile Include="GameExample\Effects\Fire.cs" />
-    <Compile Include="GameExample\Effects\Heal.cs" />
+    <Compile Include="GameExample\Effect.cs" />
     <Compile Include="GameExample\Game.cs" />
     <Compile Include="GameExample\Pawns\Pawn.cs" />
     <Compile Include="GameExample\Pawns\PawnType.cs" />

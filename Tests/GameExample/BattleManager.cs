@@ -53,7 +53,7 @@ namespace Tests.GameExample
             return true;
         }
 
-        public bool UseAbility(Pawn caster, IAbility ability, Coordinate3D target)
+        public bool UseAbility(Pawn caster, Ability ability, Coordinate3D target)
         {
             return true;
         }

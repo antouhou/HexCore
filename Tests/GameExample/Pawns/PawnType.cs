@@ -6,7 +6,7 @@ namespace Tests.GameExample.Pawns
     [Serializable]
     public class PawnType
     {
-        public PawnType(string name, Attributes attributes, IAbility[] abilities)
+        public PawnType(string name, Attributes attributes, Ability[] abilities)
         {
         }
 
