@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 using NUnit.Framework;
@@ -141,21 +140,21 @@ namespace Tests.GameExample
         /// <returns></returns>
         public static Dictionary<string, PawnType> BootstrapPawnTypes(Dictionary<string, Ability> abilities)
         {
-            var meleeType = new PawnType("Melee", new Attributes(MovementTypes.Ground, 3, 2, 10, 0, 0, 3, 1),
+            var warriorPawnType = new PawnType(WarriorPawnName, new Attributes(MovementTypes.Ground, 3, 2, 10, 0, 0, 3, 1),
                 new Ability[] { });
-            var rangeType = new PawnType("Ranger", new Attributes(MovementTypes.Ground, 3, 2, 8, 0, 0, 3, 2),
+            var archerPawnType = new PawnType(ArcherPawnName, new Attributes(MovementTypes.Ground, 3, 2, 8, 0, 0, 3, 2),
                 new Ability[] { });
-            var wizardType = new PawnType("Mage", new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
+            var wizardPawnType = new PawnType(WizardPawnName, new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
                 new[] {abilities[FireBlastAbilityName], abilities[FireBlastAreaAbilityName]});
-            var clericType = new PawnType("Support", new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
+            var clericPawnType = new PawnType(ClericPawnName, new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
                 new[] {abilities[DefenceUpAbilityName], abilities[HealAbilityName]});
             
             return new Dictionary<string, PawnType>
             {
-                [WarriorPawnName] = meleeType,
-                [ArcherPawnName] = rangeType,
-                [WizardPawnName] = wizardType,
-                [ClericPawnName] = clericType
+                [WarriorPawnName] = warriorPawnType,
+                [ArcherPawnName] = archerPawnType,
+                [WizardPawnName] = wizardPawnType,
+                [ClericPawnName] = clericPawnType
             };
         }
         
@@ -178,10 +177,37 @@ namespace Tests.GameExample
             var wizard = pawnTypes[WizardPawnName].CreatePawn();
             var cleric = pawnTypes[ClericPawnName].CreatePawn();
             // todo: It also should be possible to load pawn from a file
+            
+            /**
+             * - It should be possible to create teams
+             * - It should be not possible to move the same pawn twice during one turn
+             * - It should be available to perform only one action per pawn per turn:
+             * One attack or ability.
+             * - Turn should end automatically when no more actions is available for the team
+             * (i.e there is no more units that can cast, attack or move)
+             * - When the turn is ended for one team, turn of the next team should start.
+             *
+             * var teamOne = {warrior, cleric};
+             * var teamTwo = {archer, wizard};
+             * 
+             * battleManager.AddTeam("team1", teamOne);
+             * battleManager.AddTeam("team2", teamTwo);
+             *
+             * battleManager.Move(warrior, new Coordinate3D());
+             * // battleManager.Move(warrior, new Coordinate3D()); -> should throw, as already moved
+             * // battleManager.Move(archer, new Coordinate3D()); -> should throw, it's another team turn
+             * var targets = battleManager.GetPossibleAttackTargets(warrior); // { ["archer"]: archer }
+             * battleManager.Attack(warrior, targets["archer"]);
+             * // battleManager.Attack(warrior, archer); -> should throw, no more than one attack per turn
+             * // battleManager.CastAbility(warrior, ability, archer); -> should throw, warrior have no such ability
+             * targets = battleManager.GetPossibleAbilityTargets(cleric, defenseUp); // { ["warrior"]: warrior }
+             * battleManager.CastAbility(cleric, defenseUp, targets["warrior"]);
+             * // battleManager.CastAbility(cleric, defenseUp, targets["warrior"]); -> should throw, no more than one cast per unit per turn
+             */
 
-            // Should spawn with coordinate 2d
+            // Should spawn with coordinate 2D
             battleManager.Spawn(warrior, new Coordinate2D(1, 2, OffsetTypes.OddRowsRight));
-            // Should spawn with coordinate 3
+            // Should spawn with coordinate 3D
             battleManager.Spawn(archer, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D());
             // Should spawn a list of pawns
             battleManager.Spawn(new[]
