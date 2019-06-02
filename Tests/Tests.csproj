@@ -64,6 +64,7 @@
     <Compile Include="GameExample\BattleManager.cs" />
     <Compile Include="GameExample\Effect.cs" />
     <Compile Include="GameExample\Game.cs" />
+      <Compile Include="GameExample\Test.cs"/>
     <Compile Include="GameExample\Pawns\Pawn.cs" />
     <Compile Include="GameExample\Pawns\PawnType.cs" />
     <Compile Include="HexGraph\GraphFactoryTest.cs" />
