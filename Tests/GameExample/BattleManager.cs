@@ -35,29 +35,6 @@ namespace Tests.GameExample
             _teams = teams;
         }
 
-        public bool Spawn(Pawn pawn, Coordinate3D position)
-        {
-            return true;
-        }
-
-        public bool Spawn(Pawn pawn, Coordinate2D position)
-        {
-            return Spawn(pawn, position.To3D());
-        }
-
-        public bool Spawn(IEnumerable<(Pawn, Coordinate3D)> pawns)
-        {
-            var res = false;
-            // Todo: make this atomic, i.e. check that all pawns can be spawn before spawning them
-            foreach (var (pawn, position) in pawns)
-            {
-                res = Spawn(pawn, position);
-                if (!res) return false;
-            }
-
-            return res;
-        }
-
         public void AddTeam(string id, IEnumerable<Pawn> pawns)
         {
             if (_teams.ContainsKey(id))
@@ -79,6 +56,39 @@ namespace Tests.GameExample
             var newTeam = new Team(id);
             newTeam.Pawns.AddRange(pawnsList);
             _teams.Add(id, newTeam);
+        }
+
+        public void Spawn(Pawn pawn, Coordinate3D position)
+        {
+        }
+
+        public void Spawn(Pawn pawn, Coordinate2D position)
+        {
+            Spawn(pawn, position.To3D());
+        }
+
+        public void Spawn(IEnumerable<Pawn> pawns, IEnumerable<Coordinate3D> positions)
+        {
+            var pawnsList = pawns.ToList();
+            var positionsList = positions.ToList();
+            if (pawnsList.Count != positionsList.Count)
+            {
+                throw new InvalidOperationException("Pawns count is not equal to positions count");
+            }
+
+            var pawnPositionTuples = pawnsList.Zip(positionsList, (pawn, position) => (pawn, position));
+            foreach (var (pawn, position) in pawnPositionTuples)
+            {
+                Spawn(pawn, position);
+            }
+        }
+
+        // TODO: Add team and spawn all pawns in one go
+        public void SpawnTeam(string id, IEnumerable<Pawn> pawns, IEnumerable<Coordinate3D> positions)
+        {
+            var pawnsList = pawns.ToList();
+            AddTeam(id, pawnsList);
+            Spawn(pawnsList, positions);
         }
 
         public List<Pawn> GetTeam(string teamId)

@@ -55,42 +55,51 @@ namespace Tests.GameExample
          * effects applied to it.
          *     
          */
-        public const string HealEffectName = "heal";
-        public const string FireEffectName = "fire";
-        public const string DefenseUpEffectName = "defenceUp";
+        private const string HealEffectName = "heal";
+        private const string FireEffectName = "fire";
+        private const string DefenseUpEffectName = "defenceUp";
 
-        public const string HealAbilityName = "Heal";
-        public const string FireBlastAbilityName = "Fire Blast";
-        public const string FireBlastAreaAbilityName = "Fire Area Blast";
-        public const string DefenceUpAbilityName = "Defence Up";
+        private const string HealAbilityName = "Heal";
+        private const string FireBlastAbilityName = "Fire Blast";
+        private const string FireBlastAreaAbilityName = "Fire Area Blast";
+        private const string DefenceUpAbilityName = "Defence Up";
 
-        public const string WizardPawnName = "Wizard";
-        public const string ClericPawnName = "Cleric";
-        public const string WarriorPawnName = "Warrior";
-        public const string ArcherPawnName = "Archer";
+        private const string WizardPawnName = "Wizard";
+        private const string ClericPawnName = "Cleric";
+        private const string WarriorPawnName = "Warrior";
+        private const string ArcherPawnName = "Archer";
 
         /// <summary>
-        /// This function creates effects and bonuses for effects. Returns a dictionary with all effects.
-        /// Bonuses are lambdas passed to the Effect constructor. Bonus function should accept effect attributes as a
-        /// first parameter, caster/target attributes as a second parameters, and returns an instance of Attributes
-        /// that will be applied to effect attributes. There should be two bonuses: the first one is the caster bonus,
-        /// and, for example, can amplify spell damage based on caster magic power. The second is the defense bonus,
-        /// and can reduce negative/amplify positive effects based on the target attributes.
+        ///     This function creates effects and bonuses for effects. Returns a dictionary with all effects.
+        ///     Bonuses are lambdas passed to the Effect constructor. Bonus function should accept effect attributes as a
+        ///     first parameter, caster/target attributes as a second parameters, and returns an instance of Attributes
+        ///     that will be applied to effect attributes. There should be two bonuses: the first one is the caster bonus,
+        ///     and, for example, can amplify spell damage based on caster magic power. The second is the defense bonus,
+        ///     and can reduce negative/amplify positive effects based on the target attributes.
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, Effect> BootstrapEffects()
+        private static Dictionary<string, Effect> BootstrapEffects()
         {
-            Attributes NoBonus(Attributes effectAttributes, Attributes targetAttributes) => new Attributes();
+            Attributes NoBonus(Attributes effectAttributes, Attributes targetAttributes)
+            {
+                return new Attributes();
+            }
 
-            Attributes MagicalCasterBonus(Attributes effectAttributes, Attributes casterAttributes) => new Attributes(
-                hp: effectAttributes.HP * (casterAttributes.MagicPower * 0.2),
-                defense: effectAttributes.HP * (casterAttributes.MagicPower * 0.2)
-            );
+            Attributes MagicalCasterBonus(Attributes effectAttributes, Attributes casterAttributes)
+            {
+                return new Attributes(
+                    hp: effectAttributes.HP * (casterAttributes.MagicPower * 0.2),
+                    defense: effectAttributes.HP * (casterAttributes.MagicPower * 0.2)
+                );
+            }
 
-            Attributes MagicalTargetBonus(Attributes effectAttributes, Attributes casterAttributes) => new Attributes(
-                hp: effectAttributes.HP * (casterAttributes.MagicPower * 0.2),
-                defense: effectAttributes.HP * (casterAttributes.MagicPower * 0.2)
-            );
+            Attributes MagicalTargetBonus(Attributes effectAttributes, Attributes casterAttributes)
+            {
+                return new Attributes(
+                    hp: effectAttributes.HP * (casterAttributes.MagicPower * 0.2),
+                    defense: effectAttributes.HP * (casterAttributes.MagicPower * 0.2)
+                );
+            }
 
             var healEffect = new Effect(
                 new Attributes(hp: 2),
@@ -116,11 +125,11 @@ namespace Tests.GameExample
         }
 
         /// <summary>
-        /// This method bootstraps abilities based on effects.
+        ///     This method bootstraps abilities based on effects.
         /// </summary>
         /// <param name="effects"></param>
         /// <returns></returns>
-        public static Dictionary<string, Ability> BootstrapAbilities(Dictionary<string, Effect> effects)
+        private static Dictionary<string, Ability> BootstrapAbilities(Dictionary<string, Effect> effects)
         {
             var heal = new Ability(HealAbilityName, effects[HealEffectName], new[] {new Coordinate3D()}, 3, 1);
             var defenseUp = new Ability(DefenceUpAbilityName, effects[DefenseUpEffectName], new[] {new Coordinate3D()},
@@ -140,11 +149,11 @@ namespace Tests.GameExample
         }
 
         /// <summary>
-        /// This method bootstraps pawn factories that can be used to created new pawn based on the pawn template
+        ///     This method bootstraps pawn factories that can be used to created new pawn based on the pawn template
         /// </summary>
         /// <param name="abilities"></param>
         /// <returns></returns>
-        public static Dictionary<string, PawnType> BootstrapPawnTypes(Dictionary<string, Ability> abilities)
+        private static Dictionary<string, PawnType> BootstrapPawnTypes(Dictionary<string, Ability> abilities)
         {
             var warriorPawnType = new PawnType(WarriorPawnName,
                 new Attributes(MovementTypes.Ground, 3, 2, 10, 0, 0, 3, 1),
@@ -167,7 +176,7 @@ namespace Tests.GameExample
             };
         }
 
-        public Game BootstrapGame(int mapWidth, int mapHeight)
+        private Game BootstrapGame(int mapWidth, int mapHeight)
         {
             var effects = BootstrapEffects();
             var abilities = BootstrapAbilities(effects);
@@ -255,7 +264,105 @@ namespace Tests.GameExample
         }
 
         [Test]
-        public void ShouldBeAbleToPlayAGame()
+        public void Move_ShouldMoveSpawnedPawn()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMoveNotSpawnedPawn()
+        {
+            // TODO: Do we even need to have not spawned pawns? I.e. always spawn
+            // all pawns with the team? We probably do
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMovePawnIfItIsAnotherTeamTurn()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMovePawnIfPawnWasAlreadyMovedInThatTurn()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMovePawnToAlreadyTakenPosition()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMovePawnToBlockedPosition()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Move_ShouldNotMovePawnToPositionOutsideOfTheMapBorder()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldNotSpawnAlreadySpawnedPawn()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldNotSpawnAtBlockedCoordinate()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldNotSpawnAtTheSameCoordinateTwice()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldNotSpawnWhenDesiredPositionIsAlreadyBlocked()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldSpawnAListOfPawns()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldSpawnPawnAtTheGivenCoordinate()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Spawn_ShouldThrowWhenPawnsCountIsNotEqualToPositionsCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void SpawnTeam_ShouldAddTeamAndSpawnAllItsPawns()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void UseAbility()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Z_ShouldBeAbleToPlayAGame()
         {
             // Bootstrap effects, abilities, and pawn types
             var effects = BootstrapEffects();
@@ -305,18 +412,16 @@ namespace Tests.GameExample
             // Create manager
             var battleManager = new BattleManager(map);
 
-            battleManager.AddTeam("red", new[] {warrior, cleric});
-            battleManager.AddTeam("blue", new[] {wizard, archer});
-
-            // Should spawn with coordinate 2D
-            battleManager.Spawn(warrior, new Coordinate2D(1, 2, OffsetTypes.OddRowsRight));
-            // Should spawn with coordinate 3D
-            battleManager.Spawn(archer, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D());
-            // Should spawn a list of pawns
-            battleManager.Spawn(new[]
+            battleManager.SpawnTeam("red", new[] {warrior, cleric}, new[]
+                {
+                    new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                    new Coordinate2D(1, 0, OffsetTypes.OddRowsRight).To3D()
+                }
+            );
+            battleManager.SpawnTeam("blue", new[] {wizard, archer}, new[]
             {
-                (wizard, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()),
-                (cleric, new Coordinate2D(1, 0, OffsetTypes.OddRowsRight).To3D())
+                new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D(),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D()
             });
 
             // Should move to coordinate 2D
@@ -332,24 +437,6 @@ namespace Tests.GameExample
             var rangerPosition = battleManager.GetPosition(archer);
             // Should last more than one turn
             battleManager.UseAbility(cleric, abilities[DefenceUpAbilityName], rangerPosition);
-        }
-
-        [Test]
-        public void Spawn_ShouldNotSpawnWhenDesiredPositionIsAlreadyBlocked()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void Spawn_ShouldSpawnPawnAtTheGivenCoordinate()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void UseAbility()
-        {
-            throw new NotImplementedException();
         }
     }
 }
