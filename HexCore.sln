@@ -2,7 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexCore", "HexCore\HexCore.csproj", "{BC0B075E-237F-40A3-9ADC-40C61DD19ADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexCoreTests", "HexCoreTests\HexCoreTests.csproj", "{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameExample", "GameExample\GameExample.csproj", "{3A320242-9D3F-4D34-9324-3134EF267FAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameExampleTests", "GameExampleTests\GameExampleTests.csproj", "{4820BF37-5DBD-430A-94BC-7329051518FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +22,13 @@ Global
 		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC343A55-AFB3-4AB9-B47A-1EEB5423FD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A320242-9D3F-4D34-9324-3134EF267FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A320242-9D3F-4D34-9324-3134EF267FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A320242-9D3F-4D34-9324-3134EF267FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A320242-9D3F-4D34-9324-3134EF267FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4820BF37-5DBD-430A-94BC-7329051518FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4820BF37-5DBD-430A-94BC-7329051518FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4820BF37-5DBD-430A-94BC-7329051518FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4820BF37-5DBD-430A-94BC-7329051518FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

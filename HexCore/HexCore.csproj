@@ -40,21 +40,6 @@
   <ItemGroup>
     <Compile Include="AStar\AStarSearch.cs" />
     <Compile Include="AStar\IWeightedGraph.cs" />
-      <Compile Include="BattleCore\Ability.cs"/>
-    <Compile Include="BattleCore\Attack.cs" />
-    <Compile Include="BattleCore\BattlefieldManager.cs" />
-    <Compile Include="BattleCore\Pawn.cs" />
-    <Compile Include="BattleCore\Team.cs" />
-    <Compile Include="BattleCore\Unit\AttackResult.cs" />
-    <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitAttack.cs" />
-    <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitBehavior.cs" />
-    <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitDefense.cs" />
-    <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitFactory.cs" />
-    <Compile Include="BattleCore\Unit\BasicImplementation\BasicUnitState.cs" />
-    <Compile Include="BattleCore\Unit\IUnitAttack.cs" />
-    <Compile Include="BattleCore\Unit\IUnitBehavior.cs" />
-    <Compile Include="BattleCore\Unit\IUnitDefense.cs" />
-    <Compile Include="BattleCore\Unit\IUnitState.cs" />
     <Compile Include="DataStructures\Coordinate3D.cs" />
     <Compile Include="DataStructures\Coordinate2D.cs" />
       <Compile Include="DataStructures\OffsetTypes.cs"/>
@@ -69,8 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AStar\README.md" />
-    <Content Include="BattleCore\README.md" />
-    <Content Include="BattleCore\Unit\README.md" />
     <Content Include="DataStructures\README.md" />
     <Content Include="HexGraph\GRAPH_FACTORY_README.md" />
     <Content Include="HexGraph\README.md" />
