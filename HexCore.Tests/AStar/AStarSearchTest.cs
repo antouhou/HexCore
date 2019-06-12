@@ -2,10 +2,10 @@
 using HexCore.AStar;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
+using HexCoreTests.Mocks;
 using NUnit.Framework;
-using Tests.Mocks;
 
-namespace Tests.AStar
+namespace HexCoreTests.AStar
 {
     [TestFixture]
     public class AStarSearchTest

@@ -21,14 +21,11 @@ namespace GameExample
     public class BattleManager
     {
         private Graph _map;
-        private Dictionary<string, Team> _teams;
+        private readonly Dictionary<string, Team> _teams;
 
         public BattleManager(Graph map, Dictionary<string, Team> teams = null)
         {
-            if (teams == null)
-            {
-                teams = new Dictionary<string, Team>();
-            }
+            if (teams == null) teams = new Dictionary<string, Team>();
 
             _map = map;
             _teams = teams;
@@ -36,10 +33,7 @@ namespace GameExample
 
         public void AddTeam(string id, IEnumerable<Pawn> pawns)
         {
-            if (_teams.ContainsKey(id))
-            {
-                throw new InvalidOperationException("Team with such id was already added");
-            }
+            if (_teams.ContainsKey(id)) throw new InvalidOperationException("Team with such id was already added");
 
             var pawnsList = pawns.ToList();
             foreach (var team in _teams)
@@ -47,9 +41,7 @@ namespace GameExample
                 var teamPawns = team.Value.Pawns;
                 var samePawns = teamPawns.Intersect(pawnsList);
                 if (samePawns.Any())
-                {
                     throw new InvalidOperationException("Can't add team whose pawn is already in another team");
-                }
             }
 
             var newTeam = new Team(id);
@@ -71,15 +63,10 @@ namespace GameExample
             var pawnsList = pawns.ToList();
             var positionsList = positions.ToList();
             if (pawnsList.Count != positionsList.Count)
-            {
                 throw new InvalidOperationException("Pawns count is not equal to positions count");
-            }
 
             var pawnPositionTuples = pawnsList.Zip(positionsList, (pawn, position) => (pawn, position));
-            foreach (var (pawn, position) in pawnPositionTuples)
-            {
-                Spawn(pawn, position);
-            }
+            foreach (var (pawn, position) in pawnPositionTuples) Spawn(pawn, position);
         }
 
         // TODO: Add team and spawn all pawns in one go

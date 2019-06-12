@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using HexCore.HexGraph;
 
-namespace Tests.Mocks
+namespace HexCoreTests.Mocks
 {
     public static class MovementTypes
     {

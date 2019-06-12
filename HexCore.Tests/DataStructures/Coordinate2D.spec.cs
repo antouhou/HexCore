@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
+using HexCoreTests.Mocks;
 using NUnit.Framework;
-using Tests.Mocks;
 
-namespace Tests.DataStructures
+namespace HexCoreTests.DataStructures
 {
     [TestFixture]
     public class Coordinate2D_spec

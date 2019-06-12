@@ -4,8 +4,8 @@ namespace GameExample
 {
     public class Effect
     {
-        private Func<Attributes, Attributes, Attributes> calculateCasterBonus;
-        private Func<Attributes, Attributes, Attributes> calculateTargetBonus;
+        private readonly Func<Attributes, Attributes, Attributes> calculateCasterBonus;
+        private readonly Func<Attributes, Attributes, Attributes> calculateTargetBonus;
 
         public Effect(Attributes effectEffectAttributes, Func<Attributes, Attributes, Attributes> casterBonus,
             Func<Attributes, Attributes, Attributes> targetBonus)

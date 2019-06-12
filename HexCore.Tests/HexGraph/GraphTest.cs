@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
+using HexCoreTests.Mocks;
 using NUnit.Framework;
-using Tests.Mocks;
 
-namespace Tests.HexGraph
+namespace HexCoreTests.HexGraph
 {
     [TestFixture]
     [TestOf(typeof(Graph))]

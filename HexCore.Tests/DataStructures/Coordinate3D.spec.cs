@@ -1,42 +1,42 @@
 using HexCore.DataStructures;
 using NUnit.Framework;
 
-namespace Tests.DataStructures
+namespace HexCoreTests.DataStructures
 {
     [TestFixture]
     public class Coordinate3D_spec
     {
         private static Coordinate3D[][] RotateRightCases =
         {
-            new Coordinate3D[]
+            new[]
             {
                 new Coordinate3D(0, 0, 0),
                 new Coordinate3D(0, 2, -2),
-                new Coordinate3D(2, 0, -2),
+                new Coordinate3D(2, 0, -2)
             },
-            new Coordinate3D[]
+            new[]
             {
                 new Coordinate3D(0, 0, 0),
                 new Coordinate3D(2, 0, -2),
-                new Coordinate3D(2, -2, -0),
+                new Coordinate3D(2, -2, -0)
             },
-            new Coordinate3D[]
+            new[]
             {
                 new Coordinate3D(0, 0, 0),
                 new Coordinate3D(1, 1, -2),
-                new Coordinate3D(2, -1, -1),
+                new Coordinate3D(2, -1, -1)
             },
-            new Coordinate3D[]
+            new[]
             {
                 new Coordinate3D(1, 1, -2),
                 new Coordinate3D(1, 3, -4),
-                new Coordinate3D(3, 1, -4),
+                new Coordinate3D(3, 1, -4)
             },
-            new Coordinate3D[]
+            new[]
             {
                 new Coordinate3D(0, 2, -2),
                 new Coordinate3D(0, 4, -4),
-                new Coordinate3D(2, 2, -4),
+                new Coordinate3D(2, 2, -4)
             }
         };
 

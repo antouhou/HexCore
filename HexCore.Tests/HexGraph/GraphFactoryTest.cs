@@ -1,9 +1,9 @@
 ﻿using HexCore.DataStructures;
 using HexCore.HexGraph;
+using HexCoreTests.Mocks;
 using NUnit.Framework;
-using Tests.Mocks;
 
-namespace Tests.HexGraph
+namespace HexCoreTests.HexGraph
 {
     [TestFixture]
     public class GraphFactoryTest
