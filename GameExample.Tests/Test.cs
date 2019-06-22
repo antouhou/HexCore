@@ -155,15 +155,16 @@ namespace GameExampleTests
         private static Dictionary<string, PawnType> BootstrapPawnTypes(Dictionary<string, Ability> abilities)
         {
             var warriorPawnType = new PawnType(WarriorPawnName,
-                new Attributes(MovementTypes.Ground, 3, 2, 10, 0, 0, 3, 1),
+                new Attributes(MovementTypesMock.Ground, 3, 2, 10, 0, 0, 3, 1),
                 new Ability[] { });
-            var archerPawnType = new PawnType(ArcherPawnName, new Attributes(MovementTypes.Ground, 3, 2, 8, 0, 0, 3, 2),
+            var archerPawnType = new PawnType(ArcherPawnName,
+                new Attributes(MovementTypesMock.Ground, 3, 2, 8, 0, 0, 3, 2),
                 new Ability[] { });
             var wizardPawnType = new PawnType(WizardPawnName,
-                new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
+                new Attributes(MovementTypesMock.Ground, 3, 1, 8, 10, 1, 3, 1),
                 new[] {abilities[FireBlastAbilityName], abilities[FireBlastAreaAbilityName]});
             var clericPawnType = new PawnType(ClericPawnName,
-                new Attributes(MovementTypes.Ground, 3, 1, 8, 10, 1, 3, 1),
+                new Attributes(MovementTypesMock.Ground, 3, 1, 8, 10, 1, 3, 1),
                 new[] {abilities[DefenceUpAbilityName], abilities[HealAbilityName]});
 
             return new Dictionary<string, PawnType>

@@ -50,6 +50,12 @@ namespace HexCore.DataStructures
 
         public Coordinate3D(int x, int y, int z)
         {
+            if (x + y + z != 0)
+            {
+                throw new InvalidOperationException(
+                    "Sum of all points in 3D coordinate should always be equal to zero");
+            }
+
             X = x;
             Y = y;
             Z = z;
@@ -63,11 +69,6 @@ namespace HexCore.DataStructures
         public static Coordinate3D operator -(Coordinate3D a, Coordinate3D b)
         {
             return new Coordinate3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-        }
-
-        public static Coordinate3D operator *(Coordinate3D a, Coordinate3D b)
-        {
-            return new Coordinate3D(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         }
 
         public static Coordinate3D operator *(Coordinate3D a, int scalar)

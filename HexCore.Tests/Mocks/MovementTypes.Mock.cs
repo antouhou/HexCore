@@ -3,7 +3,7 @@ using HexCore.HexGraph;
 
 namespace HexCoreTests.Mocks
 {
-    public static class MovementTypes
+    public static class MovementTypesMock
     {
         public static readonly MovementType Ground = new MovementType
         {

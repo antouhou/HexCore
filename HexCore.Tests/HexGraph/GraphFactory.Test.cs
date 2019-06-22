@@ -9,12 +9,12 @@ namespace HexCoreTests.HexGraph
     public class GraphFactoryTest
     {
         [Test]
-        public void ShouldCreateSquareGraphWithOptionalParameters()
+        public void CreateRectangularGraph_ShouldCreateSquareGraphWithOptionalParameters()
         {
             const int width = 4;
             const int height = 3;
             var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypes.Ground);
+                MovementTypesMock.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)
@@ -25,7 +25,7 @@ namespace HexCoreTests.HexGraph
         }
 
         [Test]
-        public void ShouldCreateSquareGraphWithoutOptionalParameters()
+        public void CreateRectangularGraph_ShouldCreateSquareGraphWithoutOptionalParameters()
         {
             const int width = 4;
             const int height = 3;

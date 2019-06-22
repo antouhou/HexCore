@@ -9,8 +9,6 @@ namespace HexCore.HexGraph
     [Serializable]
     public class Graph : IWeightedGraph
     {
-        private static readonly Random Random = new Random();
-
         // Possible directions to detect neighbors        
         private static readonly List<Coordinate3D> Directions = new List<Coordinate3D>
         {
@@ -64,35 +62,6 @@ namespace HexCore.HexGraph
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
             return _allCoordinates;
-        }
-
-        public List<Coordinate3D> GetAllEmptyCellsCoordinates()
-        {
-            return _emptyCells;
-        }
-
-        private bool IsThereEmptyCell()
-        {
-            return _emptyCells.Count > 0;
-        }
-
-        public Coordinate3D? GetRandomEmptyCellCoordinate()
-        {
-            /*
-             * After having some thoughts on what is better - to return null or to throw an error,
-             * I decided to go with returning null - since to me, it looks like it's an ordinary situation,
-             * rather than an exception.
-             * For example, if you can't get an empty cell it's may be a good idea to empty some cells and
-             * call that method again.
-             * (Thanks to this thread on StackOverflow: https://softwareengineering.stackexchange.com/questions/159096/return-magic-value-throw-exception-or-return-false-on-failure)
-             */
-            if (IsThereEmptyCell()) return _emptyCells[Random.Next(_emptyCells.Count)];
-            return null;
-        }
-
-        public Coordinate3D GetRandomCellCoordinate()
-        {
-            return _allCoordinates[Random.Next(_emptyCells.Count)];
         }
 
         /**

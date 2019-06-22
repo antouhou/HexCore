@@ -15,7 +15,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldGetCorrectDirectionFromOneCoordinateToAnother()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 2);
@@ -30,7 +30,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldNotIncludeCoordinatesOutsideOfGraph()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 5);
@@ -45,12 +45,12 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldThrowIfCoordinateIsNotDirection()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
-                var dir = graph.GetLine(start, new Coordinate3D(2, 3, 4), 2);
+                var dir = graph.GetLine(start, new Coordinate3D(-2, 3, -1), 2);
                 dir.ToList();
             });
             Assert.That(exception.Message, Is.EqualTo("Invalid direction"));
@@ -59,7 +59,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetMovementRange_ShouldGetCorrectMovementRange()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedMovementRange2D = new List<Coordinate2D>
@@ -88,7 +88,7 @@ namespace HexCoreTests.HexGraph
             var expectedMovementRange =
                 Coordinate2D.To3D(expectedMovementRange2D);
 
-            var movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
+            var movementRange = graph.GetMovementRange(center, 2, MovementTypesMock.Ground);
 
             Assert.That(movementRange.Count, Is.EqualTo(expectedMovementRange.Count));
             Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
@@ -99,7 +99,7 @@ namespace HexCoreTests.HexGraph
             {
                 new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 3, OffsetTypes.OddRowsRight)
-            }), MovementTypes.Water);
+            }), MovementTypesMock.Water);
 
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
             graph.SetOneCellBlocked(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D(), true);
@@ -114,7 +114,7 @@ namespace HexCoreTests.HexGraph
 
             expectedMovementRange = Coordinate2D.To3D(expectedMovementRange2D);
 
-            movementRange = graph.GetMovementRange(center, 2, MovementTypes.Ground);
+            movementRange = graph.GetMovementRange(center, 2, MovementTypesMock.Ground);
 
             Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
         }
@@ -122,7 +122,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetNeighbours_ShouldGetCorrectNeighbors()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
 
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight);
@@ -145,7 +145,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetRange_ShouldGetCorrectRange()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedRange2D = new List<Coordinate2D>
@@ -188,7 +188,7 @@ namespace HexCoreTests.HexGraph
             var graph = GraphFactory.CreateRectangularGraph(height: 3, width: 3);
             var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
             var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
-            var shortestPath = graph.GetShortestPath(start, goal, MovementTypes.Ground);
+            var shortestPath = graph.GetShortestPath(start, goal, MovementTypesMock.Ground);
             var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
@@ -202,12 +202,12 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void SetManyCellsMovementType_ShouldSetMovementTypesToCells()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
 
             var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
 
-            graph.SetOneCellMovementType(coordinateToSet, MovementTypes.Water);
-            Assert.That(graph.GetCellState(coordinateToSet).MovementType, Is.EqualTo(MovementTypes.Water));
+            graph.SetOneCellMovementType(coordinateToSet, MovementTypesMock.Water);
+            Assert.That(graph.GetCellState(coordinateToSet).MovementType, Is.EqualTo(MovementTypesMock.Water));
 
             var coordinatesToSet = Coordinate2D.To3D(new List<Coordinate2D>
             {
@@ -215,15 +215,15 @@ namespace HexCoreTests.HexGraph
                 new Coordinate2D(0, 2, OffsetTypes.OddRowsRight)
             });
 
-            graph.SetManyCellsMovementType(coordinatesToSet, MovementTypes.Water);
+            graph.SetManyCellsMovementType(coordinatesToSet, MovementTypesMock.Water);
             foreach (var coordinate in coordinatesToSet)
-                Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypes.Water));
+                Assert.That(graph.GetCellState(coordinate).MovementType, Is.EqualTo(MovementTypesMock.Water));
         }
 
         [Test]
         public void SetOneCellBlocked_ShouldBlockCell()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypes.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
             graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
