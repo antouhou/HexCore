@@ -14,7 +14,7 @@ namespace GameExampleTests
     {
         /**
          * 1. Create a map
-         * 2. Instanciate units:
+         * 2. Instantiate units:
          *     Unit position is managed by battlefield manager, not by pawn;
          *     Add units to the battlefield like this:
          *         battleManager.spawn(uint, position);
@@ -27,10 +27,10 @@ namespace GameExampleTests
          *             - Area of effect application:
          *                 - Should be not just a specific number, but a shape of 3D Coords instead, with Coordinate3D(0,0,0)
          *                 being the center, and all other cells (may consider excluding 0,0,0 from the list, but if included,
-         *                 it allows more ineteresting shapes, such as a circle around the selected target, but excluding
+         *                 it allows more interesting shapes, such as a circle around the selected target, but excluding
          *                 the exact target coordinate, i.e, if the range of casting is 0, and shape is a circle, caster
          *                 can cast it only in itself, but the effect will be applied only to pawns surronuding caster,
-         *                 exluding himself). It is possible to rotate shape through Coordinate3D.RotateRight()
+         *                 excluding himself). It is possible to rotate shape through Coordinate3D.RotateRight()
          *             - EffectDuration (0 for one-time effect, more for lasting effect)
          *                 - Applies right after the use
          *             - Possible targets (enemy, ally, empty, everyone)
@@ -378,7 +378,7 @@ namespace GameExampleTests
             var cleric = pawnTypes[ClericPawnName].CreatePawn();
             // todo: It also should be possible to load pawn from a file
 
-            /**
+            /*
              * - It should be possible to create teams
              * - It should be not possible to move the same pawn twice during one turn
              * - It should be available to perform only one action per pawn per turn:
