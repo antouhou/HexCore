@@ -3,6 +3,12 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>HexCore</RootNamespace>
+        <Authors>Anton Suprunchuk</Authors>
+        <Description>Yet another library to manage hexagonal grids</Description>
+        <PackageProjectUrl>antouhou.org</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/antouhou/HexCore</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>Hex HexGrid A* A-star Hexagonal Hexagonal Grid</PackageTags>
     </PropertyGroup>
 
 </Project>
