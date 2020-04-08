@@ -3,12 +3,19 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>HexCore</RootNamespace>
+        <PackageId>HexCore</PackageId>
+        <Version>1.0.2</Version>
         <Authors>Anton Suprunchuk</Authors>
         <Description>Yet another library to manage hexagonal grids</Description>
-        <PackageProjectUrl>antouhou.org</PackageProjectUrl>
+        <PackageProjectUrl>https://antouhou.com</PackageProjectUrl>
         <RepositoryUrl>https://github.com/antouhou/HexCore</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
-        <PackageTags>Hex HexGrid A* A-star Hexagonal Hexagonal Grid</PackageTags>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageTags>Hex;HexGrid;A*;A-star;Hexagonal;Hexagon;Hexagonal Grid;Hex Grid</PackageTags>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="icon.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
 </Project>
