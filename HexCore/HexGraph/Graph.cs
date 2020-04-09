@@ -110,7 +110,7 @@ namespace HexCore.HexGraph
             _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
         }
 
-        private bool IsInBounds(Coordinate3D coordinate)
+        public bool IsInBounds(Coordinate3D coordinate)
         {
             return _allCoordinates.Contains(coordinate);
         }
