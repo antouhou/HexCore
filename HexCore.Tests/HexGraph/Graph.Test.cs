@@ -230,5 +230,17 @@ namespace HexCoreTests.HexGraph
             graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
         }
+        
+        [Test]
+        public void IsInBounds_ShouldReturnTrueIfThePositionIsWithinTheGraphBounds()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var position = new Coordinate3D(0, -1, 1);
+            
+            Assert.That(graph.IsInBounds(position), Is.True);
+            
+            position = new Coordinate3D(-1, 2, -1);
+            Assert.That(graph.IsInBounds(position), Is.False);
+        }
     }
 }
