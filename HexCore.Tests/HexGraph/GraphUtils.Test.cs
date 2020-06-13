@@ -1,6 +1,6 @@
 ﻿using HexCore.DataStructures;
 using HexCore.HexGraph;
-using HexCoreTests.Mocks;
+using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
 namespace HexCoreTests.HexGraph
@@ -14,8 +14,8 @@ namespace HexCoreTests.HexGraph
         {
             var width = 6;
             var height = 7;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
@@ -27,7 +27,7 @@ namespace HexCoreTests.HexGraph
 
             width = 4;
             height = 5;
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
@@ -38,7 +38,7 @@ namespace HexCoreTests.HexGraph
 
             width = 7;
             height = 8;
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
@@ -53,12 +53,12 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             height = 4;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -72,12 +72,12 @@ namespace HexCoreTests.HexGraph
         {
             var width = 4;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 5;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -91,13 +91,13 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 4;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 4;
             height = 5;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -109,11 +109,12 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void ResizeSquareGraph_ShouldMaintainCellStatesOnResize()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
             Assert.False(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
             graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
             Assert.True(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, 2, 2, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, 2, 2, MovementTypesFixture.Ground);
             Assert.True(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
         }
 
@@ -122,10 +123,10 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -139,12 +140,12 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             height = 2;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -158,12 +159,12 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 2;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)
@@ -177,13 +178,13 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 2;
             height = 2;
 
-            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesMock.Ground);
+            GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
             for (var x = 0; x < width; x++)
             for (var y = 0; y < height; y++)

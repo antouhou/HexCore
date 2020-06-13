@@ -67,7 +67,6 @@ namespace HexCore.HexGraph
         /**
          * Resize graph. Mostly used by the editor
          */
-
         public void SetManyCellsBlocked(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
         {
             foreach (var coordinate in coordinates)

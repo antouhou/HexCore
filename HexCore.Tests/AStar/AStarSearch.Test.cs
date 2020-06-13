@@ -2,7 +2,7 @@
 using HexCore.AStar;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
-using HexCoreTests.Mocks;
+using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
 namespace HexCoreTests.AStar
@@ -15,7 +15,8 @@ namespace HexCoreTests.AStar
         {
             // This test wouldn't be that different from previous ones, except size of the graph
             // Not so square anymore! 7 columns, 10 rows.
-            var graph = GraphFactory.CreateRectangularGraph(7, 10, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(7, 10, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
 
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
             var startOddR = new Coordinate2D(5, 6, OffsetTypes.OddRowsRight);
@@ -37,7 +38,7 @@ namespace HexCoreTests.AStar
             };
             var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
@@ -57,7 +58,7 @@ namespace HexCoreTests.AStar
                 new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
                 new Coordinate2D(3, 3, OffsetTypes.OddRowsRight)
-            }), MovementTypesMock.Water);
+            }), MovementTypesFixture.Water);
 
             //Let's see what's going to happen!
             expectedOffsetPath = new List<Coordinate2D>
@@ -78,12 +79,12 @@ namespace HexCoreTests.AStar
             };
             expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Now let's check water movement type - it should prefer going through the water rather than the ground
-            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Water);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Water);
 
             expectedOffsetPath = new List<Coordinate2D>
             {
@@ -111,10 +112,11 @@ namespace HexCoreTests.AStar
         {
             // Everything is like before, but now instead of blocking 1,1 let's make it water to apply some penalties 
             // to our ground moving type
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
 
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
-                MovementTypesMock.Water);
+                MovementTypesFixture.Water);
             // And we expect to achieve same result - even through 1,1 is not blocked
 
             var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
@@ -133,13 +135,13 @@ namespace HexCoreTests.AStar
             };
             var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's make 0,1 water too and move our starting point to bottom left
             graph.SetOneCellMovementType(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
-                MovementTypesMock.Water);
+                MovementTypesFixture.Water);
             startOddR = new Coordinate2D(0, 2, OffsetTypes.OddRowsRight);
             start = startOddR.To3D();
 
@@ -154,7 +156,7 @@ namespace HexCoreTests.AStar
             };
             expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -163,11 +165,12 @@ namespace HexCoreTests.AStar
         public void FindShortestPath_ShouldFindShortestPathWhenThereIsPenaltiesAndObstacles()
         {
             // Now let's make 1,1 water and block 1,2
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(), true);
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
-                MovementTypesMock.Water);
+                MovementTypesFixture.Water);
 
             var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
             var goalOddR = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
@@ -185,7 +188,7 @@ namespace HexCoreTests.AStar
             };
             var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -194,7 +197,8 @@ namespace HexCoreTests.AStar
         public void FindShortestPath_ShouldFindShortestPathWithObstacles()
         {
             // Now let's block center, 1,1
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(), true);
 
@@ -215,7 +219,7 @@ namespace HexCoreTests.AStar
             };
             var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
 
@@ -238,7 +242,7 @@ namespace HexCoreTests.AStar
             };
             expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
-            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
 
             Assert.That(path, Is.EqualTo(expectedPath));
         }
@@ -246,7 +250,8 @@ namespace HexCoreTests.AStar
         [Test]
         public void FindShortestPath_ShouldFindShortestPathWithoutObstacles()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
 
             // Cube coordinates are not so intuitive when it comes to visualizing them in your head, so let's use 
             // offset ones and convert them to cube. Cube coordinate are used by the algorythm because it's
@@ -272,7 +277,7 @@ namespace HexCoreTests.AStar
             var expectedPath = Coordinate2D.To3D(expectedOffsetPath);
 
             // For the simplest test we assume that all cells have type ground, as well as a unit
-            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesMock.Ground);
+            var path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Ground);
             Assert.That(path, Is.EqualTo(expectedPath));
         }
     }

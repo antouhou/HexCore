@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using HexCore.HexGraph;
 
-namespace HexCore.HexGraph
+namespace HexCoreTests.Fixtures
 {
-    public static class BasicMovementTypes
+    public static class MovementTypesFixture
     {
         public static readonly MovementType Ground = new MovementType
         {
@@ -10,6 +10,7 @@ namespace HexCore.HexGraph
             MovementCostTo =
             {
                 {"ground", 1},
+                {"forest", 2},
                 {"water", 2}
             }
         };
@@ -20,14 +21,9 @@ namespace HexCore.HexGraph
             MovementCostTo =
             {
                 {"ground", 2},
+                {"forest", 2},
                 {"water", 1}
             }
-        };
-
-        public static readonly List<MovementType> TypesList = new List<MovementType>
-        {
-            Ground,
-            Water
         };
     }
 }

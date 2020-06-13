@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
-using HexCoreTests.Mocks;
+using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
 namespace HexCoreTests.DataStructures
@@ -12,7 +12,8 @@ namespace HexCoreTests.DataStructures
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, OffsetTypes.OddRowsRight, MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+                OffsetTypes.OddRowsRight);
             var cubeCoordinates = graph.GetAllCellsCoordinates();
             //For odd rows right:
             //Down and right: Y - 1, Z + 1

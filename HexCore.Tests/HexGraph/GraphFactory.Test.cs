@@ -1,6 +1,6 @@
 ﻿using HexCore.DataStructures;
 using HexCore.HexGraph;
-using HexCoreTests.Mocks;
+using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
 namespace HexCoreTests.HexGraph
@@ -13,8 +13,8 @@ namespace HexCoreTests.HexGraph
         {
             const int width = 4;
             const int height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, OffsetTypes.OddRowsRight,
-                MovementTypesMock.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height,
+                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)
@@ -29,7 +29,7 @@ namespace HexCoreTests.HexGraph
         {
             const int width = 4;
             const int height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)
