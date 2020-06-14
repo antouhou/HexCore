@@ -15,7 +15,7 @@ namespace HexCoreTests.AStar
         {
             // This test wouldn't be that different from previous ones, except size of the graph
             // Not so square anymore! 7 columns, 10 rows.
-            var graph = GraphFactory.CreateRectangularGraph(7, 10, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(7, 10, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
 
             // First, let's do simple test - from 5,6 to 1,2 without obstacles
@@ -112,7 +112,7 @@ namespace HexCoreTests.AStar
         {
             // Everything is like before, but now instead of blocking 1,1 let's make it water to apply some penalties 
             // to our ground moving type
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
 
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
@@ -165,7 +165,7 @@ namespace HexCoreTests.AStar
         public void FindShortestPath_ShouldFindShortestPathWhenThereIsPenaltiesAndObstacles()
         {
             // Now let's make 1,1 water and block 1,2
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(), true);
@@ -197,7 +197,7 @@ namespace HexCoreTests.AStar
         public void FindShortestPath_ShouldFindShortestPathWithObstacles()
         {
             // Now let's block center, 1,1
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
 
             graph.SetOneCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(), true);
@@ -250,7 +250,7 @@ namespace HexCoreTests.AStar
         [Test]
         public void FindShortestPath_ShouldFindShortestPathWithoutObstacles()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
 
             // Cube coordinates are not so intuitive when it comes to visualizing them in your head, so let's use 

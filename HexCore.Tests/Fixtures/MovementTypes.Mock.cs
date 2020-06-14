@@ -25,5 +25,13 @@ namespace HexCoreTests.Fixtures
                 {"water", 1}
             }
         };
+
+        public static MovementType[] GetMovementTypes()
+        {
+            return new[]
+            {
+                Water, Ground
+            };
+        }
     }
 }

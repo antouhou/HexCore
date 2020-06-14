@@ -28,9 +28,18 @@ namespace HexCore.HexGraph
 
         private List<Coordinate3D> _emptyCells;
 
-        public Graph(List<CellState> cellStatesList)
+        private MovementType[] _movementTypes;
+
+        public Graph(List<CellState> cellStatesList, MovementType[] movementTypes)
         {
             _cellStatesList = cellStatesList;
+            _movementTypes = movementTypes;
+            foreach (var cell in cellStatesList.Where(cell => !movementTypes.Contains(cell.MovementType)))
+            {
+                throw new InvalidOperationException(
+                    $"One of the cells in graph has an unknown type: {cell.MovementType.Name}");
+            }
+
             UpdateCoordinatesList();
         }
 
@@ -41,6 +50,11 @@ namespace HexCore.HexGraph
 
         public int GetMovementCost(Coordinate3D coordinate, MovementType unitMovementType)
         {
+            if (!_movementTypes.Contains(unitMovementType))
+            {
+                throw new InvalidOperationException(
+                    $"Unknown movement type: {unitMovementType.Name}");
+            }
             var cellState = GetCellState(coordinate);
             return unitMovementType.GetCostTo(cellState.MovementType.Name);
         }

@@ -14,7 +14,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 6;
             var height = 7;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
@@ -53,7 +53,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             height = 4;
@@ -72,7 +72,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 4;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 5;
@@ -91,7 +91,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 4;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 4;
@@ -109,7 +109,7 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void ResizeSquareGraph_ShouldMaintainCellStatesOnResize()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.Ground,
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
                 OffsetTypes.OddRowsRight);
             Assert.False(graph.IsCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D()));
             graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
@@ -123,7 +123,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             GraphUtils.ResizeSquareGraph(graph, OffsetTypes.OddRowsRight, width, height, MovementTypesFixture.Ground);
@@ -140,7 +140,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             height = 2;
@@ -159,7 +159,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 2;
@@ -178,7 +178,7 @@ namespace HexCoreTests.HexGraph
         {
             var width = 3;
             var height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height,
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
 
             width = 2;
