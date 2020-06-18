@@ -6,8 +6,8 @@ using HexCore.HexGraph;
 namespace HexCore.AStar
 {
     /**
-     * This is pathfinding algorithm called 'A*'. It's one of the most common pathfindg algorithms.
-     * In order to work it needs a gird's graph that's implemented in HexGridGraph class.
+     * This is path finding algorithm called 'A*'. It's one of the most common pathfindg algorithms.
+     * In order to work it needs a grid's graph that's implemented in HexGridGraph class.
      */
     public static class AStarSearch
     {

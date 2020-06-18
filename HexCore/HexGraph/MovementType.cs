@@ -1,17 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace HexCore.HexGraph
 {
     [Serializable]
-    public class MovementType
+    public class MovementType : IMovementType
     {
-        public Dictionary<string, int> MovementCostTo = new Dictionary<string, int>();
-        public string Name = "";
-
-        public int GetCostTo(string typeName)
+        public MovementType(int id, string name)
         {
-            return MovementCostTo[typeName];
+            Id = id;
+            Name = name;
+        }
+
+        public int Id { get; }
+        public string Name { get; }
+
+        public bool Equals(IMovementType other)
+        {
+            if (other is null)
+                return false;
+
+            return Name == other.Name && Id == other.Id;
         }
     }
 }

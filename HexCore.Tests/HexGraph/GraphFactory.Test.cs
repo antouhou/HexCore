@@ -14,7 +14,7 @@ namespace HexCoreTests.HexGraph
             const int width = 4;
             const int height = 3;
             var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
-                MovementTypesFixture.Ground, OffsetTypes.OddRowsRight);
+                MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)
@@ -29,7 +29,8 @@ namespace HexCoreTests.HexGraph
         {
             const int width = 4;
             const int height = 3;
-            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(width, height, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             Assert.That(graph.GetAllCellsCoordinates().Count, Is.EqualTo(width * height));
 
             for (var x = 0; x < width; x++)

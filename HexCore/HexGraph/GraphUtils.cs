@@ -42,7 +42,7 @@ namespace HexCore.HexGraph
                 graph.AddCells(cellsToAdd);
             }
 
-            if (newHeight > height)
+            if (newHeight <= height) return;
             {
                 var cellsToAdd = new List<CellState>();
                 // New columns already will have correct height; So only old needs to be resized.
@@ -54,13 +54,13 @@ namespace HexCore.HexGraph
             }
         }
 
-        private static List<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
+        private static IEnumerable<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
             MovementType defaultMovementType, OffsetTypes offsetType)
         {
             var newCells = new List<CellState>();
             for (var y = oldY; y < newY; y++)
             {
-                var position = new Coordinate2D(x, y, OffsetTypes.OddRowsRight);
+                var position = new Coordinate2D(x, y, offsetType);
                 var cubeCoordinate = position.To3D();
                 newCells.Add(new CellState(false, cubeCoordinate, defaultMovementType));
             }

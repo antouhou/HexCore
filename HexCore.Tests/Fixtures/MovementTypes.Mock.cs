@@ -1,37 +1,40 @@
-﻿using HexCore.HexGraph;
+﻿using System.Collections.Generic;
+using HexCore.HexGraph;
 
 namespace HexCoreTests.Fixtures
 {
     public static class MovementTypesFixture
     {
-        public static readonly MovementType Ground = new MovementType
-        {
-            Name = "ground",
-            MovementCostTo =
-            {
-                {"ground", 1},
-                {"forest", 2},
-                {"water", 2}
-            }
-        };
+        public static readonly MovementType Ground = new MovementType(1, "Ground");
+        public static readonly MovementType Water = new MovementType(2, "Water");
+        public static readonly MovementType Air = new MovementType(3, "Air");
 
-        public static readonly MovementType Water = new MovementType
+        public static MovementTypes GetMovementTypes()
         {
-            Name = "water",
-            MovementCostTo =
-            {
-                {"ground", 2},
-                {"forest", 2},
-                {"water", 1}
-            }
-        };
-
-        public static MovementType[] GetMovementTypes()
-        {
-            return new[]
-            {
-                Water, Ground
-            };
+            var movementTypes = new MovementTypes(
+                new Dictionary<IMovementType, Dictionary<IMovementType, int>>
+                {
+                    [Ground] = new Dictionary<IMovementType, int>
+                    {
+                        [Ground] = 1,
+                        [Water] = 2,
+                        [Air] = 999
+                    },
+                    [Water] = new Dictionary<IMovementType, int>
+                    {
+                        [Ground] = 2,
+                        [Water] = 1,
+                        [Air] = 999
+                    },
+                    [Air] = new Dictionary<IMovementType, int>
+                    {
+                        [Ground] = 1,
+                        [Water] = 1,
+                        [Air] = 1
+                    }
+                }
+            );
+            return movementTypes;
         }
     }
 }

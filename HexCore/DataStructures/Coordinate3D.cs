@@ -51,10 +51,8 @@ namespace HexCore.DataStructures
         public Coordinate3D(int x, int y, int z)
         {
             if (x + y + z != 0)
-            {
                 throw new InvalidOperationException(
                     "Sum of all points in 3D coordinate should always be equal to zero");
-            }
 
             X = x;
             Y = y;

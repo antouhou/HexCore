@@ -12,8 +12,8 @@ namespace HexCoreTests.DataStructures
         [Test]
         public void ConvertsOffsetCoordinatesToCubeCoordinatesCorrectly()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var cubeCoordinates = graph.GetAllCellsCoordinates();
             //For odd rows right:
             //Down and right: Y - 1, Z + 1

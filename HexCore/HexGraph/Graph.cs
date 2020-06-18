@@ -20,7 +20,7 @@ namespace HexCore.HexGraph
             new Coordinate3D(0, -1, +1)
         };
 
-        private readonly List<CellState> _cellStatesList;
+        private readonly List<CellState> _cellStatesList = new List<CellState>();
 
         private List<Coordinate3D> _allCoordinates;
 
@@ -28,18 +28,13 @@ namespace HexCore.HexGraph
 
         private List<Coordinate3D> _emptyCells;
 
-        private MovementType[] _movementTypes;
+        private MovementTypes _movementTypes;
 
-        public Graph(List<CellState> cellStatesList, MovementType[] movementTypes)
+        public Graph(IEnumerable<CellState> cellStatesList, MovementTypes movementTypes)
         {
-            _cellStatesList = cellStatesList;
             _movementTypes = movementTypes;
-            foreach (var cell in cellStatesList.Where(cell => !movementTypes.Contains(cell.MovementType)))
-            {
-                throw new InvalidOperationException(
-                    $"One of the cells in graph has an unknown type: {cell.MovementType.Name}");
-            }
 
+            AddCells(cellStatesList);
             UpdateCoordinatesList();
         }
 
@@ -51,17 +46,19 @@ namespace HexCore.HexGraph
         public int GetMovementCost(Coordinate3D coordinate, MovementType unitMovementType)
         {
             if (!_movementTypes.Contains(unitMovementType))
-            {
                 throw new InvalidOperationException(
                     $"Unknown movement type: {unitMovementType.Name}");
-            }
             var cellState = GetCellState(coordinate);
-            return unitMovementType.GetCostTo(cellState.MovementType.Name);
+            return _movementTypes.GetMovementCost(unitMovementType, cellState.MovementType);
         }
 
         public void AddCells(IEnumerable<CellState> newCellStatesList)
         {
-            _cellStatesList.AddRange(newCellStatesList);
+            var cellStates = newCellStatesList as CellState[] ?? newCellStatesList.ToArray();
+            foreach (var cell in cellStates.Where(cell => !_movementTypes.Contains(cell.MovementType)))
+                throw new InvalidOperationException(
+                    $"One of the cells in graph has an unknown type: {cell.MovementType.Name}");
+            _cellStatesList.AddRange(cellStates);
             UpdateCellStateDictionary();
             UpdateCoordinatesList();
         }
@@ -78,9 +75,6 @@ namespace HexCore.HexGraph
             return _allCoordinates;
         }
 
-        /**
-         * Resize graph. Mostly used by the editor
-         */
         public void SetManyCellsBlocked(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
         {
             foreach (var coordinate in coordinates)

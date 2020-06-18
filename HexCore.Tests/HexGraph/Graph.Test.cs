@@ -15,8 +15,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldGetCorrectDirectionFromOneCoordinateToAnother()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 2);
@@ -31,8 +31,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldNotIncludeCoordinatesOutsideOfGraph()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var direction = graph.GetLine(start, new Coordinate3D(0, 1, -1), 5);
@@ -47,8 +47,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetLine_ShouldThrowIfCoordinateIsNotDirection()
         {
-            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(10, 10, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var start = new Coordinate3D(1, -3, 2);
 
             var exception = Assert.Throws<InvalidOperationException>(() =>
@@ -62,8 +62,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetMovementRange_ShouldGetCorrectMovementRange()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedMovementRange2D = new List<Coordinate2D>
@@ -126,8 +126,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetNeighbours_ShouldGetCorrectNeighbors()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
 
             // Column 2, row 1
             var offsetTarget = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight);
@@ -150,8 +150,8 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void GetRange_ShouldGetCorrectRange()
         {
-            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
 
             var expectedRange2D = new List<Coordinate2D>
@@ -191,8 +191,8 @@ namespace HexCoreTests.HexGraph
             // Note: this method uses AStarSearch class inside.
             // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
             // returns something meaningful.
-            var graph = GraphFactory.CreateRectangularGraph(width: 3,
-                height: 3, movementTypes: MovementTypesFixture.GetMovementTypes(), defaultMovementType: MovementTypesFixture.Ground);
+            var graph = GraphFactory.CreateRectangularGraph(3,
+                3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground);
             var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
             var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
             var shortestPath = graph.GetShortestPath(start, goal, MovementTypesFixture.Ground);
@@ -207,10 +207,23 @@ namespace HexCoreTests.HexGraph
         }
 
         [Test]
+        public void IsInBounds_ShouldReturnTrueIfThePositionIsWithinTheGraphBounds()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+            var position = new Coordinate3D(0, -1, 1);
+
+            Assert.That(graph.IsInBounds(position), Is.True);
+
+            position = new Coordinate3D(-1, 2, -1);
+            Assert.That(graph.IsInBounds(position), Is.False);
+        }
+
+        [Test]
         public void SetManyCellsMovementType_ShouldSetMovementTypesToCells()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
 
             var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
 
@@ -231,26 +244,13 @@ namespace HexCoreTests.HexGraph
         [Test]
         public void SetOneCellBlocked_ShouldBlockCell()
         {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
             graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
             graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
-        }
-
-        [Test]
-        public void IsInBounds_ShouldReturnTrueIfThePositionIsWithinTheGraphBounds()
-        {
-            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground,
-                OffsetTypes.OddRowsRight);
-            var position = new Coordinate3D(0, -1, 1);
-
-            Assert.That(graph.IsInBounds(position), Is.True);
-
-            position = new Coordinate3D(-1, 2, -1);
-            Assert.That(graph.IsInBounds(position), Is.False);
         }
     }
 }

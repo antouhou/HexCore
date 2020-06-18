@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>HexCore</RootNamespace>
         <PackageId>HexCore</PackageId>
-        <Version>2.0.0</Version>
+        <Version>3.0.0</Version>
         <Authors>Anton Suprunchuk</Authors>
         <Description>Yet another library to manage hexagonal grids</Description>
         <PackageProjectUrl>https://antouhou.com</PackageProjectUrl>
