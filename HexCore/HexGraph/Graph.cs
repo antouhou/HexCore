@@ -43,7 +43,7 @@ namespace HexCore.HexGraph
             return GetNeighbors(position, true);
         }
 
-        public int GetMovementCost(Coordinate3D coordinate, MovementType unitMovementType)
+        public int GetMovementCost(Coordinate3D coordinate, IMovementType unitMovementType)
         {
             if (!_movementTypes.Contains(unitMovementType))
                 throw new InvalidOperationException(
@@ -91,7 +91,7 @@ namespace HexCore.HexGraph
             SetManyCellsBlocked(new List<Coordinate3D> {coordinate}, isBlocked);
         }
 
-        public void SetManyCellsMovementType(IEnumerable<Coordinate3D> coordinates, MovementType movementType)
+        public void SetManyCellsMovementType(IEnumerable<Coordinate3D> coordinates, IMovementType movementType)
         {
             foreach (var coordinate in coordinates)
             {
@@ -100,7 +100,7 @@ namespace HexCore.HexGraph
             }
         }
 
-        public void SetOneCellMovementType(Coordinate3D coordinate, MovementType movementType)
+        public void SetOneCellMovementType(Coordinate3D coordinate, IMovementType movementType)
         {
             SetManyCellsMovementType(new List<Coordinate3D> {coordinate}, movementType);
         }
@@ -175,7 +175,7 @@ namespace HexCore.HexGraph
         }
 
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
-            MovementType movementType)
+            IMovementType movementType)
         {
             var visited = new List<Coordinate3D> {startPosition};
             var fringes = new List<List<Fringe>>
@@ -210,7 +210,7 @@ namespace HexCore.HexGraph
             return _cellStatesDictionary[coordinate];
         }
 
-        public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, MovementType unitMovementType)
+        public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, IMovementType unitMovementType)
         {
             return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);
         }
