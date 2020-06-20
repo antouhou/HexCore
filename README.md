@@ -3,9 +3,8 @@
 # HexCore ![alt text][logo] 
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/HexCore)](https://www.nuget.org/packages/HexCore)
 
-HexCore is a library for building hexagonal-grid-based games. It consists of two parts:
-
-The first part is HexCore library that does the hexagonal-grid math:
+HexCore is a library for building hexagonal-grid-based games.
+The features include:
 - A* pathfinding;
 - Finding neighbors;
 - Finding ranges;
