@@ -1,4 +1,7 @@
-# HexCore
+[logo]: ./icon48.png "Logo Title Text 2"
+
+# HexCore ![alt text][logo] 
+[![NuGet Version and Downloads count](https://buildstats.info/nuget/HexCore)](https://www.nuget.org/packages/HexCore)
 
 HexCore is a library for building hexagonal-grid-based games. It consists of two parts:
 
@@ -8,24 +11,4 @@ The first part is HexCore library that does the hexagonal-grid math:
 - Finding ranges;
 - Finding ranges with penalties, that can be used to simulate different terrain types;
 - Coordinate systems converter
-
-And so on.
-
-The second part is BattleCore library that implements a battlefield:
-- Units: 
-  - Movement;
-  - Attack
-
-## Docs
-
-- Basics
-  - Hexagonal Grid Graph
-  - Finding neighbors
-  - Finding ranges
-  - Pathfinding
-- Battle engine
-  - Units
-    - Movement
-    - Attacks
-    - Abilities
 

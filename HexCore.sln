@@ -18,6 +18,12 @@ ProjectSection(SolutionItems) = preProject
 	nunit3-junit.xslt = nunit3-junit.xslt
 	publish.sh = publish.sh
 	icon.png = icon.png
+	icon48.png = icon48.png
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{8312DC1F-A2C1-4A30-8E62-59F41C9DA8CE}"
+ProjectSection(SolutionItems) = preProject
+	Docs\README.md = Docs\README.md
 EndProjectSection
 EndProject
 Global
