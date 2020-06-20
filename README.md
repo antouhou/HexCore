@@ -1,4 +1,4 @@
-[logo]: ./icon48.png "Logo Title Text 2"
+[logo]: ./icon48.png "HexCore logo"
 
 # HexCore ![alt text][logo] 
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/HexCore)](https://www.nuget.org/packages/HexCore)
