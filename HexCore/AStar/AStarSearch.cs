@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
@@ -36,7 +36,7 @@ namespace HexCore.AStar
 
                 foreach (var next in graph.GetPassableNeighbors(current))
                 {
-                    var newCost = costSoFar[current] + graph.GetMovementCost(next, unitMovementType);
+                    var newCost = costSoFar[current] + graph.GetMovementCostForTheType(next, unitMovementType);
                     if (costSoFar.ContainsKey(next) && newCost >= costSoFar[next]) continue;
                     costSoFar[next] = newCost;
                     var priority = newCost + Heuristic(next, goal);

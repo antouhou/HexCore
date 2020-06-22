@@ -106,7 +106,7 @@ namespace HexCoreTests.HexGraph
             }), MovementTypesFixture.Water);
 
             // Blocking 2,1 will prevent us from going to 2,1 and 2,0 at the same time
-            graph.SetOneCellBlocked(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D(), true);
+            graph.BlockCells(new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D());
 
             // 2,4 isn't accessible because the only path to it thorough the water
             expectedMovementRange2D.Remove(new Coordinate2D(2, 4, OffsetTypes.OddRowsRight));
@@ -242,14 +242,14 @@ namespace HexCoreTests.HexGraph
         }
 
         [Test]
-        public void SetOneCellBlocked_ShouldBlockCell()
+        public void UnblockCell_ShouldUnblockCell()
         {
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
-            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), true);
+            graph.BlockCells(new Coordinate3D(0, 0, 0));
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
-            graph.SetOneCellBlocked(new Coordinate3D(0, 0, 0), false);
+            graph.UnblockCells(new Coordinate3D(0, 0, 0));
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
         }
     }

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 VERSION=$1
 API_KEY=$2
 MISSING_OPTIONS_MESSAGE="

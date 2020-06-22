@@ -37,13 +37,73 @@ namespace HexCore.HexGraph
             AddCells(cellStatesList);
             UpdateCoordinatesList();
         }
+        
+        /* Private methods */
+        
+        private void UpdateCellStateDictionary()
+        {
+            _cellStatesDictionary = new Dictionary<Coordinate3D, CellState>();
+            foreach (var cellState in _cellStatesList) _cellStatesDictionary.Add(cellState.Coordinate3, cellState);
+        }
 
+        private void UpdateCoordinatesList()
+        {
+            _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
+            _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
+        }
+        
+        private void SetCellBlockStatus(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
+        {
+            foreach (var coordinate in coordinates)
+            {
+                var cellState = GetCellState(coordinate);
+                cellState.IsBlocked = isBlocked;
+            }
+
+            UpdateCoordinatesList();
+        }
+
+        private void SetCellBlockStatus(Coordinate3D coordinate, bool isBlocked)
+        {
+            SetCellBlockStatus(new List<Coordinate3D> {coordinate}, isBlocked);
+        }
+
+        /* Public methods */
+        
+        /// <summary>
+        /// Returns neighbors for the cell
+        /// </summary>
+        /// <param name="position">Coordinate to get neighbors to</param>
+        /// <param name="onlyPassable">Return only passable neighbors</param>
+        /// <returns>The list of this cell's neighbors</returns>
+        public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
+        {
+            foreach (var direction in Directions)
+            {
+                var next = position + direction;
+                if (IsInBounds(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
+            }
+        }
+        
+        /// <summary>
+        /// Returns passable neighbors of the cell
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
         {
             return GetNeighbors(position, true);
         }
 
-        public int GetMovementCost(Coordinate3D coordinate, IMovementType unitMovementType)
+        /// <summary>
+        /// This methods gets movement costs to the coordinate for the movement type in range = 1.
+        /// Used internally by path finding and range finding.
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <param name="unitMovementType"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
         {
             if (!_movementTypes.Contains(unitMovementType))
                 throw new InvalidOperationException(
@@ -75,20 +135,24 @@ namespace HexCore.HexGraph
             return _allCoordinates;
         }
 
-        public void SetManyCellsBlocked(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
+        public void BlockCells(IEnumerable<Coordinate3D> coordinates)
         {
-            foreach (var coordinate in coordinates)
-            {
-                var cellState = GetCellState(coordinate);
-                cellState.IsBlocked = isBlocked;
-            }
-
-            UpdateCoordinatesList();
+            SetCellBlockStatus(coordinates, true);
         }
 
-        public void SetOneCellBlocked(Coordinate3D coordinate, bool isBlocked)
+        public void BlockCells(Coordinate3D coordinate)
         {
-            SetManyCellsBlocked(new List<Coordinate3D> {coordinate}, isBlocked);
+            SetCellBlockStatus(coordinate, true);
+        }
+        
+        public void UnblockCells(IEnumerable<Coordinate3D> coordinates)
+        {
+            SetCellBlockStatus(coordinates, false);
+        }
+        
+        public void UnblockCells(Coordinate3D coordinate)
+        {
+            SetCellBlockStatus(coordinate, false);
         }
 
         public void SetManyCellsMovementType(IEnumerable<Coordinate3D> coordinates, IMovementType movementType)
@@ -105,37 +169,32 @@ namespace HexCore.HexGraph
             SetManyCellsMovementType(new List<Coordinate3D> {coordinate}, movementType);
         }
 
-        private void UpdateCellStateDictionary()
-        {
-            _cellStatesDictionary = new Dictionary<Coordinate3D, CellState>();
-            foreach (var cellState in _cellStatesList) _cellStatesDictionary.Add(cellState.Coordinate3, cellState);
-        }
-
-        private void UpdateCoordinatesList()
-        {
-            _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
-            _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
-        }
-
+        /// <summary>
+        /// Returns true if graph contains the coordinate, false otherwise
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
         public bool IsInBounds(Coordinate3D coordinate)
         {
             return _allCoordinates.Contains(coordinate);
         }
 
+        /// <summary>
+        /// Returns true if the cell is marked as not passable, false otherwise
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
         public bool IsCellBlocked(Coordinate3D coordinate)
         {
             return GetCellState(coordinate).IsBlocked;
         }
 
-        public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
-        {
-            foreach (var direction in Directions)
-            {
-                var next = position + direction;
-                if (IsInBounds(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
-            }
-        }
-
+        /// <summary>
+        /// Returns circular range of the cell
+        /// </summary>
+        /// <param name="startPosition">The center of the range</param>
+        /// <param name="radius">Radius of the range</param>
+        /// <returns></returns>
         public List<Coordinate3D> GetRange(Coordinate3D startPosition, int radius)
         {
             var visited = new List<Coordinate3D> {startPosition};
@@ -174,6 +233,13 @@ namespace HexCore.HexGraph
             }
         }
 
+        /// <summary>
+        /// Similar to get range, but also takes two additional params:
+        /// </summary>
+        /// <param name="startPosition">Center of the range</param>
+        /// <param name="movementPoints">Amount of points allowed to spend on the movement</param>
+        /// <param name="movementType">Movement type of the pawn to calculate movement range based on the movement points</param>
+        /// <returns></returns>
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
             IMovementType movementType)
         {
@@ -190,7 +256,7 @@ namespace HexCore.HexGraph
                 foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
                 {
                     if (visited.Contains(neighbor)) continue;
-                    var movementCostToNeighbor = GetMovementCost(neighbor, movementType);
+                    var movementCostToNeighbor = GetMovementCostForTheType(neighbor, movementType);
                     var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
                     if (newCost > movementPoints) continue;
                     visited.Add(neighbor);
@@ -205,11 +271,23 @@ namespace HexCore.HexGraph
             return visited;
         }
 
+        /// <summary>
+        /// Returns the state of the cell for a given coordinate
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
         public CellState GetCellState(Coordinate3D coordinate)
         {
             return _cellStatesDictionary[coordinate];
         }
 
+        /// <summary>
+        /// Finds shortest path from the start to the goal. Requires pawn's movement type to operate
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="goal"></param>
+        /// <param name="unitMovementType"></param>
+        /// <returns></returns>
         public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, IMovementType unitMovementType)
         {
             return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);

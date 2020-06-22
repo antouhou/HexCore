@@ -43,13 +43,13 @@ namespace HexCoreTests.AStar
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Good! Now let's block some of them, and also let's add a lake in the middle.
-            graph.SetManyCellsBlocked(Coordinate2D.To3D(new List<Coordinate2D>
+            graph.BlockCells(Coordinate2D.To3D(new List<Coordinate2D>
             {
                 new Coordinate2D(4, 6, OffsetTypes.OddRowsRight),
                 new Coordinate2D(4, 5, OffsetTypes.OddRowsRight),
                 new Coordinate2D(4, 7, OffsetTypes.OddRowsRight),
                 new Coordinate2D(5, 5, OffsetTypes.OddRowsRight)
-            }), true);
+            }));
             graph.SetManyCellsMovementType(Coordinate2D.To3D(new List<Coordinate2D>
             {
                 new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
@@ -168,7 +168,7 @@ namespace HexCoreTests.AStar
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
 
-            graph.SetOneCellBlocked(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(), true);
+            graph.BlockCells(new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D());
             graph.SetOneCellMovementType(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 MovementTypesFixture.Water);
 
@@ -200,7 +200,7 @@ namespace HexCoreTests.AStar
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
 
-            graph.SetOneCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(), true);
+            graph.BlockCells(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D());
 
             // Same as in prevoius test
             var startOddR = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
@@ -224,7 +224,7 @@ namespace HexCoreTests.AStar
             Assert.That(path, Is.EqualTo(expectedPath));
 
             // Let's block 0,1 and move our starting point to bottom left
-            graph.SetOneCellBlocked(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(), true);
+            graph.BlockCells(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D());
             startOddR = new Coordinate2D(0, 2, OffsetTypes.OddRowsRight);
             start = startOddR.To3D();
 
