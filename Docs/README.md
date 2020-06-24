@@ -38,18 +38,25 @@ for a graph. Movement types creation looks like this:
  this is a deliberate choice and not a mistake.*
 
 ```c#
+var ground = new TerrainType(1, "Ground");
+var water = new TerrainType(2, "Water");
+
+var walkingType = new MovementType(1, "Walking");
+var swimmingType = new MovementType(2, "Swimming");
+
 var movementTypes = new MovementTypes(
-    new Dictionary<IMovementType, Dictionary<IMovementType, int>>
+    new ITerrainType[] { ground, water }, 
+    new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
     {
-        [walkingType] = new Dictionary<IMovementType, int>
+        [walkingType] = new Dictionary<ITerrainType, int>
         {
             [ground] = 1,
-            [water] = 2,
+            [water] = 2
         },
-        [swimmingType] = new Dictionary<IMovementType, int>
+        [swimmingType] = new Dictionary<ITerrainType, int>
         {
             [ground] = 2,
-            [water] = 1,
+            [water] = 1
         }
     }
 );
