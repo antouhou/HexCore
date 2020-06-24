@@ -11,13 +11,13 @@ namespace HexCore.HexGraph
         // Never set this field directly, only through graph.SetCellBlocked, since changing cell state requires
         // rebuild of some graph coordinates.
         public bool IsBlocked;
-        public IMovementType MovementType;
+        public ITerrainType TerrainType;
 
-        public CellState(bool isBlocked, Coordinate3D coordinate3, IMovementType movementType)
+        public CellState(bool isBlocked, Coordinate3D coordinate3, ITerrainType terrainType)
         {
             IsBlocked = isBlocked;
             Coordinate3 = coordinate3;
-            MovementType = movementType;
+            TerrainType = terrainType;
         }
     }
 }

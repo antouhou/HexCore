@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace HexCore.HexGraph
 {
     [Serializable]
-    public struct MovementType : IMovementType
+    public struct TerrainType : ITerrainType
     {
-        public MovementType(int id, string name)
+        public TerrainType(int id, string name)
         {
             Id = id;
             Name = name;

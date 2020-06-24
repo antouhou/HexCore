@@ -7,7 +7,7 @@ namespace HexCore.HexGraph
     public static class GraphUtils
     {
         public static void ResizeSquareGraph(Graph graph, OffsetTypes offsetType, int newWidth, int newHeight,
-            MovementType defaultMovementType)
+            ITerrainType defaultTerrainType)
         {
             var offsetCoordinates =
                 Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
@@ -36,7 +36,7 @@ namespace HexCore.HexGraph
                 var cellsToAdd = new List<CellState>();
                 // We'll add new columns width already updated height
                 for (var x = width; x < newWidth; x++)
-                    cellsToAdd.AddRange(CreateNewCellsForColumn(x, 0, newHeight, defaultMovementType,
+                    cellsToAdd.AddRange(CreateNewCellsForColumn(x, 0, newHeight, defaultTerrainType,
                         offsetType));
 
                 graph.AddCells(cellsToAdd);
@@ -47,7 +47,7 @@ namespace HexCore.HexGraph
                 var cellsToAdd = new List<CellState>();
                 // New columns already will have correct height; So only old needs to be resized.
                 for (var x = 0; x < width; x++)
-                    cellsToAdd.AddRange(CreateNewCellsForColumn(x, height, newHeight, defaultMovementType,
+                    cellsToAdd.AddRange(CreateNewCellsForColumn(x, height, newHeight, defaultTerrainType,
                         offsetType));
 
                 graph.AddCells(cellsToAdd);
@@ -55,14 +55,14 @@ namespace HexCore.HexGraph
         }
 
         private static IEnumerable<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
-            MovementType defaultMovementType, OffsetTypes offsetType)
+            ITerrainType defaultTerrainType, OffsetTypes offsetType)
         {
             var newCells = new List<CellState>();
             for (var y = oldY; y < newY; y++)
             {
                 var position = new Coordinate2D(x, y, offsetType);
                 var cubeCoordinate = position.To3D();
-                newCells.Add(new CellState(false, cubeCoordinate, defaultMovementType));
+                newCells.Add(new CellState(false, cubeCoordinate, defaultTerrainType));
             }
 
             return newCells;

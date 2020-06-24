@@ -105,19 +105,19 @@ namespace HexCore.HexGraph
         /// <exception cref="InvalidOperationException"></exception>
         public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
         {
-            if (!_movementTypes.Contains(unitMovementType))
+            if (!_movementTypes.ContainsMovementType(unitMovementType))
                 throw new InvalidOperationException(
                     $"Unknown movement type: {unitMovementType.Name}");
             var cellState = GetCellState(coordinate);
-            return _movementTypes.GetMovementCost(unitMovementType, cellState.MovementType);
+            return _movementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
         }
 
         public void AddCells(IEnumerable<CellState> newCellStatesList)
         {
             var cellStates = newCellStatesList as CellState[] ?? newCellStatesList.ToArray();
-            foreach (var cell in cellStates.Where(cell => !_movementTypes.Contains(cell.MovementType)))
+            foreach (var cell in cellStates.Where(cell => !_movementTypes.ContainsTerrainType(cell.TerrainType)))
                 throw new InvalidOperationException(
-                    $"One of the cells in graph has an unknown type: {cell.MovementType.Name}");
+                    $"One of the cells in graph has an unknown type: {cell.TerrainType.Name}");
             _cellStatesList.AddRange(cellStates);
             UpdateCellStateDictionary();
             UpdateCoordinatesList();
@@ -155,18 +155,18 @@ namespace HexCore.HexGraph
             SetCellBlockStatus(coordinate, false);
         }
 
-        public void SetManyCellsMovementType(IEnumerable<Coordinate3D> coordinates, IMovementType movementType)
+        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType movementType)
         {
             foreach (var coordinate in coordinates)
             {
                 var cellState = GetCellState(coordinate);
-                cellState.MovementType = movementType;
+                cellState.TerrainType = movementType;
             }
         }
 
-        public void SetOneCellMovementType(Coordinate3D coordinate, IMovementType movementType)
+        public void SetCellTerrainType(Coordinate3D coordinate, ITerrainType movementType)
         {
-            SetManyCellsMovementType(new List<Coordinate3D> {coordinate}, movementType);
+            SetCellsTerrainType(new List<Coordinate3D> {coordinate}, movementType);
         }
 
         /// <summary>
