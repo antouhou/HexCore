@@ -32,16 +32,21 @@ types. It's called `MovementTypes`. It maintains a table of your
 movement and terrain types. It's mandatory to specify movement types
 for a graph. Movement types creation looks like this:
 
+*If you want to have just the same constant movement cost across the whole map,
+ create only one terrain and movement type with a movement cost of 1. 
+ One terrain type with a movement cost of 1 is not a default option to ensure that 
+ this is a deliberate choice and not a mistake.*
+
 ```c#
 var movementTypes = new MovementTypes(
     new Dictionary<IMovementType, Dictionary<IMovementType, int>>
     {
-        [ground] = new Dictionary<IMovementType, int>
+        [walkingType] = new Dictionary<IMovementType, int>
         {
             [ground] = 1,
             [water] = 2,
         },
-        [water] = new Dictionary<IMovementType, int>
+        [swimmingType] = new Dictionary<IMovementType, int>
         {
             [ground] = 2,
             [water] = 1,
