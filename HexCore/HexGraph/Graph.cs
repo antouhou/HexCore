@@ -10,7 +10,7 @@ namespace HexCore.HexGraph
     public class Graph : IWeightedGraph
     {
         // Possible directions to detect neighbors        
-        private static readonly List<Coordinate3D> Directions = new List<Coordinate3D>
+        public static readonly List<Coordinate3D> Directions = new List<Coordinate3D>
         {
             new Coordinate3D(+1, -1, 0),
             new Coordinate3D(+1, 0, -1),
@@ -133,6 +133,11 @@ namespace HexCore.HexGraph
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
             return _allCoordinates;
+        }
+
+        public List<CellState> GetAllCells()
+        {
+            return _cellStatesList;
         }
 
         public void BlockCells(IEnumerable<Coordinate3D> coordinates)

@@ -19,5 +19,12 @@ namespace HexCore.HexGraph
             Coordinate3 = coordinate3;
             TerrainType = terrainType;
         }
+        
+        public CellState(bool isBlocked, Coordinate2D coordinate2, ITerrainType terrainType)
+        {
+            IsBlocked = isBlocked;
+            Coordinate3 = coordinate2.To3D();
+            TerrainType = terrainType;
+        }
     }
 }
