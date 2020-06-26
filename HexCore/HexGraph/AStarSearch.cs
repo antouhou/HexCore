@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HexCore.DataStructures;
 using HexCore.HexGraph;
 
@@ -44,10 +45,18 @@ namespace HexCore.AStar
                     cameFrom[next] = current;
                 }
             }
+            
+            var path = new List<Coordinate3D>();
+            var pathWasNotFound = !cameFrom.ContainsKey(goal);
 
+            // Returning an empty list if the path wasn't found
+            if (pathWasNotFound)
+            {
+                return path;
+            }
+            
             // Reconstructing path
             var curr = goal;
-            var path = new List<Coordinate3D>();
             while (!curr.Equals(start))
             {
                 path.Add(curr);

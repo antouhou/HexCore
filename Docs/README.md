@@ -8,7 +8,7 @@ Welcome to the HexCore documentation! HexCore is a library to perform various op
 - [Coordinate systems](#coordinates)
 - Find the shortest path
 - Get the pawn's movement range
-- Other types of ranges
+- Changing state of the cells
 
 ## Core principles
 
@@ -63,8 +63,8 @@ var graph = new Graph(new CellState[] {
 ```
 The resulting graph would look like this:
 ```
-   ⬡⬡
-  ⬡⬡⬡
+ ⬡⬡
+⬡⬡⬡
 ```
 The two cells on top would have terrain type "ground", the two cells in the second row would represent our first lake, and the first water cell would be not passable - we can imagine that there's a sharp rock in the lake at that spot.
 
@@ -97,7 +97,9 @@ var c = a + b; // c == -1, 2, -1
 var d = c * 2; // d == -2, 4, -2
 ```
 
-## Find sortest path
+## Find the shortest path
+
+After the graph was initialized, simply call `graph.GetShortestPath()` method on it. It accepts three parameters: coordinate from, coordinate to and your pawn's movement type. If there's a path from a to b, 
 
 ## Get movement range
 
