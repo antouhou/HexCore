@@ -342,3 +342,4 @@ gen
 /nunit-results.xml
 /output.mlpd
 /.vscode/
+.DS_Store
