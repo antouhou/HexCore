@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using HexCore.HexGraph;
+using HexCore;
 using NUnit.Framework;
 
 namespace HexCoreTests.HexGraph
@@ -12,13 +12,14 @@ namespace HexCoreTests.HexGraph
         {
             var ground = new TerrainType(1, "Ground");
             var walking = new MovementType(1, "Walking");
-            var movementTypes = new MovementTypes(new ITerrainType[] { ground }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-            {
-                [walking] = new Dictionary<ITerrainType, int>
+            var movementTypes = new MovementTypes(new ITerrainType[] {ground},
+                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                 {
-                    [ground] = 1
-                }
-            });
+                    [walking] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 1
+                    }
+                });
 
             Assert.That(movementTypes.ContainsTerrainType(ground), Is.True);
             Assert.That(movementTypes.ContainsMovementType(walking), Is.True);
@@ -30,27 +31,28 @@ namespace HexCoreTests.HexGraph
             var ground = new TerrainType(1, "Ground");
             var water = new TerrainType(2, "Water");
             var air = new TerrainType(3, "Air");
-            
+
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(2, "Swimming");
 
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new ITerrainType[] { ground, water }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-                    {
-                        [walkingType] = new Dictionary<ITerrainType, int>
+                    var movementTypes = new MovementTypes(new ITerrainType[] {ground, water},
+                        new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                         {
-                            [ground] = 1,
-                            [water] = 2,
-                            [air] = 1
-                        },
-                        [swimmingType] = new Dictionary<ITerrainType, int>
-                        {
-                            [ground] = 2,
-                            [water] = 1,
-                            [air] = 1
-                        }
-                    });
+                            [walkingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 1,
+                                [water] = 2,
+                                [air] = 1
+                            },
+                            [swimmingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 2,
+                                [water] = 1,
+                                [air] = 1
+                            }
+                        });
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
                     "Error when adding movement type 'Walking': movement costs contain unknown type: 'Air'"));
@@ -62,30 +64,31 @@ namespace HexCoreTests.HexGraph
             var ground = new TerrainType(1, "Ground");
             var water = new TerrainType(2, "Water");
             var air = new TerrainType(3, "Air");
-            
+
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(2, "Swimming");
             var flyingType = new MovementType(3, "Flying");
-            
+
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new ITerrainType[] { ground, water, air }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-                    {
-                        [walkingType] = new Dictionary<ITerrainType, int>
+                    var movementTypes = new MovementTypes(new ITerrainType[] {ground, water, air},
+                        new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                         {
-                            [ground] = 1
-                        },
-                        [swimmingType] = new Dictionary<ITerrainType, int>
-                        {
-                            [ground] = 2,
-                            [water] = 1
-                        },
-                        [flyingType] = new Dictionary<ITerrainType, int>
-                        {
-                            [ground] = 2,
-                            [water] = 1
-                        }
-                    });
+                            [walkingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 1
+                            },
+                            [swimmingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 2,
+                                [water] = 1
+                            },
+                            [flyingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 2,
+                                [water] = 1
+                            }
+                        });
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
                     "Error when adding movement type 'Walking': missing movement costs to types: 'Water', 'Air'"));
@@ -101,19 +104,20 @@ namespace HexCoreTests.HexGraph
             var swimmingType = new MovementType(1, "Swimming");
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new ITerrainType[] { ground, water }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-                    {
-                        [walkingType] = new Dictionary<ITerrainType, int>
+                    var movementTypes = new MovementTypes(new ITerrainType[] {ground, water},
+                        new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                         {
-                            [ground] = 1,
-                            [water] = 2
-                        },
-                        [swimmingType] = new Dictionary<ITerrainType, int>
-                        {
-                            [ground] = 2,
-                            [water] = 1
-                        }
-                    });
+                            [walkingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 1,
+                                [water] = 2
+                            },
+                            [swimmingType] = new Dictionary<ITerrainType, int>
+                            {
+                                [ground] = 2,
+                                [water] = 1
+                            }
+                        });
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
                     "An item with the same key has already been added. Key: 1"));
@@ -127,21 +131,23 @@ namespace HexCoreTests.HexGraph
             Assert.That(() =>
                 {
                     var movementTypes =
-                        new MovementTypes(new ITerrainType[] { ground }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>());
+                        new MovementTypes(new ITerrainType[] {ground},
+                            new Dictionary<IMovementType, Dictionary<ITerrainType, int>>());
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
                     "Movement types should always have at least one explicitly defined type. For the reasoning, please visit the movement types section in the library's docs"));
-            
+
             Assert.That(() =>
                 {
                     var movementTypes =
-                        new MovementTypes(new ITerrainType[] { }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>()
-                        {
-                            [walking] = new Dictionary<ITerrainType, int>()
+                        new MovementTypes(new ITerrainType[] { },
+                            new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                             {
-                                [ground] = 1
-                            }
-                        });
+                                [walking] = new Dictionary<ITerrainType, int>
+                                {
+                                    [ground] = 1
+                                }
+                            });
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
                     "Error when adding movement type 'Walking': movement costs contain unknown type: 'Ground'"));
@@ -156,19 +162,20 @@ namespace HexCoreTests.HexGraph
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(2, "Swimming");
 
-            var movementTypes = new MovementTypes(new ITerrainType[] { ground, water }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-            {
-                [walkingType] = new Dictionary<ITerrainType, int>
+            var movementTypes = new MovementTypes(new ITerrainType[] {ground, water},
+                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                 {
-                    [ground] = 1,
-                    [water] = 2
-                },
-                [swimmingType] = new Dictionary<ITerrainType, int>
-                {
-                    [ground] = 2,
-                    [water] = 1
-                }
-            });
+                    [walkingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 1,
+                        [water] = 2
+                    },
+                    [swimmingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 2,
+                        [water] = 1
+                    }
+                });
 
             Assert.That(movementTypes.GetAllMovementTypes(), Is.EquivalentTo(new[] {walkingType, swimmingType}));
             Assert.That(movementTypes.GetAllTerrainTypes(), Is.EquivalentTo(new[] {ground, water}));
@@ -183,19 +190,20 @@ namespace HexCoreTests.HexGraph
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(123, "Swimming");
 
-            var movementTypes = new MovementTypes(new ITerrainType[] { ground, water }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-            {
-                [walkingType] = new Dictionary<ITerrainType, int>
+            var movementTypes = new MovementTypes(new ITerrainType[] {ground, water},
+                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                 {
-                    [ground] = 1,
-                    [water] = 2
-                },
-                [swimmingType] = new Dictionary<ITerrainType, int>
-                {
-                    [ground] = 2,
-                    [water] = 1
-                }
-            });
+                    [walkingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 1,
+                        [water] = 2
+                    },
+                    [swimmingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 2,
+                        [water] = 1
+                    }
+                });
 
             Assert.That(movementTypes.GetMovementTypeId(walkingType), Is.EqualTo(1));
             Assert.That(movementTypes.GetMovementTypeId(swimmingType), Is.EqualTo(123));
@@ -207,11 +215,11 @@ namespace HexCoreTests.HexGraph
             var ground = new TerrainType(1, "Ground");
             var water = new TerrainType(2, "Water");
             var air = new TerrainType(3, "Air");
-            
+
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(2, "Swimming");
             var flyingType = new MovementType(3, "Flying");
-            
+
             var movementTypes = new MovementTypes(new ITerrainType[]
             {
                 ground, water, air
@@ -254,19 +262,20 @@ namespace HexCoreTests.HexGraph
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(123, "Swimming");
 
-            var movementTypes = new MovementTypes(new ITerrainType[] { ground, water }, new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
-            {
-                [walkingType] = new Dictionary<ITerrainType, int>
+            var movementTypes = new MovementTypes(new ITerrainType[] {ground, water},
+                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
                 {
-                    [ground] = 1,
-                    [water] = 2
-                },
-                [swimmingType] = new Dictionary<ITerrainType, int>
-                {
-                    [ground] = 2,
-                    [water] = 1
-                }
-            });
+                    [walkingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 1,
+                        [water] = 2
+                    },
+                    [swimmingType] = new Dictionary<ITerrainType, int>
+                    {
+                        [ground] = 2,
+                        [water] = 1
+                    }
+                });
 
             Assert.That(movementTypes.GetMovementTypeById(1), Is.EqualTo(walkingType));
             Assert.That(movementTypes.GetMovementTypeById(123), Is.EqualTo(swimmingType));

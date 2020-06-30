@@ -2,21 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     public class MovementTypes
     {
-        private readonly Dictionary<int, IMovementType> _movementTypeIds = new Dictionary<int, IMovementType>();
         private readonly Dictionary<IMovementType, int> _inverseMovementTypeIds = new Dictionary<IMovementType, int>();
-        
+
         private readonly Dictionary<ITerrainType, int> _inverseTerrainTypeIds = new Dictionary<ITerrainType, int>();
-        private readonly Dictionary<int, ITerrainType> _terrainTypeIds = new Dictionary<int, ITerrainType>();
 
         // <movement_type<terrain_type, cost>>
         private readonly Dictionary<IMovementType, Dictionary<ITerrainType, int>> _movementCosts =
             new Dictionary<IMovementType, Dictionary<ITerrainType, int>>();
 
+        private readonly Dictionary<int, IMovementType> _movementTypeIds = new Dictionary<int, IMovementType>();
+
         private readonly HashSet<IMovementType> _movementTypes;
+        private readonly Dictionary<int, ITerrainType> _terrainTypeIds = new Dictionary<int, ITerrainType>();
         private readonly HashSet<ITerrainType> _terrainTypes;
 
         // Public constructor
@@ -34,7 +35,7 @@ namespace HexCore.HexGraph
                 _terrainTypeIds.Add(terrainType.Id, terrainType);
                 _inverseTerrainTypeIds.Add(terrainType, terrainType.Id);
             }
-            
+
             foreach (var movementType in movementTypesWithCosts)
             {
                 // For fast lookups
@@ -93,7 +94,7 @@ namespace HexCore.HexGraph
         {
             return _movementTypes;
         }
-        
+
         public IEnumerable<ITerrainType> GetAllTerrainTypes()
         {
             return _terrainTypes;
@@ -108,7 +109,7 @@ namespace HexCore.HexGraph
         {
             return GetAllMovementTypes().Contains(movementType);
         }
-        
+
         public bool ContainsTerrainType(ITerrainType movementType)
         {
             return GetAllTerrainTypes().Contains(movementType);

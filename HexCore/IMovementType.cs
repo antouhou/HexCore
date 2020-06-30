@@ -1,6 +1,6 @@
 using System;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     public interface IMovementType : IEquatable<IMovementType>
     {

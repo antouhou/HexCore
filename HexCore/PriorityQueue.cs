@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HexCore.DataStructures
+namespace HexCore
 {
     public class PriorityQueue<T>
     {

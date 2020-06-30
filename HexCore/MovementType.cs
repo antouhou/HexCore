@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     [Serializable]
     public struct MovementType : IMovementType

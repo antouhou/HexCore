@@ -1,4 +1,4 @@
-namespace HexCore.HexGraph
+namespace HexCore
 {
     public interface ITerrainType
     {

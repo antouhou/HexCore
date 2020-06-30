@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HexCore.DataStructures;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     public static class GraphUtils
     {

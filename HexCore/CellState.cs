@@ -1,14 +1,13 @@
 ﻿using System;
-using HexCore.DataStructures;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     [Serializable]
     public class CellState
     {
         public Coordinate3D Coordinate3;
 
-        // Never set this field directly, only through graph.SetCellBlocked, since changing cell state requires
+        // Never set this field directly, only through graph.BlockCells, since changing cell state requires
         // rebuild of some graph coordinates.
         public bool IsBlocked;
         public ITerrainType TerrainType;
@@ -19,7 +18,7 @@ namespace HexCore.HexGraph
             Coordinate3 = coordinate3;
             TerrainType = terrainType;
         }
-        
+
         public CellState(bool isBlocked, Coordinate2D coordinate2, ITerrainType terrainType)
         {
             IsBlocked = isBlocked;

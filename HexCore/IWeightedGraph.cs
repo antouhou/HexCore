@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using HexCore.DataStructures;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     public interface IWeightedGraph
     {

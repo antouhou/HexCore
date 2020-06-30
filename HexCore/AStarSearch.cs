@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using HexCore.DataStructures;
-using HexCore.HexGraph;
 
-namespace HexCore.AStar
+namespace HexCore
 {
     /**
      * This is path finding algorithm called 'A*'. It's one of the most common pathfindg algorithms.
@@ -45,16 +42,13 @@ namespace HexCore.AStar
                     cameFrom[next] = current;
                 }
             }
-            
+
             var path = new List<Coordinate3D>();
             var pathWasNotFound = !cameFrom.ContainsKey(goal);
 
             // Returning an empty list if the path wasn't found
-            if (pathWasNotFound)
-            {
-                return path;
-            }
-            
+            if (pathWasNotFound) return path;
+
             // Reconstructing path
             var curr = goal;
             while (!curr.Equals(start))
@@ -63,7 +57,6 @@ namespace HexCore.AStar
                 curr = cameFrom[curr];
             }
 
-            // path.Add(start); // optional
             // Reverse it to start at actual start point
             path.Reverse();
             return path;

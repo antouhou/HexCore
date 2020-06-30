@@ -1,5 +1,4 @@
-﻿using HexCore.DataStructures;
-using HexCore.HexGraph;
+﻿using HexCore;
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
 

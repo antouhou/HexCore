@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HexCore.AStar;
-using HexCore.DataStructures;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     [Serializable]
     public class Graph : IWeightedGraph
@@ -37,9 +35,36 @@ namespace HexCore.HexGraph
             AddCells(cellStatesList);
             UpdateCoordinatesList();
         }
-        
+
+        /// <summary>
+        ///     Returns passable neighbors of the cell
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
+        {
+            return GetNeighbors(position, true);
+        }
+
+        /// <summary>
+        ///     This methods gets movement costs to the coordinate for the movement type in range = 1.
+        ///     Used internally by path finding and range finding.
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <param name="unitMovementType"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
+        {
+            if (!_movementTypes.ContainsMovementType(unitMovementType))
+                throw new InvalidOperationException(
+                    $"Unknown movement type: {unitMovementType.Name}");
+            var cellState = GetCellState(coordinate);
+            return _movementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
+        }
+
         /* Private methods */
-        
+
         private void UpdateCellStateDictionary()
         {
             _cellStatesDictionary = new Dictionary<Coordinate3D, CellState>();
@@ -51,7 +76,7 @@ namespace HexCore.HexGraph
             _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
             _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
         }
-        
+
         private void SetCellBlockStatus(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
         {
             foreach (var coordinate in coordinates)
@@ -69,9 +94,9 @@ namespace HexCore.HexGraph
         }
 
         /* Public methods */
-        
+
         /// <summary>
-        /// Returns neighbors for the cell
+        ///     Returns neighbors for the cell
         /// </summary>
         /// <param name="position">Coordinate to get neighbors to</param>
         /// <param name="onlyPassable">Return only passable neighbors</param>
@@ -81,35 +106,8 @@ namespace HexCore.HexGraph
             foreach (var direction in Directions)
             {
                 var next = position + direction;
-                if (IsInBounds(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
+                if (Contains(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
             }
-        }
-        
-        /// <summary>
-        /// Returns passable neighbors of the cell
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
-        {
-            return GetNeighbors(position, true);
-        }
-
-        /// <summary>
-        /// This methods gets movement costs to the coordinate for the movement type in range = 1.
-        /// Used internally by path finding and range finding.
-        /// </summary>
-        /// <param name="coordinate"></param>
-        /// <param name="unitMovementType"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
-        {
-            if (!_movementTypes.ContainsMovementType(unitMovementType))
-                throw new InvalidOperationException(
-                    $"Unknown movement type: {unitMovementType.Name}");
-            var cellState = GetCellState(coordinate);
-            return _movementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
         }
 
         public void AddCells(IEnumerable<CellState> newCellStatesList)
@@ -149,43 +147,43 @@ namespace HexCore.HexGraph
         {
             SetCellBlockStatus(coordinate, true);
         }
-        
+
         public void UnblockCells(IEnumerable<Coordinate3D> coordinates)
         {
             SetCellBlockStatus(coordinates, false);
         }
-        
+
         public void UnblockCells(Coordinate3D coordinate)
         {
             SetCellBlockStatus(coordinate, false);
         }
 
-        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType movementType)
+        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType terrainType)
         {
             foreach (var coordinate in coordinates)
             {
                 var cellState = GetCellState(coordinate);
-                cellState.TerrainType = movementType;
+                cellState.TerrainType = terrainType;
             }
         }
 
-        public void SetCellTerrainType(Coordinate3D coordinate, ITerrainType movementType)
+        public void SetCellsTerrainType(Coordinate3D coordinate, ITerrainType terrainType)
         {
-            SetCellsTerrainType(new List<Coordinate3D> {coordinate}, movementType);
+            SetCellsTerrainType(new List<Coordinate3D> {coordinate}, terrainType);
         }
 
         /// <summary>
-        /// Returns true if graph contains the coordinate, false otherwise
+        ///     Returns true if graph contains the coordinate, false otherwise
         /// </summary>
         /// <param name="coordinate"></param>
         /// <returns></returns>
-        public bool IsInBounds(Coordinate3D coordinate)
+        public bool Contains(Coordinate3D coordinate)
         {
             return _allCoordinates.Contains(coordinate);
         }
 
         /// <summary>
-        /// Returns true if the cell is marked as not passable, false otherwise
+        ///     Returns true if the cell is marked as not passable, false otherwise
         /// </summary>
         /// <param name="coordinate"></param>
         /// <returns></returns>
@@ -195,7 +193,7 @@ namespace HexCore.HexGraph
         }
 
         /// <summary>
-        /// Returns circular range of the cell
+        ///     Returns circular range of the cell
         /// </summary>
         /// <param name="startPosition">The center of the range</param>
         /// <param name="radius">Radius of the range</param>
@@ -234,12 +232,12 @@ namespace HexCore.HexGraph
             for (var currentLength = 1; currentLength < length + 1; currentLength++)
             {
                 var next = start + direction * currentLength;
-                if (IsInBounds(next)) yield return next;
+                if (Contains(next)) yield return next;
             }
         }
 
         /// <summary>
-        /// Similar to get range, but also takes two additional params:
+        ///     Similar to get range, but also takes two additional params:
         /// </summary>
         /// <param name="startPosition">Center of the range</param>
         /// <param name="movementPoints">Amount of points allowed to spend on the movement</param>
@@ -277,7 +275,7 @@ namespace HexCore.HexGraph
         }
 
         /// <summary>
-        /// Returns the state of the cell for a given coordinate
+        ///     Returns the state of the cell for a given coordinate
         /// </summary>
         /// <param name="coordinate"></param>
         /// <returns></returns>
@@ -287,7 +285,7 @@ namespace HexCore.HexGraph
         }
 
         /// <summary>
-        /// Finds shortest path from the start to the goal. Requires pawn's movement type to operate
+        ///     Finds shortest path from the start to the goal. Requires pawn's movement type to operate
         /// </summary>
         /// <param name="start"></param>
         /// <param name="goal"></param>

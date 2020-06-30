@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HexCore.DataStructures
+namespace HexCore
 {
     [Serializable]
     public struct Coordinate2D
@@ -51,5 +51,7 @@ namespace HexCore.DataStructures
             Y = y;
             _offsetType = offsetType;
         }
+        
+        public override string ToString() => $"({X}, {Y})";
     }
 }

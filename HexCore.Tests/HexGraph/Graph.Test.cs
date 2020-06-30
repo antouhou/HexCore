@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HexCore.DataStructures;
-using HexCore.HexGraph;
+using HexCore;
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
@@ -213,10 +212,10 @@ namespace HexCoreTests.HexGraph
                 MovementTypesFixture.Ground);
             var position = new Coordinate3D(0, -1, 1);
 
-            Assert.That(graph.IsInBounds(position), Is.True);
+            Assert.That(graph.Contains(position), Is.True);
 
             position = new Coordinate3D(-1, 2, -1);
-            Assert.That(graph.IsInBounds(position), Is.False);
+            Assert.That(graph.Contains(position), Is.False);
         }
 
         [Test]
@@ -227,7 +226,7 @@ namespace HexCoreTests.HexGraph
 
             var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
 
-            graph.SetCellTerrainType(coordinateToSet, MovementTypesFixture.Water);
+            graph.SetCellsTerrainType(coordinateToSet, MovementTypesFixture.Water);
             Assert.That(graph.GetCellState(coordinateToSet).TerrainType, Is.EqualTo(MovementTypesFixture.Water));
 
             var coordinatesToSet = Coordinate2D.To3D(new List<Coordinate2D>
