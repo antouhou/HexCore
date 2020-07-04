@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>HexCore</RootNamespace>
-        <Version>4.0.0</Version>
+        <Version>4.0.1</Version>
         <Authors>Anton Suprunchuk</Authors>
         <Description>Yet another library to manage hexagonal grids. For docs and usage examples please see the GitHub repo.</Description>
         <RepositoryType>Git</RepositoryType>
