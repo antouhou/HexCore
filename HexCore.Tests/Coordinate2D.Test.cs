@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using HexCore;
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
-namespace HexCoreTests.DataStructures
+namespace HexCoreTests
 {
     [TestFixture]
     public class Coordinate2DTest
@@ -18,7 +17,7 @@ namespace HexCoreTests.DataStructures
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1
             //Right: X + 1, Y - 1;
-            var expectedCubeCoordinates = new []
+            var expectedCubeCoordinates = new[]
             {
                 new Coordinate3D(0, 0, 0),
                 // Down right:
@@ -38,7 +37,7 @@ namespace HexCoreTests.DataStructures
                 // Down and left:
                 new Coordinate3D(1, -3, 2)
             };
-            
+
             Assert.That(cubeCoordinates, Is.EqualTo(expectedCubeCoordinates));
         }
 
@@ -76,6 +75,14 @@ namespace HexCoreTests.DataStructures
             var expectedCoordinate3D = new Coordinate3D(1, -2, 1);
             var actualCoordinate3D = coordinate2D.To3D();
             Assert.That(actualCoordinate3D, Is.EqualTo(expectedCoordinate3D));
+        }
+
+        [Test]
+        public void ToString_ShouldSerializeToString()
+        {
+            var coordinate2D = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
+
+            Assert.That(coordinate2D.ToString(), Is.EqualTo("(1, 1)"));
         }
     }
 }

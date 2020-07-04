@@ -2,7 +2,7 @@
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
-namespace HexCoreTests.HexGraph
+namespace HexCoreTests
 {
     [TestFixture]
     public class GraphUtilsTest

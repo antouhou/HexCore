@@ -2,7 +2,7 @@ using System;
 using HexCore;
 using NUnit.Framework;
 
-namespace HexCoreTests.DataStructures
+namespace HexCoreTests
 {
     [TestFixture]
     public class Coordinate3DTest
@@ -118,6 +118,14 @@ namespace HexCoreTests.DataStructures
             var actualCoordinate2D = coordinate3D.To2D(OffsetTypes.OddRowsRight);
             var expectedCoordinate2D = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
             Assert.That(actualCoordinate2D, Is.EqualTo(expectedCoordinate2D));
+        }
+
+        [Test]
+        public void ToString_ShouldSerializeToString()
+        {
+            var coordinate3D = new Coordinate3D(1, -2, 1);
+
+            Assert.That(coordinate3D.ToString(), Is.EqualTo("(1, -2, 1)"));
         }
     }
 }

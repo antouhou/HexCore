@@ -51,7 +51,10 @@ namespace HexCore
             Y = y;
             OffsetType = offsetType;
         }
-        
-        public override string ToString() => $"({X}, {Y})";
+
+        public override string ToString()
+        {
+            return $"({X}, {Y})";
+        }
     }
 }

@@ -100,9 +100,15 @@ namespace HexCore
             return _terrainTypes;
         }
 
-        public int GetMovementCost(IMovementType from, ITerrainType to)
+        public int GetMovementCost(IMovementType pawnMovementType, ITerrainType terrainType)
         {
-            return _movementCosts[from][to];
+            if (!ContainsMovementType(pawnMovementType))
+                throw new ArgumentException(
+                    $"Unknown movement type: '{pawnMovementType.Name}'");
+            if (!ContainsTerrainType(terrainType))
+                throw new ArgumentException(
+                    $"Unknown terrain type: '{terrainType.Name}'");
+            return _movementCosts[pawnMovementType][terrainType];
         }
 
         public bool ContainsMovementType(IMovementType movementType)

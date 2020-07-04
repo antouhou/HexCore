@@ -5,12 +5,70 @@ using HexCore;
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
-namespace HexCoreTests.HexGraph
+namespace HexCoreTests
 {
     [TestFixture]
     [TestOf(typeof(Graph))]
     public class GraphTest
     {
+        [Test]
+        public void AddCells_ShouldThrow_WhenAddingCellWithAnUnknownType()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+            var unexpectedTerrainType = new TerrainType(10, "Some Unexpected Terrain");
+            Assert.That(() =>
+                {
+                    graph.AddCells(new[]
+                    {
+                        new CellState(
+                            false,
+                            new Coordinate2D(),
+                            unexpectedTerrainType
+                        )
+                    });
+                },
+                Throws.ArgumentException.With.Message.EqualTo(
+                    "One of the cells in graph has an unknown terrain type: 'Some Unexpected Terrain'"));
+        }
+
+        [Test]
+        public void GetAllCells_ShouldReturnAllCellStates()
+        {
+            var movementTypes = MovementTypesFixture.GetMovementTypes();
+            var cellStates = new[]
+            {
+                new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
+                new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
+                new CellState(true, new Coordinate2D(1, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Water),
+                new CellState(false, new Coordinate2D(1, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Water),
+                new CellState(false, new Coordinate2D(1, 2, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground)
+            };
+            var graph = new Graph(cellStates, movementTypes);
+
+            Assert.That(graph.GetAllCells(), Is.EqualTo(cellStates));
+        }
+
+        [Test]
+        public void GetAllCellsCoordinate_ShouldReturn2DCoordinates_WhenOffsetTypeIsPassed()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(2, 2, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+
+            var expectedCoordinates = new[]
+            {
+                new Coordinate2D(0, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)
+            };
+
+            Assert.That(
+                graph.GetAllCellsCoordinates(OffsetTypes.OddRowsRight),
+                Is.EqualTo(expectedCoordinates)
+            );
+        }
+
         [Test]
         public void GetLine_ShouldGetCorrectDirectionFromOneCoordinateToAnother()
         {
@@ -69,32 +127,33 @@ namespace HexCoreTests.HexGraph
             var expectedMovementRange2D = new List<Coordinate2D>
             {
                 // Closest circle
-                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
-                new Coordinate2D(3, 1, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
-                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
-                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 2, OffsetTypes.OddRowsRight),
                 new Coordinate2D(3, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
                 // Second circle
-                new Coordinate2D(5, 2, OffsetTypes.OddRowsRight),
-                new Coordinate2D(4, 1, OffsetTypes.OddRowsRight),
-                new Coordinate2D(4, 3, OffsetTypes.OddRowsRight),
-                new Coordinate2D(4, 0, OffsetTypes.OddRowsRight),
-                new Coordinate2D(3, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(3, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
-                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
-                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
-                new Coordinate2D(2, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(5, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight),
                 new Coordinate2D(3, 4, OffsetTypes.OddRowsRight),
-                new Coordinate2D(4, 4, OffsetTypes.OddRowsRight)
+                new Coordinate2D(2, 4, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 3, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight)
             };
             var expectedMovementRange =
                 Coordinate2D.To3D(expectedMovementRange2D);
 
+            var movementRange2d = graph.GetMovementRange(center2d, 2, MovementTypesFixture.Walking);
             var movementRange = graph.GetMovementRange(center, 2, MovementTypesFixture.Walking);
 
-            Assert.That(movementRange.Count, Is.EqualTo(expectedMovementRange.Count));
+            Assert.That(movementRange2d, Is.EqualTo(expectedMovementRange2D));
             Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
 
             // If 2,3 is water, we shouldn't be able to access 2,4. If we make 1,3 water - we just shouldn't be able to 
@@ -117,14 +176,12 @@ namespace HexCoreTests.HexGraph
             expectedMovementRange2D.Remove(new Coordinate2D(2, 0, OffsetTypes.OddRowsRight));
 
             expectedMovementRange = Coordinate2D.To3D(expectedMovementRange2D);
+
+            movementRange2d = graph.GetMovementRange(center2d, 2, MovementTypesFixture.Walking);
             movementRange = graph.GetMovementRange(center, 2, MovementTypesFixture.Walking);
 
-            Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
-
-            Assert.That(
-                graph.GetMovementRange(center2d, 2, MovementTypesFixture.Walking),
-                Is.EquivalentTo(expectedMovementRange2D)
-            );
+            Assert.That(movementRange2d, Is.EquivalentTo(expectedMovementRange2D));
+            Assert.That(movementRange, Is.EquivalentTo(expectedMovementRange));
         }
 
         [Test]
@@ -141,19 +198,90 @@ namespace HexCoreTests.HexGraph
             // Cube(+1, -1, 0), Cube(+1, 0, -1), Cube(0, +1, -1), Cube(-1, +1, 0), Cube(-1, 0, +1), Cube(0, -1, +1),
             var expectedNeighbors = new List<Coordinate3D>
             {
-                new Coordinate3D(3, -4, 1),
-                new Coordinate3D(3, -3, 0),
                 new Coordinate3D(2, -2, 0),
-                new Coordinate3D(1, -2, 1),
-                new Coordinate3D(1, -3, +2),
-                new Coordinate3D(2, -4, 2)
+                new Coordinate3D(3, -3, 0),
+                new Coordinate3D(3, -4, 1),
+                new Coordinate3D(2, -4, 2),
+                new Coordinate3D(1, -3, 2),
+                new Coordinate3D(1, -2, 1)
             };
             Assert.That(neighbors, Is.EqualTo(expectedNeighbors));
 
             Assert.That(
-                graph.GetNeighbors(offsetTarget, false).ToList(), 
+                graph.GetNeighbors(offsetTarget, false).ToList(),
                 Is.EquivalentTo(Coordinate3D.To2D(expectedNeighbors, OffsetTypes.OddRowsRight))
             );
+        }
+
+        [Test]
+        public void GetPassableNeighbors_ShouldExcludeBlockedNeighbors()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+            var center2d = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
+            var center = center2d.To3D();
+
+            graph.BlockCells(new[]
+            {
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight)
+            });
+
+            var expectedPassableNeighbors2d = new[]
+            {
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight)
+            };
+            var expectedPassableNeighbors = Coordinate2D.To3D(expectedPassableNeighbors2d);
+
+            Assert.That(graph.GetPassableNeighbors(center2d), Is.EqualTo(expectedPassableNeighbors2d));
+            Assert.That(graph.GetPassableNeighbors(center), Is.EqualTo(expectedPassableNeighbors));
+        }
+
+        [Test]
+        public void GetPassableNeighbors_ShouldExcludeNeighborsOutsideOfTheGraph()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+            var center2d = new Coordinate2D(1, 0, OffsetTypes.OddRowsRight);
+            var center = center2d.To3D();
+
+            var expectedPassableNeighbors2d = new[]
+            {
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 0, OffsetTypes.OddRowsRight)
+            };
+            var expectedPassableNeighbors = Coordinate2D.To3D(expectedPassableNeighbors2d);
+
+            Assert.That(graph.GetPassableNeighbors(center2d), Is.EqualTo(expectedPassableNeighbors2d));
+            Assert.That(graph.GetPassableNeighbors(center), Is.EqualTo(expectedPassableNeighbors));
+        }
+
+        [Test]
+        public void GetPassableNeighbors_ShouldReturnAllNeighbors_WhenAllNeighborsArePassable()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+            var center2d = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
+            var center = center2d.To3D();
+
+            var expectedPassableNeighbors2d = new[]
+            {
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight)
+            };
+            var expectedPassableNeighbors = Coordinate2D.To3D(expectedPassableNeighbors2d);
+
+            Assert.That(graph.GetPassableNeighbors(center2d), Is.EqualTo(expectedPassableNeighbors2d));
+            Assert.That(graph.GetPassableNeighbors(center), Is.EqualTo(expectedPassableNeighbors));
         }
 
         [Test]
@@ -193,7 +321,7 @@ namespace HexCoreTests.HexGraph
             var range = graph.GetRange(center, 2);
 
             Assert.That(range, Is.EquivalentTo(expectedMovementRange));
-            
+
             Assert.That(graph.GetRange(center2d, 2), Is.EquivalentTo(expectedRange2D));
         }
 
@@ -205,16 +333,22 @@ namespace HexCoreTests.HexGraph
             // returns something meaningful.
             var graph = GraphFactory.CreateRectangularGraph(3,
                 3, MovementTypesFixture.GetMovementTypes(), MovementTypesFixture.Ground);
-            var start = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
-            var goal = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
-            var shortestPath = graph.GetShortestPath(start, goal, MovementTypesFixture.Walking);
-            var expectedShortestPath = Coordinate2D.To3D(new List<Coordinate2D>
+            var start2d = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight);
+            var start = start2d.To3D();
+            var goal2d = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
+            var goal = goal2d.To3D();
+            var expectedPath2d = new[]
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 2, OffsetTypes.OddRowsRight)
-            });
+            };
+            var expectedShortestPath = Coordinate2D.To3D(expectedPath2d);
 
+            var shortestPath2d = graph.GetShortestPath(start2d, goal2d, MovementTypesFixture.Walking);
+            var shortestPath = graph.GetShortestPath(start, goal, MovementTypesFixture.Walking);
+
+            Assert.That(shortestPath2d, Is.EqualTo(expectedPath2d));
             Assert.That(shortestPath, Is.EqualTo(expectedShortestPath));
         }
 
@@ -235,12 +369,34 @@ namespace HexCoreTests.HexGraph
         }
 
         [Test]
-        public void SetManyCellsMovementType_ShouldSetTerrainTypesToCells()
+        public void RemoveCells_ShouldRemoveAListOfCells()
         {
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
 
-            var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight).To3D();
+            var cellsToRemove = new[]
+            {
+                new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight)
+            };
+            var cellsToRemove3d = Coordinate2D.To3D(cellsToRemove);
+
+            Assert.That(graph.GetAllCellsCoordinates(), Does.Contain(cellsToRemove3d[0]));
+            Assert.That(graph.GetAllCellsCoordinates(), Does.Contain(cellsToRemove3d[1]));
+
+            graph.RemoveCells(cellsToRemove);
+
+            Assert.That(graph.GetAllCellsCoordinates(), Does.Not.Contain(cellsToRemove3d[0]));
+            Assert.That(graph.GetAllCellsCoordinates(), Does.Not.Contain(cellsToRemove3d[1]));
+        }
+
+        [Test]
+        public void SetManyCellsTerrainType_ShouldSetTerrainTypesToCells()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+
+            var coordinateToSet = new Coordinate2D(2, 1, OffsetTypes.OddRowsRight);
 
             graph.SetCellsTerrainType(coordinateToSet, MovementTypesFixture.Water);
             Assert.That(graph.GetCellState(coordinateToSet).TerrainType, Is.EqualTo(MovementTypesFixture.Water));
@@ -254,8 +410,8 @@ namespace HexCoreTests.HexGraph
             graph.SetCellsTerrainType(coordinatesToSet, MovementTypesFixture.Water);
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).TerrainType, Is.EqualTo(MovementTypesFixture.Water));
-            
-            graph.SetCellsTerrainType(new []
+
+            graph.SetCellsTerrainType(new[]
             {
                 new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
                 new Coordinate2D(0, 2, OffsetTypes.OddRowsRight)
@@ -274,12 +430,48 @@ namespace HexCoreTests.HexGraph
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
             graph.UnblockCells(new Coordinate3D(0, 0, 0));
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
-            
+
             Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.False);
             graph.BlockCells(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight));
             Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.True);
             graph.UnblockCells(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight));
             Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.False);
+        }
+
+        [Test]
+        public void UnblockCells_ShouldUnblockCells_WhenCellListIsPassed()
+        {
+            var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
+                MovementTypesFixture.Ground);
+
+            var cellsToBlock = new[]
+            {
+                new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight)
+            };
+
+            Assert.That(graph.IsCellBlocked(cellsToBlock[0]), Is.False);
+            Assert.That(graph.IsCellBlocked(cellsToBlock[1]), Is.False);
+
+            graph.BlockCells(cellsToBlock);
+
+            Assert.That(graph.IsCellBlocked(cellsToBlock[0]), Is.True);
+            Assert.That(graph.IsCellBlocked(cellsToBlock[1]), Is.True);
+
+            graph.UnblockCells(cellsToBlock);
+
+            Assert.That(graph.IsCellBlocked(cellsToBlock[0]), Is.False);
+            Assert.That(graph.IsCellBlocked(cellsToBlock[1]), Is.False);
+
+            graph.BlockCells(cellsToBlock);
+
+            Assert.That(graph.IsCellBlocked(cellsToBlock[0]), Is.True);
+            Assert.That(graph.IsCellBlocked(cellsToBlock[1]), Is.True);
+
+            graph.UnblockCells(Coordinate2D.To3D(cellsToBlock));
+
+            Assert.That(graph.IsCellBlocked(cellsToBlock[0]), Is.False);
+            Assert.That(graph.IsCellBlocked(cellsToBlock[1]), Is.False);
         }
     }
 }
