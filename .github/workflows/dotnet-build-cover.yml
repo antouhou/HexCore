@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
-      run: dotnet restore --source nuget.org
+      run: dotnet restore --source https://api.nuget.org/v3/index.json
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Cover
