@@ -63,7 +63,8 @@ namespace HexCoreTests.HexGraph
         {
             var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
-            var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
+            var center2d = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight);
+            var center = center2d.To3D();
 
             var expectedMovementRange2D = new List<Coordinate2D>
             {
@@ -116,10 +117,14 @@ namespace HexCoreTests.HexGraph
             expectedMovementRange2D.Remove(new Coordinate2D(2, 0, OffsetTypes.OddRowsRight));
 
             expectedMovementRange = Coordinate2D.To3D(expectedMovementRange2D);
-
             movementRange = graph.GetMovementRange(center, 2, MovementTypesFixture.Walking);
 
             Assert.That(movementRange, Is.EqualTo(expectedMovementRange));
+
+            Assert.That(
+                graph.GetMovementRange(center2d, 2, MovementTypesFixture.Walking),
+                Is.EquivalentTo(expectedMovementRange2D)
+            );
         }
 
         [Test]
@@ -144,6 +149,11 @@ namespace HexCoreTests.HexGraph
                 new Coordinate3D(2, -4, 2)
             };
             Assert.That(neighbors, Is.EqualTo(expectedNeighbors));
+
+            Assert.That(
+                graph.GetNeighbors(offsetTarget, false).ToList(), 
+                Is.EquivalentTo(Coordinate3D.To2D(expectedNeighbors, OffsetTypes.OddRowsRight))
+            );
         }
 
         [Test]
@@ -151,7 +161,8 @@ namespace HexCoreTests.HexGraph
         {
             var graph = GraphFactory.CreateRectangularGraph(6, 7, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
-            var center = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight).To3D();
+            var center2d = new Coordinate2D(3, 2, OffsetTypes.OddRowsRight);
+            var center = center2d.To3D();
 
             var expectedRange2D = new List<Coordinate2D>
             {
@@ -181,11 +192,13 @@ namespace HexCoreTests.HexGraph
 
             var range = graph.GetRange(center, 2);
 
-            Assert.That(range, Is.EqualTo(expectedMovementRange));
+            Assert.That(range, Is.EquivalentTo(expectedMovementRange));
+            
+            Assert.That(graph.GetRange(center2d, 2), Is.EquivalentTo(expectedRange2D));
         }
 
         [Test]
-        public void GetShortestPath_ShouldBeAbleToFindingShortesetPath()
+        public void GetShortestPath_ShouldBeAbleToFindingShortestPath()
         {
             // Note: this method uses AStarSearch class inside.
             // AStarSerach has its own comprehensive tests, so this test is only to ensure that this method exists and
@@ -216,10 +229,13 @@ namespace HexCoreTests.HexGraph
 
             position = new Coordinate3D(-1, 2, -1);
             Assert.That(graph.Contains(position), Is.False);
+
+            Assert.That(graph.Contains(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.True);
+            Assert.That(graph.Contains(new Coordinate2D(10, 10, OffsetTypes.OddRowsRight)), Is.False);
         }
 
         [Test]
-        public void SetManyCellsMovementType_ShouldSetMovementTypesToCells()
+        public void SetManyCellsMovementType_ShouldSetTerrainTypesToCells()
         {
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
@@ -238,6 +254,14 @@ namespace HexCoreTests.HexGraph
             graph.SetCellsTerrainType(coordinatesToSet, MovementTypesFixture.Water);
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).TerrainType, Is.EqualTo(MovementTypesFixture.Water));
+            
+            graph.SetCellsTerrainType(new []
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
+                new Coordinate2D(0, 2, OffsetTypes.OddRowsRight)
+            }, MovementTypesFixture.Air);
+            foreach (var coordinate in coordinatesToSet)
+                Assert.That(graph.GetCellState(coordinate).TerrainType, Is.EqualTo(MovementTypesFixture.Air));
         }
 
         [Test]
@@ -250,6 +274,12 @@ namespace HexCoreTests.HexGraph
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.True);
             graph.UnblockCells(new Coordinate3D(0, 0, 0));
             Assert.That(graph.IsCellBlocked(new Coordinate3D(0, 0, 0)), Is.False);
+            
+            Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.False);
+            graph.BlockCells(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight));
+            Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.True);
+            graph.UnblockCells(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight));
+            Assert.That(graph.IsCellBlocked(new Coordinate2D(1, 1, OffsetTypes.OddRowsRight)), Is.False);
         }
     }
 }

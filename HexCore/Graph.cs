@@ -45,6 +45,11 @@ namespace HexCore
         {
             return GetNeighbors(position, true);
         }
+        
+        public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate2D position)
+        {
+            return GetPassableNeighbors(position.To3D());
+        }
 
         /// <summary>
         ///     This methods gets movement costs to the coordinate for the movement type in range = 1.
@@ -109,6 +114,14 @@ namespace HexCore
                 if (Contains(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
             }
         }
+        
+        public IEnumerable<Coordinate2D> GetNeighbors(Coordinate2D position, bool onlyPassable)
+        {
+            return Coordinate3D.To2D(
+                GetNeighbors(position.To3D(), onlyPassable),
+                position.OffsetType
+            );
+        }
 
         public void AddCells(IEnumerable<CellState> newCellStatesList)
         {
@@ -127,10 +140,20 @@ namespace HexCore
             UpdateCellStateDictionary();
             UpdateCoordinatesList();
         }
+        
+        public void RemoveCells(IEnumerable<Coordinate2D> coordinatesToRemove2d)
+        {
+            RemoveCells(Coordinate2D.To3D(coordinatesToRemove2d));
+        }
 
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
             return _allCoordinates;
+        }
+        
+        public List<Coordinate2D> GetAllCellsCoordinates(OffsetTypes offsetType)
+        {
+            return Coordinate3D.To2D(_allCoordinates, offsetType);
         }
 
         public List<CellState> GetAllCells()
@@ -147,6 +170,16 @@ namespace HexCore
         {
             SetCellBlockStatus(coordinate, true);
         }
+        
+        public void BlockCells(IEnumerable<Coordinate2D> coordinates)
+        {
+            BlockCells(Coordinate2D.To3D(coordinates));
+        }
+
+        public void BlockCells(Coordinate2D coordinate)
+        {
+            BlockCells(coordinate.To3D());
+        }
 
         public void UnblockCells(IEnumerable<Coordinate3D> coordinates)
         {
@@ -156,6 +189,16 @@ namespace HexCore
         public void UnblockCells(Coordinate3D coordinate)
         {
             SetCellBlockStatus(coordinate, false);
+        }
+        
+        public void UnblockCells(IEnumerable<Coordinate2D> coordinates)
+        {
+            UnblockCells(Coordinate2D.To3D(coordinates));
+        }
+
+        public void UnblockCells(Coordinate2D coordinate)
+        {
+            UnblockCells(coordinate.To3D());
         }
 
         public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType terrainType)
@@ -171,6 +214,16 @@ namespace HexCore
         {
             SetCellsTerrainType(new List<Coordinate3D> {coordinate}, terrainType);
         }
+        
+        public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, ITerrainType terrainType)
+        {
+            SetCellsTerrainType(Coordinate2D.To3D(coordinates), terrainType);
+        }
+
+        public void SetCellsTerrainType(Coordinate2D coordinate, ITerrainType terrainType)
+        {
+            SetCellsTerrainType(coordinate.To3D(), terrainType);
+        }
 
         /// <summary>
         ///     Returns true if graph contains the coordinate, false otherwise
@@ -181,6 +234,11 @@ namespace HexCore
         {
             return _allCoordinates.Contains(coordinate);
         }
+        
+        public bool Contains(Coordinate2D coordinate)
+        {
+            return Contains(coordinate.To3D());
+        }
 
         /// <summary>
         ///     Returns true if the cell is marked as not passable, false otherwise
@@ -190,6 +248,11 @@ namespace HexCore
         public bool IsCellBlocked(Coordinate3D coordinate)
         {
             return GetCellState(coordinate).IsBlocked;
+        }
+        
+        public bool IsCellBlocked(Coordinate2D coordinate)
+        {
+            return IsCellBlocked(coordinate.To3D());
         }
 
         /// <summary>
@@ -223,6 +286,14 @@ namespace HexCore
             // So start position won't be included in the range
             visited.Remove(startPosition);
             return visited;
+        }
+        
+        public List<Coordinate2D> GetRange(Coordinate2D startPosition, int radius)
+        {
+            return Coordinate3D.To2D(
+                GetRange(startPosition.To3D(), radius), 
+                startPosition.OffsetType
+            );
         }
 
         public IEnumerable<Coordinate3D> GetLine(Coordinate3D start, Coordinate3D direction, int length)
@@ -273,6 +344,15 @@ namespace HexCore
             visited.Remove(startPosition);
             return visited;
         }
+        
+        public List<Coordinate2D> GetMovementRange(Coordinate2D startPosition, int movementPoints,
+            IMovementType movementType)
+        {
+            return Coordinate3D.To2D(
+                GetMovementRange(startPosition.To3D(), movementPoints, movementType), 
+                startPosition.OffsetType
+            );
+        }
 
         /// <summary>
         ///     Returns the state of the cell for a given coordinate
@@ -282,6 +362,11 @@ namespace HexCore
         public CellState GetCellState(Coordinate3D coordinate)
         {
             return _cellStatesDictionary[coordinate];
+        }
+        
+        public CellState GetCellState(Coordinate2D coordinate)
+        {
+            return GetCellState(coordinate.To3D());
         }
 
         /// <summary>
@@ -294,6 +379,14 @@ namespace HexCore
         public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, IMovementType unitMovementType)
         {
             return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);
+        }
+        
+        public List<Coordinate2D> GetShortestPath(Coordinate2D start, Coordinate2D goal, IMovementType unitMovementType)
+        {
+            return Coordinate3D.To2D(
+                GetShortestPath(start.To3D(), goal.To3D(), unitMovementType),
+                start.OffsetType
+            );
         }
 
         private struct Fringe
