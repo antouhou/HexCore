@@ -17,13 +17,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore --source https://api.nuget.org/v3/index.json
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: ./scripts/build.sh
     - name: Cover
       run: ./scripts/cover.sh
-    - name: Coveralls
+    - name: Publish coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}

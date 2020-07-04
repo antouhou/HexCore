@@ -1,0 +1,29 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Build
+        run: ./scripts/build.sh
+      - shell: bash
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          PACKAGES_API_KEY: ${{secrets.PACKAGES_API_KEY}}
+        run: ./scripts/publish.sh "${GITHUB_REF#refs/*/}" "$NUGET_API_KEY" "$PACKAGES_API_KEY"
+      - name: Publish coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

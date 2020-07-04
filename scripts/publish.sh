@@ -2,7 +2,7 @@
 
 VERSION=$1
 API_KEY=$2
-GITHUB_TOKEN=$3
+GITHUB_API_KEY=$3
 MISSING_OPTIONS_MESSAGE="
 Invalid arguments!\n
 Usage: ./publish.sh %version_to_publish% %nuget_key% %GitHub_packages_key%
@@ -13,4 +13,4 @@ Usage: ./publish.sh %version_to_publish% %nuget_key% %GitHub_packages_key%
 
 dotnet pack ./HexCore/HexCore.csproj --configuration Release
 dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -k ${API_KEY} -s "nuget.org"
-GITHUB_TOKEN=${GITHUB_TOKEN} dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -s "github"
+GITHUB_API_KEY=${GITHUB_API_KEY} dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -s "github"
