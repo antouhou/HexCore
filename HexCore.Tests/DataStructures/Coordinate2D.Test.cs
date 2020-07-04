@@ -18,7 +18,7 @@ namespace HexCoreTests.DataStructures
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1
             //Right: X + 1, Y - 1;
-            var expectedCubeCoordinates = new List<Coordinate3D>
+            var expectedCubeCoordinates = new []
             {
                 new Coordinate3D(0, 0, 0),
                 // Down right:
@@ -38,10 +38,8 @@ namespace HexCoreTests.DataStructures
                 // Down and left:
                 new Coordinate3D(1, -3, 2)
             };
-
-            Assert.That(cubeCoordinates.Count, Is.EqualTo(expectedCubeCoordinates.Count));
-            for (var index = 0; index < expectedCubeCoordinates.Count; index++)
-                Assert.That(cubeCoordinates[index], Is.EqualTo(expectedCubeCoordinates[index]));
+            
+            Assert.That(cubeCoordinates, Is.EqualTo(expectedCubeCoordinates));
         }
 
         [Test]

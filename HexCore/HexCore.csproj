@@ -5,7 +5,7 @@
         <RootNamespace>HexCore</RootNamespace>
         <Version>4.0.0</Version>
         <Authors>Anton Suprunchuk</Authors>
-        <Description>Yet another library to manage hexagonal grids</Description>
+        <Description>Yet another library to manage hexagonal grids. For docs and usage examples please see the GitHub repo.</Description>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/antouhou/HexCore</RepositoryUrl>
         <PackageId>HexCore</PackageId>

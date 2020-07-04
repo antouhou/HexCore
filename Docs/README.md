@@ -105,6 +105,8 @@ var c = a + b; // c == -1, 2, -1
 var d = c * 2; // d == -2, 4, -2
 ```
 
+All `Graph` methods accept both offset coordinates and 3d coordinates. The result will be returned with the same coordinate type that was passed to the method.
+
 ## Finding the shortest path
 
 After the graph is initialized, simply call `graph.GetShortestPath(start, goal, pawnMovementType)` method on it. It accepts three parameters: coordinate from, coordinate to and, your pawn's movement type. If there's a path from a to b, it will return a sorted list containing the path excluding the starting point. For example for the 3x3 graph, where top the top left is `(0,0)` and the bottom right is `(2,2)`, the path from the bottom right to the top left would be `{(1,1),(1,0),(0,0)}`. 

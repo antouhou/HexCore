@@ -8,8 +8,7 @@ namespace HexCore
     public class Graph : IWeightedGraph
     {
         // Possible directions to detect neighbors        
-        public static readonly List<Coordinate3D> Directions = new List<Coordinate3D>
-        {
+        public static readonly Coordinate3D[] Directions = {
             new Coordinate3D(+1, -1, 0),
             new Coordinate3D(+1, 0, -1),
             new Coordinate3D(0, +1, -1),
@@ -23,8 +22,6 @@ namespace HexCore
         private List<Coordinate3D> _allCoordinates;
 
         private Dictionary<Coordinate3D, CellState> _cellStatesDictionary;
-
-        private List<Coordinate3D> _emptyCells;
 
         private MovementTypes _movementTypes;
 
@@ -79,7 +76,6 @@ namespace HexCore
         private void UpdateCoordinatesList()
         {
             _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
-            _emptyCells = _cellStatesList.Where(cell => !cell.IsBlocked).Select(cell => cell.Coordinate3).ToList();
         }
 
         private void SetCellBlockStatus(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
@@ -89,13 +85,11 @@ namespace HexCore
                 var cellState = GetCellState(coordinate);
                 cellState.IsBlocked = isBlocked;
             }
-
-            UpdateCoordinatesList();
         }
 
         private void SetCellBlockStatus(Coordinate3D coordinate, bool isBlocked)
         {
-            SetCellBlockStatus(new List<Coordinate3D> {coordinate}, isBlocked);
+            SetCellBlockStatus(new []{coordinate}, isBlocked);
         }
 
         /* Public methods */
@@ -108,11 +102,9 @@ namespace HexCore
         /// <returns>The list of this cell's neighbors</returns>
         public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
         {
-            foreach (var direction in Directions)
-            {
-                var next = position + direction;
-                if (Contains(next) && !(onlyPassable && IsCellBlocked(next))) yield return next;
-            }
+            return Directions
+                .Select(direction => position + direction)
+                .Where(next => Contains(next) && !(onlyPassable && IsCellBlocked(next)));
         }
         
         public IEnumerable<Coordinate2D> GetNeighbors(Coordinate2D position, bool onlyPassable)
@@ -134,7 +126,7 @@ namespace HexCore
             UpdateCoordinatesList();
         }
 
-        public void RemoveCells(List<Coordinate3D> coordinatesToRemove)
+        public void RemoveCells(IEnumerable<Coordinate3D> coordinatesToRemove)
         {
             _cellStatesList.RemoveAll(cellState => coordinatesToRemove.Contains(cellState.Coordinate3));
             UpdateCellStateDictionary();
@@ -212,7 +204,7 @@ namespace HexCore
 
         public void SetCellsTerrainType(Coordinate3D coordinate, ITerrainType terrainType)
         {
-            SetCellsTerrainType(new List<Coordinate3D> {coordinate}, terrainType);
+            SetCellsTerrainType(new []{coordinate}, terrainType);
         }
         
         public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, ITerrainType terrainType)

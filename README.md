@@ -3,8 +3,7 @@
 # HexCore ![alt text][logo] 
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/HexCore)](https://www.nuget.org/packages/HexCore)
 
-HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, variuos coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
-
+HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, various coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
 ## Installation
 
 The library can be installed from [NuGet](https://www.nuget.org/packages/HexCore). Run from the command line `dotnet add package HexCore` in your project or use your IDE of choice.
