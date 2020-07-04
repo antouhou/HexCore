@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Cover
-      run: ./coverage.sh
+      run: ./scripts/cover.sh
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:

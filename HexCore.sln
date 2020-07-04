@@ -13,8 +13,6 @@ EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{5A67B6A9-1364-4362-88BC-28D1DE110B48}"
 ProjectSection(SolutionItems) = preProject
-	coverage.sh = coverage.sh
-	publish.sh = publish.sh
 	icon.png = icon.png
 	icon48.png = icon48.png
 	NuGet.config = NuGet.config
@@ -31,6 +29,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{18806130-1907-4EB9-9A51-06DF04E0EF07}"
 ProjectSection(SolutionItems) = preProject
 	.github\workflows\dotnet-build-cover.yml = .github\workflows\dotnet-build-cover.yml
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{693E2802-5F5C-4D72-A8D7-E58BFBE30287}"
+ProjectSection(SolutionItems) = preProject
+	scripts\publish.sh = scripts\publish.sh
+	scripts\cover.sh = scripts\cover.sh
 EndProjectSection
 EndProject
 Global
