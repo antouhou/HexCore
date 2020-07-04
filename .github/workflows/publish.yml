@@ -18,8 +18,8 @@ jobs:
           dotnet-version: 3.1.101
       - name: Build
         run: ./scripts/build.sh
-     - name: Test
-       run: ./scripts/cover.sh
+      - name: Test
+        run: ./scripts/cover.sh
       - shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
