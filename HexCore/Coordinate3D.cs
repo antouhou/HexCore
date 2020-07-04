@@ -73,7 +73,10 @@ namespace HexCore
         {
             return new Coordinate3D(a.X * scalar, a.Y * scalar, a.Z * scalar);
         }
-        
-        public override string ToString() => $"({X}, {Y}, {Z})";
+
+        public override string ToString()
+        {
+            return $"({X}, {Y}, {Z})";
+        }
     }
 }

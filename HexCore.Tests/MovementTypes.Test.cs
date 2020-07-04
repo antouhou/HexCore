@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using HexCore;
+using HexCoreTests.Fixtures;
 using NUnit.Framework;
 
-namespace HexCoreTests.HexGraph
+namespace HexCoreTests
 {
     [TestFixture]
     public class MovementTypesTest
@@ -251,6 +252,30 @@ namespace HexCoreTests.HexGraph
             Assert.That(movementTypes.GetMovementCost(swimmingType, ground), Is.EqualTo(2));
             Assert.That(movementTypes.GetMovementCost(walkingType, air), Is.EqualTo(999));
             Assert.That(movementTypes.GetMovementCost(flyingType, ground), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void GetMovementCost_ShouldThrow_WhenUnknownMovementTypeIsPassed()
+        {
+            var unknownMovementType = new MovementType(1, "Some movement type");
+
+            var movementTypes = MovementTypesFixture.GetMovementTypes();
+
+            Assert.That(() => { movementTypes.GetMovementCost(unknownMovementType, MovementTypesFixture.Ground); },
+                Throws.ArgumentException.With.Message.EqualTo(
+                    "Unknown movement type: 'Some movement type'"));
+        }
+
+        [Test]
+        public void GetMovementCost_ShouldThrow_WhenUnknownTerrainTypeIsPassed()
+        {
+            var unknownTerrainType = new TerrainType(1, "Some terrain type");
+
+            var movementTypes = MovementTypesFixture.GetMovementTypes();
+
+            Assert.That(() => { movementTypes.GetMovementCost(MovementTypesFixture.Walking, unknownTerrainType); },
+                Throws.ArgumentException.With.Message.EqualTo(
+                    "Unknown terrain type: 'Some terrain type'"));
         }
 
         [Test]

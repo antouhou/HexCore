@@ -8,13 +8,14 @@ namespace HexCore
     public class Graph : IWeightedGraph
     {
         // Possible directions to detect neighbors        
-        public static readonly Coordinate3D[] Directions = {
-            new Coordinate3D(+1, -1, 0),
-            new Coordinate3D(+1, 0, -1),
+        public static readonly Coordinate3D[] Directions =
+        {
             new Coordinate3D(0, +1, -1),
-            new Coordinate3D(-1, +1, 0),
+            new Coordinate3D(+1, 0, -1),
+            new Coordinate3D(+1, -1, 0),
+            new Coordinate3D(0, -1, +1),
             new Coordinate3D(-1, 0, +1),
-            new Coordinate3D(0, -1, +1)
+            new Coordinate3D(-1, +1, 0)
         };
 
         private readonly List<CellState> _cellStatesList = new List<CellState>();
@@ -42,11 +43,6 @@ namespace HexCore
         {
             return GetNeighbors(position, true);
         }
-        
-        public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate2D position)
-        {
-            return GetPassableNeighbors(position.To3D());
-        }
 
         /// <summary>
         ///     This methods gets movement costs to the coordinate for the movement type in range = 1.
@@ -58,11 +54,16 @@ namespace HexCore
         /// <exception cref="InvalidOperationException"></exception>
         public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
         {
-            if (!_movementTypes.ContainsMovementType(unitMovementType))
-                throw new InvalidOperationException(
-                    $"Unknown movement type: {unitMovementType.Name}");
             var cellState = GetCellState(coordinate);
             return _movementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
+        }
+
+        public IEnumerable<Coordinate2D> GetPassableNeighbors(Coordinate2D position)
+        {
+            return Coordinate3D.To2D(
+                GetPassableNeighbors(position.To3D()),
+                position.OffsetType
+            );
         }
 
         /* Private methods */
@@ -89,7 +90,7 @@ namespace HexCore
 
         private void SetCellBlockStatus(Coordinate3D coordinate, bool isBlocked)
         {
-            SetCellBlockStatus(new []{coordinate}, isBlocked);
+            SetCellBlockStatus(new[] {coordinate}, isBlocked);
         }
 
         /* Public methods */
@@ -106,7 +107,7 @@ namespace HexCore
                 .Select(direction => position + direction)
                 .Where(next => Contains(next) && !(onlyPassable && IsCellBlocked(next)));
         }
-        
+
         public IEnumerable<Coordinate2D> GetNeighbors(Coordinate2D position, bool onlyPassable)
         {
             return Coordinate3D.To2D(
@@ -119,8 +120,8 @@ namespace HexCore
         {
             var cellStates = newCellStatesList as CellState[] ?? newCellStatesList.ToArray();
             foreach (var cell in cellStates.Where(cell => !_movementTypes.ContainsTerrainType(cell.TerrainType)))
-                throw new InvalidOperationException(
-                    $"One of the cells in graph has an unknown type: {cell.TerrainType.Name}");
+                throw new ArgumentException(
+                    $"One of the cells in graph has an unknown terrain type: '{cell.TerrainType.Name}'");
             _cellStatesList.AddRange(cellStates);
             UpdateCellStateDictionary();
             UpdateCoordinatesList();
@@ -132,7 +133,7 @@ namespace HexCore
             UpdateCellStateDictionary();
             UpdateCoordinatesList();
         }
-        
+
         public void RemoveCells(IEnumerable<Coordinate2D> coordinatesToRemove2d)
         {
             RemoveCells(Coordinate2D.To3D(coordinatesToRemove2d));
@@ -142,7 +143,7 @@ namespace HexCore
         {
             return _allCoordinates;
         }
-        
+
         public List<Coordinate2D> GetAllCellsCoordinates(OffsetTypes offsetType)
         {
             return Coordinate3D.To2D(_allCoordinates, offsetType);
@@ -162,7 +163,7 @@ namespace HexCore
         {
             SetCellBlockStatus(coordinate, true);
         }
-        
+
         public void BlockCells(IEnumerable<Coordinate2D> coordinates)
         {
             BlockCells(Coordinate2D.To3D(coordinates));
@@ -182,7 +183,7 @@ namespace HexCore
         {
             SetCellBlockStatus(coordinate, false);
         }
-        
+
         public void UnblockCells(IEnumerable<Coordinate2D> coordinates)
         {
             UnblockCells(Coordinate2D.To3D(coordinates));
@@ -204,9 +205,9 @@ namespace HexCore
 
         public void SetCellsTerrainType(Coordinate3D coordinate, ITerrainType terrainType)
         {
-            SetCellsTerrainType(new []{coordinate}, terrainType);
+            SetCellsTerrainType(new[] {coordinate}, terrainType);
         }
-        
+
         public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, ITerrainType terrainType)
         {
             SetCellsTerrainType(Coordinate2D.To3D(coordinates), terrainType);
@@ -226,7 +227,7 @@ namespace HexCore
         {
             return _allCoordinates.Contains(coordinate);
         }
-        
+
         public bool Contains(Coordinate2D coordinate)
         {
             return Contains(coordinate.To3D());
@@ -241,7 +242,7 @@ namespace HexCore
         {
             return GetCellState(coordinate).IsBlocked;
         }
-        
+
         public bool IsCellBlocked(Coordinate2D coordinate)
         {
             return IsCellBlocked(coordinate.To3D());
@@ -279,11 +280,11 @@ namespace HexCore
             visited.Remove(startPosition);
             return visited;
         }
-        
+
         public List<Coordinate2D> GetRange(Coordinate2D startPosition, int radius)
         {
             return Coordinate3D.To2D(
-                GetRange(startPosition.To3D(), radius), 
+                GetRange(startPosition.To3D(), radius),
                 startPosition.OffsetType
             );
         }
@@ -336,12 +337,12 @@ namespace HexCore
             visited.Remove(startPosition);
             return visited;
         }
-        
+
         public List<Coordinate2D> GetMovementRange(Coordinate2D startPosition, int movementPoints,
             IMovementType movementType)
         {
             return Coordinate3D.To2D(
-                GetMovementRange(startPosition.To3D(), movementPoints, movementType), 
+                GetMovementRange(startPosition.To3D(), movementPoints, movementType),
                 startPosition.OffsetType
             );
         }
@@ -355,7 +356,7 @@ namespace HexCore
         {
             return _cellStatesDictionary[coordinate];
         }
-        
+
         public CellState GetCellState(Coordinate2D coordinate)
         {
             return GetCellState(coordinate.To3D());
@@ -372,7 +373,7 @@ namespace HexCore
         {
             return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);
         }
-        
+
         public List<Coordinate2D> GetShortestPath(Coordinate2D start, Coordinate2D goal, IMovementType unitMovementType)
         {
             return Coordinate3D.To2D(

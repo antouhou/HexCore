@@ -14,7 +14,7 @@ namespace HexCore
         public int Id { get; }
         public string Name { get; }
 
-        public bool Equals(IMovementType other)
+        public bool Equals(ITerrainType other)
         {
             if (other is null)
                 return false;
