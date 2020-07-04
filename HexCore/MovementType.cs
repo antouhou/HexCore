@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace HexCore.HexGraph
+namespace HexCore
 {
     [Serializable]
-    public class MovementType : IMovementType
+    public struct MovementType : IMovementType
     {
         public MovementType(int id, string name)
         {

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HexCore.DataStructures
+namespace HexCore
 {
     [Serializable]
     public struct Coordinate2D
     {
         public readonly int X, Y;
-        private readonly OffsetTypes _offsetType;
+        public readonly OffsetTypes OffsetType;
 
         public Coordinate3D To3D()
         {
             int x, y, z;
-            switch (_offsetType)
+            switch (OffsetType)
             {
                 case OffsetTypes.OddRowsRight:
                     x = X - (Y - Y % 2) / 2;
@@ -36,7 +36,7 @@ namespace HexCore.DataStructures
                     y = -x - z;
                     return new Coordinate3D(x, y, z);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_offsetType), _offsetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(OffsetType), OffsetType, null);
             }
         }
 
@@ -49,7 +49,9 @@ namespace HexCore.DataStructures
         {
             X = x;
             Y = y;
-            _offsetType = offsetType;
+            OffsetType = offsetType;
         }
+        
+        public override string ToString() => $"({X}, {Y})";
     }
 }

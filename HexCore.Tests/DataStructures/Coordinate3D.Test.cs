@@ -1,5 +1,5 @@
 using System;
-using HexCore.DataStructures;
+using HexCore;
 using NUnit.Framework;
 
 namespace HexCoreTests.DataStructures

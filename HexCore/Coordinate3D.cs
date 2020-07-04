@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HexCore.DataStructures
+namespace HexCore
 {
     [Serializable]
     public struct Coordinate3D
@@ -73,5 +73,7 @@ namespace HexCore.DataStructures
         {
             return new Coordinate3D(a.X * scalar, a.Y * scalar, a.Z * scalar);
         }
+        
+        public override string ToString() => $"({X}, {Y}, {Z})";
     }
 }
