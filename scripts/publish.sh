@@ -12,5 +12,5 @@ Usage: ./publish.sh %version_to_publish% %nuget_key% %GitHub_packages_key%
 [[ -z "$3" ]] && { echo $MISSING_OPTIONS_MESSAGE ; exit 1; }
 
 dotnet pack ./HexCore/HexCore.csproj --configuration Release
-PACKAGES_API_KEY=${PACKAGES_API_KEY} dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -s "github"
-dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -k ${API_KEY} -s "nuget.org"
+PACKAGES_API_KEY=${PACKAGES_API_KEY} dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -s "github" --skip-duplicate
+dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -k ${API_KEY} -s "nuget.org" --skip-duplicate
