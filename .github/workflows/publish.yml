@@ -25,7 +25,3 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
           PACKAGES_API_KEY: ${{secrets.PACKAGES_API_KEY}}
         run: ./scripts/publish.sh "${GITHUB_REF#refs/tags/v}" "$NUGET_API_KEY" "$PACKAGES_API_KEY"
-      - name: Publish coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
