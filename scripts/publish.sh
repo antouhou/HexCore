@@ -13,4 +13,4 @@ Usage: ./publish.sh %version_to_publish% %nuget_key% %GitHub_packages_key%
 
 dotnet pack ./HexCore/HexCore.csproj --configuration Release
 dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -k ${API_KEY} -s "nuget.org" --skip-duplicate
-PACKAGES_API_KEY=${PACKAGES_API_KEY} dotnet nuget push ./HexCore/bin/Release/HexCore.$VERSION.nupkg -s "github" --skip-duplicate
+curl -vX PUT -u "[antouhou]:${PACKAGES_API_KEY}" -F package=./HexCore/bin/Release/HexCore.$VERSION.nupkg https://nuget.pkg.github.com/antouhou/
