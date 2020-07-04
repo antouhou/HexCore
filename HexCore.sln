@@ -14,9 +14,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{5A67B6A9-1364-4362-88BC-28D1DE110B48}"
 ProjectSection(SolutionItems) = preProject
 	coverage.sh = coverage.sh
-	coverage.filter = coverage.filter
-	Jenkinsfile = Jenkinsfile
-	nunit3-junit.xslt = nunit3-junit.xslt
 	publish.sh = publish.sh
 	icon.png = icon.png
 	icon48.png = icon48.png
@@ -27,6 +24,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{8312DC1F-A2C1-4A30-8E62-59F41C9DA8CE}"
 ProjectSection(SolutionItems) = preProject
 	Docs\README.md = Docs\README.md
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{59CBB725-B2A4-4579-89E5-F73CDE744764}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{18806130-1907-4EB9-9A51-06DF04E0EF07}"
+ProjectSection(SolutionItems) = preProject
+	.github\workflows\dotnet-build-cover.yml = .github\workflows\dotnet-build-cover.yml
 EndProjectSection
 EndProject
 Global
@@ -43,5 +47,8 @@ Global
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{18806130-1907-4EB9-9A51-06DF04E0EF07} = {59CBB725-B2A4-4579-89E5-F73CDE744764}
 	EndGlobalSection
 EndGlobal
