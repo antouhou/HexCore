@@ -1,0 +1,295 @@
+@using HexCore
+@using HexCore.Website.Data
+
+<div>
+    <div class="hex-demo-container">
+        <div class="hex-field">
+            <div>
+                <h2>Map</h2>
+            </div>
+            @foreach (var rowIndex in Enumerable.Range(0, SortedCells.Keys.Max() + 1))
+            {
+                <div class='hex-row @(rowIndex % 2 == 1 ? "even" : "")'>
+                    @foreach (var columnIndex in Enumerable.Range(0, GetMaxColumnNumber()))
+                    {
+                        <div
+                            class="hex @GetHexClassName(rowIndex, columnIndex)"
+                            @onclick="@(e => OnHexTileClick(rowIndex, columnIndex))">
+                            <div class="top"></div>
+                            <div class="middle">
+                                @if (CellExists(rowIndex, columnIndex))
+                                {
+                                    @if (IsOccupied(rowIndex, columnIndex))
+                                    {
+                                        <div class="unit @GetUnitColor(rowIndex, columnIndex)" >
+                                            <div class="unit-content">@GetPawn(rowIndex, columnIndex).Name</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @SortedCells[rowIndex][columnIndex].Coordinate3.To2D(OffsetTypes.OddRowsRight).ToString()
+                                        // <div>Terrain: @SortedCells[rowIndex][columnIndex].TerrainType.Name</div>
+                                        @if (_highlightGreen.Contains(SortedCells[rowIndex][columnIndex].Coordinate3.To2D(OffsetTypes.OddRowsRight)))
+                                        {
+                                            <button class="btn btn-sm btn-info" @onclick="@(e => OnMoveClick(rowIndex, columnIndex))">Move</button>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="oi oi-cloudy"></span>
+                                }
+                            </div>
+                            <div class="bottom"></div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        
+        <div>
+            <div>
+                <h2>Current selection</h2>
+            </div>
+            <div>
+                <div><h3>Cell</h3></div>
+                <div>
+                    <div class="hex-selection-row">
+                        <div>Offset coordinate:</div>
+                        <div>@_currentlySelected.Coordinate3.To2D(OffsetTypes.OddRowsRight).ToString()</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Cube coordinate:</div>
+                        <div>@_currentlySelected.Coordinate3.ToString()</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Is passable:</div>
+                        <div>@(_currentlySelected.IsBlocked ? "No" : "Yes")</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Cube coordinate:</div>
+                        <div>
+                            <button class="btn btn-sm btn-primary">Select neighbors</button>
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Get range:</div>
+                        <div>
+                            <button class="btn btn-sm btn-primary">Select range</button>
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Terrain type:</div>
+                        <div>
+                            @_currentlySelected.TerrainType.Name
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Find path:</div>
+                        <div>
+                            <button class="btn btn-sm btn-primary">Select to</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div><h3>Pawn</h3></div>
+                @if (_selectedPawn != null)
+                {
+                    <div class="hex-selection-row">
+                        <div>Pawn name:</div>
+                        <div>
+                            @_selectedPawn.Name
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Movement type:</div>
+                        <div>
+                            @_selectedPawn.MovementType.Name
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Movement range:</div>
+                        <div>
+                            @_selectedPawn.MovementRange
+                        </div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <button class="btn btn-sm btn-primary">Get movement range</button>
+                    </div>
+                    <div>
+                        <span>@_selectedPawn.CurrentPosition</span>
+                        @foreach (var cell in _highlightRed)
+                        {
+                            <span> -> @cell</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <span>No pawn on the selected tile</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private GraphData _graphData;
+    private CellState _currentlySelected;
+    private SimplePawn _selectedPawn;
+    private List<Coordinate2D> _highlightGreen;
+    private List<Coordinate2D> _highlightRed;
+    
+    [Parameter]
+    public GraphData GraphParameter
+    {
+        get => _graphData;
+        set
+        {
+            _graphData = value;
+            SortedCells = SortCells(_graphData.Graph.GetAllCells());
+            OnHexTileClick(0, 1);
+        } 
+    }
+
+    private int GetMaxColumnNumber()
+    {
+        return SortedCells
+            .Select(row => row.Value.Keys.Max() + 1)
+            .Concat(new[] {0})
+            .Max();
+    }
+
+    private bool CellExists(int row, int column)
+    {
+        return SortedCells.ContainsKey(row) && SortedCells[row].ContainsKey(column);
+    }
+
+    private Dictionary<int, Dictionary<int, CellState>> SortedCells { get; set; }
+
+    private string GetHexClassName(int row, int column)
+    {
+        var className = "";
+
+        if (!CellExists(row, column))
+        {
+            return "empty";
+        }
+
+        var cell = SortedCells[row][column];
+
+        switch (cell.TerrainType.Name)
+        {
+            case "Ground":
+                className += " ground";
+                break;
+            case "Water":
+                className += " water";
+                break;
+        }
+        if (_highlightGreen.Contains(cell.Coordinate3.To2D(OffsetTypes.OddRowsRight)))
+        {
+            //className += " highlight-green";
+        }
+        if (cell.Coordinate3.Equals(_currentlySelected.Coordinate3))
+        {
+            className += " selected";
+        }
+
+        return className;
+    }
+
+    private static Dictionary<int, Dictionary<int, CellState>> SortCells(IEnumerable<CellState> cells)
+    {
+        var sortedCoordinates = new Dictionary<int, Dictionary<int, CellState>>();
+        foreach (var cell in cells)
+        {
+            var coordinate2d = cell.Coordinate3.To2D(OffsetTypes.OddRowsRight);
+            var row = coordinate2d.Y;
+            var col = coordinate2d.X;
+            if (!sortedCoordinates.ContainsKey(row))
+            {
+                sortedCoordinates.Add(row, new Dictionary<int, CellState>());
+            }
+            sortedCoordinates[row].Add(col, cell);
+        }
+
+        return sortedCoordinates;
+    }
+
+    private SimplePawn GetPawn(int row, int column)
+    {
+        return GraphParameter.Pawns.Find(pawn => pawn.CurrentPosition.Equals(@SortedCells[row][column].Coordinate3.To2D(OffsetTypes.OddRowsRight)));
+    }
+
+    private bool IsOccupied(int row, int column)
+    {
+        return GetPawn(row, column) != null;
+    }
+
+    private string GetUnitColor(int row, int column)
+    {
+        var pawn = GetPawn(row, column);
+
+        return pawn.Name switch
+        {
+            "Orc" => "green",
+            "Knight" => "red",
+            "Hydra" => "blue",
+            _ => ""
+        };
+    }
+
+    private void OnHexTileClick(int row, int column)
+    {
+        if (!CellExists(row, column)) return;
+        ClearHighlights();
+        _currentlySelected = SortedCells[row][column];
+        SelectPawn(row, column);
+    }
+
+    private void OnMoveClick(int row, int column)
+    {
+        var coordinate = new Coordinate2D(column, row, OffsetTypes.OddRowsRight);
+        HighlightRed(GraphParameter.Graph.GetShortestPath(
+            _selectedPawn.CurrentPosition, 
+            coordinate, 
+            _selectedPawn.MovementType)
+        );
+        GraphParameter.Graph.UnblockCells(_selectedPawn.CurrentPosition);
+        _selectedPawn.CurrentPosition = coordinate;
+        GraphParameter.Graph.BlockCells(_selectedPawn.CurrentPosition);
+    }
+
+    private void SelectPawn(int row, int column)
+    {
+        _selectedPawn = GetPawn(row, column);
+        if (_selectedPawn != null)
+        {
+            SelectMovementRange(_selectedPawn);
+        }
+    }
+
+    private void ClearHighlights()
+    {
+        _highlightGreen = new List<Coordinate2D>();
+        _highlightRed = new List<Coordinate2D>();
+    }
+
+    public void HighlightGreen(List<Coordinate2D> highlights)
+    {
+        _highlightGreen = highlights;
+    }
+    
+    public void HighlightRed(List<Coordinate2D> highlights)
+    {
+        _highlightRed = highlights;
+    }
+
+    private void SelectMovementRange(SimplePawn pawn)
+    {
+        var movementRange = _graphData.Graph.GetMovementRange(pawn.CurrentPosition, pawn.MovementRange, pawn.MovementType);
+        HighlightGreen(movementRange);
+    }
+}

@@ -1,0 +1,29 @@
+@page "/graphdemo"
+
+@using HexCore.Website.Data
+@inject GraphService GraphService
+
+<h1>Graph demo</h1>
+
+<p>This component demonstrates graph.</p>
+
+@if (graphs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var graphData in graphs)
+    {
+        <GraphComponent GraphParameter=@graphData></GraphComponent>
+    }
+}
+
+@code {
+    private GraphData[] graphs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        graphs = GraphService.GetGraphs();
+    }
+}
