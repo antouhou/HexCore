@@ -1,0 +1,81 @@
+@using HexCore
+@using HexCore.Website.Data
+@inject GraphService GraphService
+
+<div
+    class="hex @GetHexClassName()"
+    @onclick="@(e => OnTileClick())">
+    <div class="top"></div>
+    <div class="middle">
+        @if (TileData.IsEmptySpace) {
+            <span class="oi oi-cloudy"></span>
+        }
+        else
+        {
+            @if (HasPawnOnIt)
+            {
+                <div class="unit @TileData.Pawn.Color" >
+                    <div class="unit-content">@TileData.Pawn.Name</div>
+                </div>
+            }
+            else
+            {
+                @TileData.Coordinate2D.ToString()
+                @if (TileData.ShowMoveButton)
+                {
+                    <button class="btn btn-sm btn-info" @onclick="@(e => OnMoveButtonClick())">
+                        Move
+                    </button>
+                }
+            }
+        }
+
+    </div>
+    <div class="bottom"></div>
+</div>
+
+@code {
+    [Parameter]
+    public HexTileData TileData { get; set; }
+
+    private bool HasPawnOnIt => TileData.Pawn != null;
+    
+    private string GetHexClassName()
+    {
+        var className = "";
+
+        if (TileData.IsEmptySpace)
+        {
+            return "empty";
+        }
+
+        switch (TileData.CellState.TerrainType.Name)
+        {
+            case "Ground":
+                className += " ground";
+                break;
+            case "Water":
+                className += " water";
+                break;
+        }
+        if (TileData.IsSelected)
+        {
+            className += " selected";
+        }
+
+        return className;
+    }
+
+    private void OnTileClick()
+    {
+        if (TileData.CellState != null)
+        {
+            GraphService.SelectCell(TileData.CellState);
+        }
+    }
+
+    private void OnMoveButtonClick()
+    {
+        GraphService.MoveCurrentlySelectedPawn(TileData.Coordinate2D);
+    }
+}

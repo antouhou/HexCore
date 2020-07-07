@@ -7,23 +7,31 @@
 
 <p>This component demonstrates graph.</p>
 
-@if (graphs == null)
+@if (graph == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @foreach (var graphData in graphs)
-    {
-        <GraphComponent GraphParameter=@graphData></GraphComponent>
-    }
+    <GraphComponent GraphParameter=@graph></GraphComponent>
 }
 
 @code {
-    private GraphData[] graphs;
-
+    private GraphData graph;
+    
+    private void OnGraphDataChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+    
     protected override async Task OnInitializedAsync()
     {
-        graphs = GraphService.GetGraphs();
+        graph = GraphService.GetGraph();
+        GraphService.GraphDataUpdated += OnGraphDataChanged;
+    }
+    
+    public void Dispose()
+    {
+        GraphService.GraphDataUpdated -= OnGraphDataChanged;
     }
 }
