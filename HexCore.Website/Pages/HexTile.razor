@@ -3,7 +3,7 @@
 @inject GraphService GraphService
 
 <div
-    class="hex @GetHexClassName()"
+    class="hex outer @GetOuterHexClassName()"
     @onclick="@(e => OnTileClick())">
     <div class="top"></div>
     <div class="middle">
@@ -12,22 +12,32 @@
         }
         else
         {
-            @if (HasPawnOnIt)
-            {
-                <div class="unit @TileData.Pawn.Color" >
-                    <div class="unit-content">@TileData.Pawn.Name</div>
+            <div class="hex inner @GetInnerHexClassName()">
+                <div class="top"></div>
+                <div class="middle">
+                    @if (HasPawnOnIt)
+                    {
+                         <div class="unit-container">
+                              <div class="unit @TileData.Pawn.Color" >
+                                  <div class="unit-content">@TileData.Pawn.Name</div>
+                              </div>
+                         </div>
+                    }
+                    else
+                    {
+                        <div>
+                            @TileData.Coordinate2D.ToString()
+                        </div>
+                    @if (TileData.ShowMoveButton)
+                    {
+                         <button class="btn btn-sm btn-info" @onclick="@(e => OnMoveButtonClick())">
+                             Move
+                         </button>
+                    }
+                    }
                 </div>
-            }
-            else
-            {
-                @TileData.Coordinate2D.ToString()
-                @if (TileData.ShowMoveButton)
-                {
-                    <button class="btn btn-sm btn-info" @onclick="@(e => OnMoveButtonClick())">
-                        Move
-                    </button>
-                }
-            }
+                <div class="bottom"></div>
+            </div>
         }
 
     </div>
@@ -39,8 +49,25 @@
     public HexTileData TileData { get; set; }
 
     private bool HasPawnOnIt => TileData.Pawn != null;
+
+    private string GetOuterHexClassName()
+    {
+        var className = "";
+        
+        if (TileData.IsEmptySpace)
+        {
+            return "empty";
+        }
+        
+        if (TileData.IsSelected)
+        {
+            className += " selected";
+        }
+
+        return className;
+    }
     
-    private string GetHexClassName()
+    private string GetInnerHexClassName()
     {
         var className = "";
 
@@ -57,10 +84,6 @@
             case "Water":
                 className += " water";
                 break;
-        }
-        if (TileData.IsSelected)
-        {
-            className += " selected";
         }
 
         return className;

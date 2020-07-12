@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="HexCore" Version="4.0.2" />
+    <PackageReference Include="Markdig" Version="0.20.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +22,10 @@
     </Content>
     <Content Update="Pages\HexTile.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="wwwroot\water-texture.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 

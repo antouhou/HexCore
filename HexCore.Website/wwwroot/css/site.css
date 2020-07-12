@@ -190,7 +190,7 @@ app {
 }
 .hex .top {
     width: 0;
-    border-bottom: 30px solid #F9C74F;
+    border-bottom: 30px solid transparent;
     border-left: 52px solid transparent;
     border-right: 52px solid transparent;
     transition: border-bottom-color 0.15s ease;
@@ -198,16 +198,46 @@ app {
 .hex .middle {
     width: 104px;
     height: 60px;
-    background: #F9C74F;
     transition: background-color 0.15s ease;
-    padding: 0 20px 0 20px;
 }
 .hex .bottom {
     width: 0;
-    border-top: 30px solid #F9C74F;
+    border-top: 30px solid transparent;
     border-left: 52px solid transparent;
     border-right: 52px solid transparent;
     transition: border-top-color 0.15s ease;
+}
+
+.hex.inner {
+    cursor: pointer;
+    text-align: center;
+    z-index: 1;
+    position: relative;
+    top: -30px;
+    transform: scale(0.9);
+    margin: 0;
+}
+.hex.inner .top {
+    width: 0;
+    border-bottom: 30px solid;
+    border-left: 52px solid transparent;
+    border-right: 52px solid transparent;
+    transition: border-bottom-color 0.15s ease;
+    z-index: 1;
+}
+.hex.inner .middle {
+    width: 104px;
+    height: 60px;
+    transition: background-color 0.15s ease;
+    z-index: 1;
+}
+.hex.inner .bottom {
+    width: 0;
+    border-top: 30px solid;
+    border-left: 52px solid transparent;
+    border-right: 52px solid transparent;
+    transition: border-top-color 0.15s ease;
+    z-index: 1;
 }
 
 .hex.ground .top {
@@ -243,23 +273,23 @@ app {
     border-top: 30px solid #90be6d;
 }
 
-.hex:hover .top {
+.hex.outer:hover > .top {
     border-bottom: 30px solid #43AA8B;
 }
-.hex:hover .middle {
+.hex.outer:hover > .middle {
     background: #43AA8B;
 }
-.hex:hover .bottom {
+.hex.outer:hover > .bottom {
     border-top: 30px solid #43AA8B;
 }
 
-.hex.selected .top {
+.hex.selected > .top {
     border-bottom: 30px solid #43AA8B;
 }
-.hex.selected .middle {
+.hex.selected > .middle {
     background: #43AA8B;
 }
-.hex.selected .bottom {
+.hex.selected > .bottom {
     border-top: 30px solid #43AA8B;
 }
 
@@ -275,6 +305,24 @@ app {
     background: transparent;
 }
 .hex.empty .bottom {
+    width: 0;
+    border-top: 30px solid transparent;
+    border-left: 52px solid transparent;
+    border-right: 52px solid transparent;
+}
+
+.hex.empty:hover .top {
+    width: 0;
+    border-bottom: 30px solid transparent;
+    border-left: 52px solid transparent;
+    border-right: 52px solid transparent;
+}
+.hex.empty:hover .middle {
+    width: 104px;
+    height: 60px;
+    background: transparent;
+}
+.hex.empty:hover .bottom {
     width: 0;
     border-top: 30px solid transparent;
     border-left: 52px solid transparent;
@@ -302,9 +350,14 @@ app {
     padding: 5px;
 }
 
-.unit {
-    border-radius: 50%;
+.unit-container {
     height: 100%;
+    padding: 0 20px;
+}
+
+.unit {
+    height: 100%;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     text-align: center;
