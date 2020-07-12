@@ -394,11 +394,7 @@ app {
 /* Top */
 
 .navigation {
-    font-size: 0.9rem;
-    box-shadow: 0 -2px 7px gray;
-    position: fixed;
-    width: 100%;
-    max-height: 4rem;
+    background: #323330;
 }
 
 .navigation-logo {
@@ -432,10 +428,90 @@ app {
     /* background: linear-gradient(to bottom right, #FFBE0B, #FF006E); */
 }
 
+.top-section-logo {
+    padding: 1rem;
+}
+
 /* Mid section */
 
 .mid-section {
     padding: 4rem 0;
+}
+
+/* Points section */
+
+.point-section {
+    padding: 5rem;
+}
+
+.point-section-header {
+    text-align: center;
+    font-size: 1.5rem;
+    padding-bottom: 0.5em;
+    font-weight: bold;
+}
+
+.point-section-text {
+    font-size: 1.2rem;
+    padding-bottom: 1.2rem;
+    text-align: center;
+}
+
+.point-section-intro {
+    font-size: 1rem;
+    text-align: center;
+    padding-bottom: 2rem;
+    line-height: 1.5rem;
+}
+
+.points-container {
+    display: flex;
+}
+
+.point {
+    padding: 1rem;
+    flex: 1;
+}
+
+.point-header {
+    padding: 1rem 0;
+    font-size: 1.2rem;
+}
+
+.point-icon {
+
+}
+
+.point-content {
+    line-height: 1.4rem;
+}
+
+.point-footer {
+    padding-top: 1rem;
+    cursor: pointer;
+}
+
+.point-footer a {
+    text-decoration: none;
+}
+
+.point-footer a:visited {
+    text-decoration: none;
+}
+
+.point-footer a i {
+    font-size: 12px;
+}
+
+.point-buttons-section {
+    flex: 1;
+}
+
+.point-button {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: underline;
+    flex: 1
 }
 
 /* Footer */
