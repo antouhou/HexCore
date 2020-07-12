@@ -18,11 +18,11 @@ The library can be installed from [NuGet](https://www.nuget.org/packages/HexCore
 
 ## Usage
 
+For the detailed explanations please see [the docs](./Docs).
+
 ## Demo
 
 For the interactive demo, please visit the [website](https://hexcore.antouhou.com)!
-
-For the detailed explanations please see [the docs](./Docs).
 
 ### Quickstart
 
