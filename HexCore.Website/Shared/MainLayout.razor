@@ -1,15 +1,45 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
-
 <div class="main">
     <div class="top-row px-4">
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <div class="flex container">
+            <div class="navigation-logo">
+                <a href="#"><img alt="logo" src="img/logo.svg"></a>
+            </div>
+            <div class="navigation-list flex text-dark-blue">
+                <a
+                        class="navigation-list-item text-dark-blue text-blue-hover text-dark-blue-visited"
+                        href="https://dash.org"
+                        target="_blank"
+                >
+                    Docs
+                </a>
+                <a
+                        class="navigation-list-item text-dark-blue text-blue-hover text-dark-blue-visited"
+                        href="https://dashdevs.org/"
+                        target="_blank"
+                >
+                    Quickstart
+                </a>
+                <a
+                        class="navigation-list-item text-dark-blue text-blue-hover text-dark-blue-visited"
+                        href="https://dashplatform.readme.io/docs/introduction-what-is-dash-platform"
+                        target="_blank"
+                >
+                    Interactive demo
+                </a>
+                <a
+                        class="navigation-list-item text-dark-blue text-blue-hover text-dark-blue-visited"
+                        href="https://github.com/dashevo"
+                        target="_blank"
+                >
+                    GitHub
+                </a>
+            </div>
+        </div>
     </div>
-
-    <div class="content px-4">
+    
+    <div>
         @Body
     </div>
 </div>
