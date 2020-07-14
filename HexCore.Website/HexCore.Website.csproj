@@ -23,11 +23,11 @@
     <Content Update="Pages\HexTile.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="wwwroot\water-texture.jpg">
+    <Content Update="wwwroot\img\logo.svg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="wwwroot\img\logo.svg">
+    <Content Update="wwwroot\scripts\script.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

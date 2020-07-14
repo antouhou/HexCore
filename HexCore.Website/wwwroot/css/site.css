@@ -304,6 +304,16 @@ app {
     border-top: 30px solid #FF006E;
 }
 
+.hex.hex-green-highlight > .top {
+    border-bottom: 30px solid #8338EC;
+}
+.hex.hex-green-highlight > .middle {
+    background: #8338EC;
+}
+.hex.hex-green-highlight > .bottom {
+    border-top: 30px solid #8338EC;
+}
+
 .hex.empty .top {
     width: 0;
     border-bottom: 30px solid transparent;
@@ -353,6 +363,7 @@ app {
 
 .hex-demo-container {
     display: flex;
+    padding-top: 2rem;
 }
 
 .hex-selection-row {
@@ -372,6 +383,7 @@ app {
     display: flex;
     align-items: center;
     text-align: center;
+    border: black solid 2px;
 }
 
 .unit.red {
@@ -519,4 +531,26 @@ app {
 .footer {
     padding: 4rem 0;
     background: whitesmoke;
+}
+
+/* Collapsible section */
+
+.demo-header {
+    text-align: center;
+}
+
+.collapsible {
+    height: 0;
+    transition: height 0.3s ease-out;
+    overflow: hidden;
+}
+
+.collapsible-content {
+    line-height: 1.5rem;
+    padding-top: 2rem;
+}
+
+.collapsible-button {
+    text-decoration: underline;
+    cursor: pointer;
 }

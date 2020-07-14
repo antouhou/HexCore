@@ -12,6 +12,7 @@ namespace HexCore.Website.Data
         public static TerrainType Water = new TerrainType(2, "Water");
         public static MovementType WalkingType = new MovementType(1, "Walking");
         public static MovementType SwimmingType = new MovementType(2, "Swimming");
+        public static MovementType HeavyType = new MovementType(3, "Heavy Type");
     }
     public class GraphService
     {
@@ -39,30 +40,30 @@ namespace HexCore.Website.Data
 
         private static List<PawnData> CreatePawns()
         {
-            var pawn1 = new PawnData
+            var knightPawn = new PawnData
             {
                 Name = "Knight",
                 CurrentPosition = new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
-                MovementType = Movements.WalkingType,
+                MovementType = Movements.HeavyType,
                 MovementRange = 2,
                 Color = "red"
             };
-            var pawn2 = new PawnData{
+            var orcPawn = new PawnData{
                 Name = "Orc",
-                CurrentPosition = new Coordinate2D(3, 4, OffsetTypes.OddRowsRight),
+                CurrentPosition = new Coordinate2D(2, 3, OffsetTypes.OddRowsRight),
                 MovementType = Movements.WalkingType,
                 MovementRange = 2,
                 Color = "green"
             };
-            var pawn3 = new PawnData{
+            var hydraPawn = new PawnData{
                 Name = "Hydra",
-                CurrentPosition = new Coordinate2D(0, 3, OffsetTypes.OddRowsRight),
+                CurrentPosition = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight),
                 MovementType = Movements.SwimmingType,
                 MovementRange = 2,
                 Color = "blue"
             };
 
-            return new List<PawnData> {pawn1, pawn2, pawn3};
+            return new List<PawnData> {knightPawn, orcPawn, hydraPawn};
         }
 
         private static MovementTypes CreateMovementTypes()
@@ -80,6 +81,11 @@ namespace HexCore.Website.Data
                     {
                         [Movements.Ground] = 2,
                         [Movements.Water] = 1
+                    },
+                    [Movements.HeavyType] = new Dictionary<ITerrainType, int>
+                    {
+                        [Movements.Ground] = 1,
+                        [Movements.Water] = 99
                     }
                 }
             );

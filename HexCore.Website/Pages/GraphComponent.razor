@@ -13,83 +13,57 @@
                 <div class=@GetRowClassName(rowIndex)>
                     @foreach (var columnIndex in Enumerable.Range(0, GraphParameter.MaxColumnNumber))
                     {
-                        <HexTile 
-                            TileData="@GraphParameter.TileData[rowIndex][columnIndex]"
-                        />
+                        <HexTile
+                            TileData="@GraphParameter.TileData[rowIndex][columnIndex]"/>
                     }
                 </div>
             }
         </div>
-        
+
         <div>
             <div>
                 <h2>Current selection</h2>
             </div>
             <div>
-                <div><h3>Cell</h3></div>
+                <div>
+                    <h3>Cell</h3></div>
                 <div>
                     <div class="hex-selection-row">
-                        <div>Offset coordinate:</div>
-                        <div>@GraphParameter.CurrentlySelectedCell.Coordinate3.To2D(OffsetTypes.OddRowsRight).ToString()</div>
+                        <div>Offset coordinate: @GraphParameter.CurrentlySelectedCell.Coordinate3.To2D(OffsetTypes.OddRowsRight).ToString()</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Cube coordinate:</div>
-                        <div>@GraphParameter.CurrentlySelectedCell.Coordinate3.ToString()</div>
+                        <div>Cube coordinate: @GraphParameter.CurrentlySelectedCell.Coordinate3.ToString()</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Is passable:</div>
-                        <div>@(GraphParameter.CurrentlySelectedCell.IsBlocked ? "No" : "Yes")</div>
+                        <div>Is passable: @(GraphParameter.CurrentlySelectedCell.IsBlocked ? "No" : "Yes")</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Cube coordinate:</div>
-                        <div>
-                            <button class="btn btn-sm btn-primary">Select neighbors</button>
-                        </div>
+                        <div>Cube coordinate: <button class="btn btn-sm btn-primary">Select neighbors</button></div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Get range:</div>
-                        <div>
-                            <button class="btn btn-sm btn-primary">Select range</button>
-                        </div>
+                        <div>Get range: <button class="btn btn-sm btn-primary">Select range</button></div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Terrain type:</div>
-                        <div>
-                            @GraphParameter.CurrentlySelectedCell.TerrainType.Name
-                        </div>
+                        <div>Terrain type: @GraphParameter.CurrentlySelectedCell.TerrainType.Name</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Find path:</div>
-                        <div>
-                            <button class="btn btn-sm btn-primary">Select to</button>
-                        </div>
+                        <div>Find path: <button class="btn btn-sm btn-primary">Select to</button></div>
                     </div>
                 </div>
             </div>
             <div>
-                <div><h3>Pawn</h3></div>
+                <div>
+                    <h3>Pawn</h3></div>
                 @if (GraphParameter.CurrentlySelectedPawnData != null)
                 {
                     <div class="hex-selection-row">
-                        <div>Pawn name:</div>
-                        <div>
-                            @GraphParameter.CurrentlySelectedPawnData.Name
-                        </div>
+                        <div>Pawn name: @GraphParameter.CurrentlySelectedPawnData.Name</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Movement type:</div>
-                        <div>
-                            @GraphParameter.CurrentlySelectedPawnData.MovementType.Name
-                        </div>
+                        <div>Movement type: @GraphParameter.CurrentlySelectedPawnData.MovementType.Name</div>
                     </div>
                     <div class="hex-selection-row">
-                        <div>Movement range:</div>
-                        <div>
-                            @GraphParameter.CurrentlySelectedPawnData.MovementRange
-                        </div>
-                    </div>
-                    <div class="hex-selection-row">
-                        <button class="btn btn-sm btn-primary">Get movement range</button>
+                        <div>Movement points available: @GraphParameter.CurrentlySelectedPawnData.MovementRange</div>
                     </div>
                 }
                 else
