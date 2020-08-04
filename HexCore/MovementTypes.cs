@@ -4,21 +4,22 @@ using System.Linq;
 
 namespace HexCore
 {
+    [Serializable]
     public class MovementTypes
     {
+        public readonly HashSet<ITerrainType> TerrainTypes;
+        // <movement_type<terrain_type, cost>>
+        public readonly Dictionary<IMovementType, Dictionary<ITerrainType, int>> MovementCosts =
+            new Dictionary<IMovementType, Dictionary<ITerrainType, int>>();
+        
         private readonly Dictionary<IMovementType, int> _inverseMovementTypeIds = new Dictionary<IMovementType, int>();
 
         private readonly Dictionary<ITerrainType, int> _inverseTerrainTypeIds = new Dictionary<ITerrainType, int>();
-
-        // <movement_type<terrain_type, cost>>
-        private readonly Dictionary<IMovementType, Dictionary<ITerrainType, int>> _movementCosts =
-            new Dictionary<IMovementType, Dictionary<ITerrainType, int>>();
 
         private readonly Dictionary<int, IMovementType> _movementTypeIds = new Dictionary<int, IMovementType>();
 
         private readonly HashSet<IMovementType> _movementTypes;
         private readonly Dictionary<int, ITerrainType> _terrainTypeIds = new Dictionary<int, ITerrainType>();
-        private readonly HashSet<ITerrainType> _terrainTypes;
 
         // Public constructor
         public MovementTypes(ITerrainType[] terrainTypes,
@@ -28,9 +29,9 @@ namespace HexCore
                 throw new ArgumentException(
                     "Movement types should always have at least one explicitly defined type. For the reasoning, please visit the movement types section in the library's docs");
             _movementTypes = new HashSet<IMovementType>(movementTypesWithCosts.Keys);
-            _terrainTypes = new HashSet<ITerrainType>(terrainTypes);
+            TerrainTypes = new HashSet<ITerrainType>(terrainTypes);
 
-            foreach (var terrainType in _terrainTypes)
+            foreach (var terrainType in TerrainTypes)
             {
                 _terrainTypeIds.Add(terrainType.Id, terrainType);
                 _inverseTerrainTypeIds.Add(terrainType, terrainType.Id);
@@ -67,7 +68,7 @@ namespace HexCore
                     $"Error when adding movement type '{type.Name}': movement costs contain unknown {excessTypesEnumerationString}");
             }
 
-            _movementCosts.Add(type, movementCostsToTerrain);
+            MovementCosts.Add(type, movementCostsToTerrain);
         }
 
         private static string CreateTypesEnumerationString(ITerrainType[] movementTypes)
@@ -97,7 +98,7 @@ namespace HexCore
 
         public IEnumerable<ITerrainType> GetAllTerrainTypes()
         {
-            return _terrainTypes;
+            return TerrainTypes;
         }
 
         public int GetMovementCost(IMovementType pawnMovementType, ITerrainType terrainType)
@@ -108,7 +109,7 @@ namespace HexCore
             if (!ContainsTerrainType(terrainType))
                 throw new ArgumentException(
                     $"Unknown terrain type: '{terrainType.Name}'");
-            return _movementCosts[pawnMovementType][terrainType];
+            return MovementCosts[pawnMovementType][terrainType];
         }
 
         public bool ContainsMovementType(IMovementType movementType)
