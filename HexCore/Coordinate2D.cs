@@ -7,8 +7,8 @@ namespace HexCore
     [Serializable]
     public struct Coordinate2D
     {
-        public readonly int X, Y;
-        public readonly OffsetTypes OffsetType;
+        public int X, Y;
+        public OffsetTypes OffsetType;
 
         public Coordinate3D To3D()
         {

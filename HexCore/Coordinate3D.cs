@@ -7,7 +7,7 @@ namespace HexCore
     [Serializable]
     public struct Coordinate3D
     {
-        public readonly int X, Y, Z;
+        public int X, Y, Z;
 
         public Coordinate2D To2D(OffsetTypes offsetType)
         {
