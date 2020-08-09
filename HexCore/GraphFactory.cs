@@ -1,10 +1,10 @@
-﻿namespace HexCore
+﻿﻿namespace HexCore
 {
     public static class GraphFactory
     {
         public static Graph CreateRectangularGraph(int width, int height,
             MovementTypes movementTypes,
-            ITerrainType defaultTerrainType,
+            TerrainType defaultTerrainType,
             OffsetTypes offsetType = OffsetTypes.OddRowsRight)
         {
             var graph = new Graph(new CellState[] { }, movementTypes);

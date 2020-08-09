@@ -1,4 +1,4 @@
-﻿namespace HexCore
+﻿﻿namespace HexCore
 {
     public enum OffsetTypes
     {

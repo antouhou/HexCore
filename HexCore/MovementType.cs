@@ -1,9 +1,9 @@
-﻿using System;
+﻿﻿﻿using System;
 
 namespace HexCore
 {
     [Serializable]
-    public struct MovementType : IMovementType
+    public struct MovementType : IEquatable<MovementType>
     {
         public MovementType(int id, string name)
         {
@@ -11,15 +11,22 @@ namespace HexCore
             Name = name;
         }
 
-        public int Id { get; }
-        public string Name { get; }
+        public int Id;
+        public string Name;
 
-        public bool Equals(IMovementType other)
+        public int GetId()
         {
-            if (other is null)
-                return false;
+            return Id;
+        }
 
-            return Name == other.Name && Id == other.Id;
+        public string GetName()
+        {
+            return Name;
+        }
+
+        public bool Equals(MovementType other)
+        {
+            return GetName() == other.GetName() && GetId() == other.GetId();
         }
     }
 }

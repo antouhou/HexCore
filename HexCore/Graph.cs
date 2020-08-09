@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,20 +18,44 @@ namespace HexCore
             new Coordinate3D(-1, +1, 0)
         };
 
-        private readonly List<CellState> _cellStatesList = new List<CellState>();
+        // In theory, this field should be private, but that will break class in Unity as it won't be able
+        // to serialize it
+        public List<CellState> CellStatesList = new List<CellState>();
+        public MovementTypes MovementTypes;
 
-        private List<Coordinate3D> _allCoordinates;
+        // Those properties are needed for the Unity serialization to rebuild caches
+        private List<Coordinate3D> _allCoordinatesCache;
+        private List<Coordinate3D> AllCoordinatesCache {
+            get {
+                if (_allCoordinatesCache == null)
+                {
+                    RebuildCache();
+                }
 
-        private Dictionary<Coordinate3D, CellState> _cellStatesDictionary;
+                return _allCoordinatesCache;
+            }
+            set => _allCoordinatesCache = value;
+        }
 
-        private MovementTypes _movementTypes;
+        private Dictionary<Coordinate3D, CellState> _coordinateToCellStatesCache;
+        private Dictionary<Coordinate3D, CellState> CoordinateToCellStatesCache {
+            get {
+                if (_coordinateToCellStatesCache == null)
+                {
+                    RebuildCache();
+                }
 
-        public Graph(IEnumerable<CellState> cellStatesList, MovementTypes movementTypes)
+                return _coordinateToCellStatesCache;
+            }
+            set => _coordinateToCellStatesCache = value;
+        }
+
+        public Graph(IEnumerable<CellState> cellStatesList, MovementTypes movementAndTerrainTypes)
         {
-            _movementTypes = movementTypes;
+            MovementTypes = movementAndTerrainTypes;
 
             AddCells(cellStatesList);
-            UpdateCoordinatesList();
+            RebuildCache();
         }
 
         /// <summary>
@@ -52,10 +76,10 @@ namespace HexCore
         /// <param name="unitMovementType"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public int GetMovementCostForTheType(Coordinate3D coordinate, IMovementType unitMovementType)
+        public int GetMovementCostForTheType(Coordinate3D coordinate, MovementType unitMovementType)
         {
             var cellState = GetCellState(coordinate);
-            return _movementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
+            return MovementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
         }
 
         public IEnumerable<Coordinate2D> GetPassableNeighbors(Coordinate2D position)
@@ -70,13 +94,19 @@ namespace HexCore
 
         private void UpdateCellStateDictionary()
         {
-            _cellStatesDictionary = new Dictionary<Coordinate3D, CellState>();
-            foreach (var cellState in _cellStatesList) _cellStatesDictionary.Add(cellState.Coordinate3, cellState);
+            CoordinateToCellStatesCache = new Dictionary<Coordinate3D, CellState>();
+            foreach (var cellState in CellStatesList) CoordinateToCellStatesCache.Add(cellState.Coordinate3, cellState);
+        }
+
+        private void RebuildCache()
+        {
+            UpdateCoordinatesList();
+            UpdateCellStateDictionary();
         }
 
         private void UpdateCoordinatesList()
         {
-            _allCoordinates = _cellStatesList.Select(cell => cell.Coordinate3).ToList();
+            AllCoordinatesCache = CellStatesList.Select(cell => cell.Coordinate3).ToList();
         }
 
         private void SetCellBlockStatus(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
@@ -119,19 +149,17 @@ namespace HexCore
         public void AddCells(IEnumerable<CellState> newCellStatesList)
         {
             var cellStates = newCellStatesList as CellState[] ?? newCellStatesList.ToArray();
-            foreach (var cell in cellStates.Where(cell => !_movementTypes.ContainsTerrainType(cell.TerrainType)))
+            foreach (var cell in cellStates.Where(cell => !MovementTypes.ContainsTerrainType(cell.TerrainType)))
                 throw new ArgumentException(
-                    $"One of the cells in graph has an unknown terrain type: '{cell.TerrainType.Name}'");
-            _cellStatesList.AddRange(cellStates);
-            UpdateCellStateDictionary();
-            UpdateCoordinatesList();
+                    $"One of the cells in graph has an unknown terrain type: '{cell.TerrainType.GetName()}'");
+            CellStatesList.AddRange(cellStates);
+            RebuildCache();
         }
 
         public void RemoveCells(IEnumerable<Coordinate3D> coordinatesToRemove)
         {
-            _cellStatesList.RemoveAll(cellState => coordinatesToRemove.Contains(cellState.Coordinate3));
-            UpdateCellStateDictionary();
-            UpdateCoordinatesList();
+            CellStatesList.RemoveAll(cellState => coordinatesToRemove.Contains(cellState.Coordinate3));
+            RebuildCache();
         }
 
         public void RemoveCells(IEnumerable<Coordinate2D> coordinatesToRemove2d)
@@ -141,17 +169,17 @@ namespace HexCore
 
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
-            return _allCoordinates;
+            return AllCoordinatesCache;
         }
 
         public List<Coordinate2D> GetAllCellsCoordinates(OffsetTypes offsetType)
         {
-            return Coordinate3D.To2D(_allCoordinates, offsetType);
+            return Coordinate3D.To2D(AllCoordinatesCache, offsetType);
         }
 
         public List<CellState> GetAllCells()
         {
-            return _cellStatesList;
+            return CellStatesList;
         }
 
         public void BlockCells(IEnumerable<Coordinate3D> coordinates)
@@ -194,7 +222,7 @@ namespace HexCore
             UnblockCells(coordinate.To3D());
         }
 
-        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType terrainType)
+        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, TerrainType terrainType)
         {
             foreach (var coordinate in coordinates)
             {
@@ -203,17 +231,17 @@ namespace HexCore
             }
         }
 
-        public void SetCellsTerrainType(Coordinate3D coordinate, ITerrainType terrainType)
+        public void SetCellsTerrainType(Coordinate3D coordinate, TerrainType terrainType)
         {
             SetCellsTerrainType(new[] {coordinate}, terrainType);
         }
 
-        public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, ITerrainType terrainType)
+        public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, TerrainType terrainType)
         {
             SetCellsTerrainType(Coordinate2D.To3D(coordinates), terrainType);
         }
 
-        public void SetCellsTerrainType(Coordinate2D coordinate, ITerrainType terrainType)
+        public void SetCellsTerrainType(Coordinate2D coordinate, TerrainType terrainType)
         {
             SetCellsTerrainType(coordinate.To3D(), terrainType);
         }
@@ -225,7 +253,7 @@ namespace HexCore
         /// <returns></returns>
         public bool Contains(Coordinate3D coordinate)
         {
-            return _allCoordinates.Contains(coordinate);
+            return AllCoordinatesCache.Contains(coordinate);
         }
 
         public bool Contains(Coordinate2D coordinate)
@@ -308,7 +336,7 @@ namespace HexCore
         /// <param name="movementType">Movement type of the pawn to calculate movement range based on the movement points</param>
         /// <returns></returns>
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
-            IMovementType movementType)
+            MovementType movementType)
         {
             var visited = new List<Coordinate3D> {startPosition};
             var fringes = new List<List<Fringe>>
@@ -339,7 +367,7 @@ namespace HexCore
         }
 
         public List<Coordinate2D> GetMovementRange(Coordinate2D startPosition, int movementPoints,
-            IMovementType movementType)
+            MovementType movementType)
         {
             return Coordinate3D.To2D(
                 GetMovementRange(startPosition.To3D(), movementPoints, movementType),
@@ -354,7 +382,7 @@ namespace HexCore
         /// <returns></returns>
         public CellState GetCellState(Coordinate3D coordinate)
         {
-            return _cellStatesDictionary[coordinate];
+            return CoordinateToCellStatesCache[coordinate];
         }
 
         public CellState GetCellState(Coordinate2D coordinate)
@@ -369,12 +397,12 @@ namespace HexCore
         /// <param name="goal"></param>
         /// <param name="unitMovementType"></param>
         /// <returns></returns>
-        public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, IMovementType unitMovementType)
+        public List<Coordinate3D> GetShortestPath(Coordinate3D start, Coordinate3D goal, MovementType unitMovementType)
         {
             return AStarSearch.FindShortestPath(this, start, goal, unitMovementType);
         }
 
-        public List<Coordinate2D> GetShortestPath(Coordinate2D start, Coordinate2D goal, IMovementType unitMovementType)
+        public List<Coordinate2D> GetShortestPath(Coordinate2D start, Coordinate2D goal, MovementType unitMovementType)
         {
             return Coordinate3D.To2D(
                 GetShortestPath(start.To3D(), goal.To3D(), unitMovementType),

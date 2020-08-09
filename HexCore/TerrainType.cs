@@ -3,7 +3,7 @@ using System;
 namespace HexCore
 {
     [Serializable]
-    public struct TerrainType : ITerrainType
+    public struct TerrainType : IEquatable<TerrainType>
     {
         public TerrainType(int id, string name)
         {
@@ -11,15 +11,22 @@ namespace HexCore
             Name = name;
         }
 
-        public int Id { get; }
-        public string Name { get; }
-
-        public bool Equals(ITerrainType other)
+        public int Id;
+        public string Name;
+        
+        public int GetId()
         {
-            if (other is null)
-                return false;
+            return Id;
+        }
 
-            return Name == other.Name && Id == other.Id;
+        public string GetName()
+        {
+            return Name;
+        }
+
+        public bool Equals(TerrainType other)
+        {
+            return GetName() == other.GetName() && GetId() == other.GetId();
         }
     }
 }
