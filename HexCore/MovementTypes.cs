@@ -4,51 +4,53 @@ using System.Linq;
 
 namespace HexCore
 {
+    [Serializable]
+    public struct Cost
+    {
+        public TerrainType TerrainType;
+        public MovementType MovementType;
+        public int MovementCost;
+    }
+    
+    [Serializable]
     public class MovementTypes
     {
-        private readonly Dictionary<IMovementType, int> _inverseMovementTypeIds = new Dictionary<IMovementType, int>();
-
-        private readonly Dictionary<ITerrainType, int> _inverseTerrainTypeIds = new Dictionary<ITerrainType, int>();
-
-        // <movement_type<terrain_type, cost>>
-        private readonly Dictionary<IMovementType, Dictionary<ITerrainType, int>> _movementCosts =
-            new Dictionary<IMovementType, Dictionary<ITerrainType, int>>();
-
-        private readonly Dictionary<int, IMovementType> _movementTypeIds = new Dictionary<int, IMovementType>();
-
-        private readonly HashSet<IMovementType> _movementTypes;
-        private readonly Dictionary<int, ITerrainType> _terrainTypeIds = new Dictionary<int, ITerrainType>();
-        private readonly HashSet<ITerrainType> _terrainTypes;
+        public TerrainType[] TerrainTypes;
+        public MovementType[] MovementTypesArray;
+        public List<Cost> Costs;
 
         // Public constructor
-        public MovementTypes(ITerrainType[] terrainTypes,
-            Dictionary<IMovementType, Dictionary<ITerrainType, int>> movementTypesWithCosts)
+        public MovementTypes(IEnumerable<TerrainType> terrainTypes,
+            Dictionary<MovementType, Dictionary<TerrainType, int>> movementTypesWithCosts)
         {
             if (!movementTypesWithCosts.Any())
                 throw new ArgumentException(
                     "Movement types should always have at least one explicitly defined type. For the reasoning, please visit the movement types section in the library's docs");
-            _movementTypes = new HashSet<IMovementType>(movementTypesWithCosts.Keys);
-            _terrainTypes = new HashSet<ITerrainType>(terrainTypes);
+            MovementTypesArray = new HashSet<MovementType>(movementTypesWithCosts.Keys).ToArray();
+            TerrainTypes = new HashSet<TerrainType>(terrainTypes).ToArray();
+            Costs = new List<Cost>();
+            var duplicatedIds = MovementTypesArray
+                .GroupBy(type => type.GetId())
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key)
+                .ToArray();
 
-            foreach (var terrainType in _terrainTypes)
+            if (duplicatedIds.Any())
             {
-                _terrainTypeIds.Add(terrainType.Id, terrainType);
-                _inverseTerrainTypeIds.Add(terrainType, terrainType.Id);
+                throw new ArgumentException(
+                    $"Some of the movement types have same Ids. Ids: {string.Join("', '", duplicatedIds)}");
             }
 
             foreach (var movementType in movementTypesWithCosts)
             {
-                // For fast lookups
-                _movementTypeIds.Add(movementType.Key.Id, movementType.Key);
-                _inverseMovementTypeIds.Add(movementType.Key, movementType.Key.Id);
                 AddCostsForType(movementType.Key, movementType.Value);
             }
         }
 
         // Private methods
         private void AddCostsForType(
-            IMovementType type,
-            Dictionary<ITerrainType, int> movementCostsToTerrain
+            MovementType type,
+            Dictionary<TerrainType, int> movementCostsToTerrain
         )
         {
             var missingTypes = GetAllTerrainTypes().Except(movementCostsToTerrain.Keys).ToArray();
@@ -56,7 +58,7 @@ namespace HexCore
             {
                 var missingTypesEnumerationString = CreateTypesEnumerationString(missingTypes);
                 throw new ArgumentException(
-                    $"Error when adding movement type '{type.Name}': missing movement costs to {missingTypesEnumerationString}");
+                    $"Error when adding movement type '{type.GetName()}': missing movement costs to {missingTypesEnumerationString}");
             }
 
             var excessTypes = movementCostsToTerrain.Keys.Except(GetAllTerrainTypes()).ToArray();
@@ -64,59 +66,70 @@ namespace HexCore
             {
                 var excessTypesEnumerationString = CreateTypesEnumerationString(excessTypes);
                 throw new ArgumentException(
-                    $"Error when adding movement type '{type.Name}': movement costs contain unknown {excessTypesEnumerationString}");
+                    $"Error when adding movement type '{type.GetName()}': movement costs contain unknown {excessTypesEnumerationString}");
             }
 
-            _movementCosts.Add(type, movementCostsToTerrain);
+            foreach (var terrainAndCost in movementCostsToTerrain)
+            {
+                var terrain = terrainAndCost.Key;
+                var costValue = terrainAndCost.Value;
+                Costs.Add(new Cost
+                {
+                    TerrainType = terrain,
+                    MovementType = type,
+                    MovementCost = costValue
+                });
+            }
         }
 
-        private static string CreateTypesEnumerationString(ITerrainType[] movementTypes)
+        private static string CreateTypesEnumerationString(TerrainType[] movementTypes)
         {
             var movementTypeNames = movementTypes
-                .Select(movementType => movementType.Name).ToArray();
+                .Select(movementType => movementType.GetName()).ToArray();
             var movementTypesNamesConcatenated = string.Join("', '", movementTypeNames);
             var pluralEnding = movementTypeNames.Length > 1 ? "s" : "";
             return $"type{pluralEnding}: '{movementTypesNamesConcatenated}'";
         }
 
-        // Public methods
-        public int GetMovementTypeId(IMovementType movementType)
+        public int GetMovementTypeId(MovementType movementType)
         {
-            return _inverseMovementTypeIds[movementType];
+            return movementType.GetId();
         }
 
-        public IMovementType GetMovementTypeById(int typeId)
+        public MovementType GetMovementTypeById(int typeId)
         {
-            return _movementTypeIds[typeId];
+            return Array.Find(MovementTypesArray, type => type.GetId() == typeId);
         }
 
-        public IEnumerable<IMovementType> GetAllMovementTypes()
+        public IEnumerable<MovementType> GetAllMovementTypes()
         {
-            return _movementTypes;
+            return MovementTypesArray;
         }
 
-        public IEnumerable<ITerrainType> GetAllTerrainTypes()
+        public IEnumerable<TerrainType> GetAllTerrainTypes()
         {
-            return _terrainTypes;
+            return TerrainTypes;
         }
 
-        public int GetMovementCost(IMovementType pawnMovementType, ITerrainType terrainType)
+        public int GetMovementCost(MovementType pawnMovementType, TerrainType terrainType)
         {
             if (!ContainsMovementType(pawnMovementType))
                 throw new ArgumentException(
-                    $"Unknown movement type: '{pawnMovementType.Name}'");
+                    $"Unknown movement type: '{pawnMovementType.GetName()}'");
             if (!ContainsTerrainType(terrainType))
                 throw new ArgumentException(
-                    $"Unknown terrain type: '{terrainType.Name}'");
-            return _movementCosts[pawnMovementType][terrainType];
+                    $"Unknown terrain type: '{terrainType.GetName()}'");
+
+            var cost = Costs.Find(cost1 => cost1.TerrainType.Equals(terrainType) && cost1.MovementType.Equals(pawnMovementType));
+            return cost.MovementCost;
         }
 
-        public bool ContainsMovementType(IMovementType movementType)
+        public bool ContainsMovementType(MovementType movementType)
         {
             return GetAllMovementTypes().Contains(movementType);
         }
 
-        public bool ContainsTerrainType(ITerrainType movementType)
+        public bool ContainsTerrainType(TerrainType movementType)
         {
             return GetAllTerrainTypes().Contains(movementType);
         }

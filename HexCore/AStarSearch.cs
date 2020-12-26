@@ -16,7 +16,7 @@ namespace HexCore
         }
 
         public static List<Coordinate3D> FindShortestPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,
-            IMovementType unitMovementType)
+            MovementType unitMovementType)
         {
             var costSoFar = new Dictionary<Coordinate3D, int>();
             var cameFrom = new Dictionary<Coordinate3D, Coordinate3D>();

@@ -15,23 +15,23 @@ namespace HexCoreTests.Fixtures
 
         public static MovementTypes GetMovementTypes()
         {
-            ITerrainType[] terrainTypes = {Ground, Water, Air};
+            TerrainType[] terrainTypes = {Ground, Water, Air};
             var movementTypes = new MovementTypes(terrainTypes,
-                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
+                new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
-                    [Walking] = new Dictionary<ITerrainType, int>
+                    [Walking] = new Dictionary<TerrainType, int>
                     {
                         [Ground] = 1,
                         [Water] = 2,
                         [Air] = 999
                     },
-                    [Swimming] = new Dictionary<ITerrainType, int>
+                    [Swimming] = new Dictionary<TerrainType, int>
                     {
                         [Ground] = 2,
                         [Water] = 1,
                         [Air] = 999
                     },
-                    [Flying] = new Dictionary<ITerrainType, int>
+                    [Flying] = new Dictionary<TerrainType, int>
                     {
                         [Ground] = 1,
                         [Water] = 1,

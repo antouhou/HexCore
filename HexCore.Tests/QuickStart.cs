@@ -14,15 +14,15 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new ITerrainType[] {ground, water},
-                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
+                new TerrainType[] {ground, water},
+                new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
-                    [walkingType] = new Dictionary<ITerrainType, int>
+                    [walkingType] = new Dictionary<TerrainType, int>
                     {
                         [ground] = 1,
                         [water] = 2
                     },
-                    [swimmingType] = new Dictionary<ITerrainType, int>
+                    [swimmingType] = new Dictionary<TerrainType, int>
                     {
                         [ground] = 2,
                         [water] = 1

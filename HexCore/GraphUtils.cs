@@ -6,7 +6,7 @@ namespace HexCore
     public static class GraphUtils
     {
         public static void ResizeSquareGraph(Graph graph, OffsetTypes offsetType, int newWidth, int newHeight,
-            ITerrainType defaultTerrainType)
+            TerrainType defaultTerrainType)
         {
             var offsetCoordinates =
                 Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
@@ -54,7 +54,7 @@ namespace HexCore
         }
 
         private static IEnumerable<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
-            ITerrainType defaultTerrainType, OffsetTypes offsetType)
+            TerrainType defaultTerrainType, OffsetTypes offsetType)
         {
             var newCells = new List<CellState>();
             for (var y = oldY; y < newY; y++)
