@@ -8,6 +8,13 @@
 HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, various coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
 ## Installation
 
+### Unity:
+1. Open the terminal, go to the Assets directory of your Unity project
+2. Run `git submodule add https://github.com/antouhou/HexCore.git`
+3. Go to the `HexCore` directory that was created on step 2 and delete `HexCore.Tests` directory 
+   (This directory contains unit tests, and will prevent Unity from building the project)
+
+### NuGet:
 The library can be installed from [NuGet](https://www.nuget.org/packages/HexCore). Run from the command line `dotnet add package HexCore` in your project or use your IDE of choice.
 
 ## Usage
