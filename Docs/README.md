@@ -36,15 +36,15 @@ var walkingType = new MovementType(1, "Walking");
 var swimmingType = new MovementType(2, "Swimming");
 
 var movementTypes = new MovementTypes(
-    new ITerrainType[] { ground, water }, 
-    new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
+    new TerrainType[] { ground, water }, 
+    new Dictionary<MovementType, Dictionary<TerrainType, int>>
     {
-        [walkingType] = new Dictionary<ITerrainType, int>
+        [walkingType] = new Dictionary<TerrainType, int>
         {
             [ground] = 1,
             [water] = 2
         },
-        [swimmingType] = new Dictionary<ITerrainType, int>
+        [swimmingType] = new Dictionary<TerrainType, int>
         {
             [ground] = 2,
             [water] = 1
@@ -137,7 +137,7 @@ Cell state consists of two properties: if the cell can be used to move to/throug
 
 #### Changing the cell's terrain type
 
-Cell's terrain type can be changed using `graph.SetCellsTerrainType()`. Just as with blocking/unblocking cells, there are two variants: `SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, ITerrainType terrainType)` and `SetCellsTerrainType(Coordinate3D coordinates, ITerrainType terrainType)`.
+Cell's terrain type can be changed using `graph.SetCellsTerrainType()`. Just as with blocking/unblocking cells, there are two variants: `SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, TerrainType terrainType)` and `SetCellsTerrainType(Coordinate3D coordinates, TerrainType terrainType)`.
 
 ## Utility methods
 

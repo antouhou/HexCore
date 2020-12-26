@@ -78,6 +78,8 @@ namespace HexCoreTests
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D()
             };
             Assert.That(pawnMovementRange, Is.EquivalentTo(expectedMovementRange));
+            
+            QuickStart.Demo();
         }
     }
 }
