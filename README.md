@@ -10,7 +10,7 @@ HexCore is a library to perform various operations with a hexagonal grid, such a
 
 ### Unity:
 1. Open the terminal, go to the Assets directory of your Unity project
-2. Run `git submodule add https://github.com/antouhou/HexCore.git`
+2. Run `git clone https://github.com/antouhou/HexCore.git` (or `git submodule add https://github.com/antouhou/HexCore.git` if you're already using git in your project)
 3. Go to the `HexCore` directory that was created on step 2 and delete `HexCore.Tests` directory 
    (This directory contains unit tests, and will prevent Unity from building the project)
 
@@ -40,15 +40,15 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new ITerrainType[] { ground, water }, 
-                new Dictionary<IMovementType, Dictionary<ITerrainType, int>>
+                new TerrainType[] {ground, water},
+                new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
-                    [walkingType] = new Dictionary<ITerrainType, int>
+                    [walkingType] = new Dictionary<TerrainType, int>
                     {
                         [ground] = 1,
                         [water] = 2
                     },
-                    [swimmingType] = new Dictionary<ITerrainType, int>
+                    [swimmingType] = new Dictionary<TerrainType, int>
                     {
                         [ground] = 2,
                         [water] = 1
@@ -56,15 +56,16 @@ namespace HexCoreTests
                 }
             );
 
-            var graph = new Graph(new CellState[] { 
-                new CellState(false, new Coordinate2D(0,0, OffsetTypes.OddRowsRight), ground),
-                new CellState(false, new Coordinate2D(0,1, OffsetTypes.OddRowsRight), ground),
-                new CellState(true, new Coordinate2D(1,0, OffsetTypes.OddRowsRight), water),
-                new CellState(false, new Coordinate2D(1,1, OffsetTypes.OddRowsRight), water),
-                new CellState(false, new Coordinate2D(1,2, OffsetTypes.OddRowsRight), ground)
+            var graph = new Graph(new[]
+            {
+                new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), ground),
+                new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), ground),
+                new CellState(true, new Coordinate2D(1, 0, OffsetTypes.OddRowsRight), water),
+                new CellState(false, new Coordinate2D(1, 1, OffsetTypes.OddRowsRight), water),
+                new CellState(false, new Coordinate2D(1, 2, OffsetTypes.OddRowsRight), ground)
             }, movementTypes);
 
-            var pawnPosition = new Coordinate2D(0,0, OffsetTypes.OddRowsRight).To3D();
+            var pawnPosition = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
             // Mark pawn's position as occupied
             graph.BlockCells(pawnPosition);
 
@@ -75,9 +76,9 @@ namespace HexCoreTests
             );
 
             var pawnGoal = new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D();
-            
+
             var theShortestPath = graph.GetShortestPath(
-                pawnPosition, 
+                pawnPosition,
                 pawnGoal,
                 walkingType
             );
