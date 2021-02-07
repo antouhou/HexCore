@@ -18,44 +18,33 @@ namespace HexCore
             new Coordinate3D(-1, +1, 0)
         };
 
-        // In theory, this field should be private, but that will break class in Unity as it won't be able
-        // to serialize it
-        public List<CellState> CellStatesList = new List<CellState>();
+        internal static readonly ObjectPoolProvider PoolProvider = new ObjectPoolProvider();
+
+        private Dictionary<Coordinate3D, CellState> _cells;
+
+        // Although only dictionary is usually used, this array is needed for unity serialization
+        public List<CellState> CellsList = new List<CellState>();
         public MovementTypes MovementTypes;
 
-        // Those properties are needed for the Unity serialization to rebuild caches
-        private List<Coordinate3D> _allCoordinatesCache;
-        private List<Coordinate3D> AllCoordinatesCache {
-            get {
-                if (_allCoordinatesCache == null)
-                {
-                    RebuildCache();
-                }
-
-                return _allCoordinatesCache;
-            }
-            set => _allCoordinatesCache = value;
-        }
-
-        private Dictionary<Coordinate3D, CellState> _coordinateToCellStatesCache;
-        private Dictionary<Coordinate3D, CellState> CoordinateToCellStatesCache {
-            get {
-                if (_coordinateToCellStatesCache == null)
-                {
-                    RebuildCache();
-                }
-
-                return _coordinateToCellStatesCache;
-            }
-            set => _coordinateToCellStatesCache = value;
-        }
-
-        public Graph(IEnumerable<CellState> cellStatesList, MovementTypes movementAndTerrainTypes)
+        public Graph(List<CellState> cellStates, MovementTypes movementAndTerrainTypes)
         {
             MovementTypes = movementAndTerrainTypes;
 
-            AddCells(cellStatesList);
-            RebuildCache();
+            AddCells(cellStates);
+        }
+        
+        private Dictionary<Coordinate3D, CellState> Cells
+        {
+            get
+            {
+                // This code is needed to repopulate the dict for unity serialization,
+                // as it can't serialize dictionaries
+                if (_cells != null) return _cells;
+                _cells = new Dictionary<Coordinate3D, CellState>();
+                foreach (var cellState in CellsList) Cells.Add(cellState.Coordinate3, cellState);
+
+                return _cells;
+            }
         }
 
         /// <summary>
@@ -63,7 +52,7 @@ namespace HexCore
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        public IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
+        public List<Coordinate3D> GetPassableNeighbors(Coordinate3D position)
         {
             return GetNeighbors(position, true);
         }
@@ -82,45 +71,38 @@ namespace HexCore
             return MovementTypes.GetMovementCost(unitMovementType, cellState.TerrainType);
         }
 
-        public IEnumerable<Coordinate2D> GetPassableNeighbors(Coordinate2D position)
+        public void ReturnListToPool(List<Coordinate3D> list)
         {
-            return Coordinate3D.To2D(
-                GetPassableNeighbors(position.To3D()),
+            PoolProvider.CoordinateListPool.Return(list);
+        }
+
+        public List<Coordinate3D> GetListFromPool()
+        {
+            return PoolProvider.CoordinateListPool.Get();
+        }
+
+        public List<Coordinate2D> GetPassableNeighbors(Coordinate2D position)
+        {
+            var list = GetNeighbors(position.To3D(), true);
+            var neighbors = Coordinate3D.To2D(
+                list,
                 position.OffsetType
             );
+
+            ReturnListToPool(list);
+            return neighbors;
         }
 
         /* Private methods */
-
-        private void UpdateCellStateDictionary()
+        private void SetCellBlockStatus(List<Coordinate3D> coordinates, bool isBlocked)
         {
-            CoordinateToCellStatesCache = new Dictionary<Coordinate3D, CellState>();
-            foreach (var cellState in CellStatesList) CoordinateToCellStatesCache.Add(cellState.Coordinate3, cellState);
-        }
-
-        private void RebuildCache()
-        {
-            UpdateCoordinatesList();
-            UpdateCellStateDictionary();
-        }
-
-        private void UpdateCoordinatesList()
-        {
-            AllCoordinatesCache = CellStatesList.Select(cell => cell.Coordinate3).ToList();
-        }
-
-        private void SetCellBlockStatus(IEnumerable<Coordinate3D> coordinates, bool isBlocked)
-        {
-            foreach (var coordinate in coordinates)
-            {
-                var cellState = GetCellState(coordinate);
-                cellState.IsBlocked = isBlocked;
-            }
+            foreach (var coordinate in coordinates) SetCellBlockStatus(coordinate, isBlocked);
         }
 
         private void SetCellBlockStatus(Coordinate3D coordinate, bool isBlocked)
         {
-            SetCellBlockStatus(new[] {coordinate}, isBlocked);
+            var cellState = GetCellState(coordinate);
+            cellState.IsBlocked = isBlocked;
         }
 
         /* Public methods */
@@ -131,58 +113,90 @@ namespace HexCore
         /// <param name="position">Coordinate to get neighbors to</param>
         /// <param name="onlyPassable">Return only passable neighbors</param>
         /// <returns>The list of this cell's neighbors</returns>
-        public IEnumerable<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
+        public List<Coordinate3D> GetNeighbors(Coordinate3D position, bool onlyPassable)
         {
-            return Directions
-                .Select(direction => position + direction)
-                .Where(next => Contains(next) && !(onlyPassable && IsCellBlocked(next)));
+            var list = PoolProvider.CoordinateListPool.Get();
+            for (var i = 0; i < Directions.Length; i++)
+            {
+                var neighbor = position + Directions[i];
+                var returnNeighbour = onlyPassable ? IsPassable(neighbor) : Contains(neighbor);
+                if (returnNeighbour) list.Add(neighbor);
+            }
+
+            return list;
         }
 
-        public IEnumerable<Coordinate2D> GetNeighbors(Coordinate2D position, bool onlyPassable)
+        private bool IsPassable(Coordinate3D coordinate3D)
         {
-            return Coordinate3D.To2D(
-                GetNeighbors(position.To3D(), onlyPassable),
+            return Contains(coordinate3D) && !IsCellBlocked(coordinate3D);
+        }
+
+        public List<Coordinate2D> GetNeighbors(Coordinate2D position, bool onlyPassable)
+        {
+            var list = GetNeighbors(position.To3D(), onlyPassable);
+            var neighbors = Coordinate3D.To2D(
+                list,
                 position.OffsetType
             );
+
+            ReturnListToPool(list);
+            return neighbors;
         }
 
-        public void AddCells(IEnumerable<CellState> newCellStatesList)
+        public void AddCells(List<CellState> cellStates)
         {
-            var cellStates = newCellStatesList as CellState[] ?? newCellStatesList.ToArray();
             foreach (var cell in cellStates.Where(cell => !MovementTypes.ContainsTerrainType(cell.TerrainType)))
                 throw new ArgumentException(
                     $"One of the cells in graph has an unknown terrain type: '{cell.TerrainType.GetName()}'");
-            CellStatesList.AddRange(cellStates);
-            RebuildCache();
+
+            foreach (var cellState in cellStates) Cells.Add(cellState.Coordinate3, cellState);
+            CellsList.AddRange(cellStates);
         }
 
-        public void RemoveCells(IEnumerable<Coordinate3D> coordinatesToRemove)
+        public void RemoveCells(List<Coordinate3D> coordinatesToRemove)
         {
-            CellStatesList.RemoveAll(cellState => coordinatesToRemove.Contains(cellState.Coordinate3));
-            RebuildCache();
+            foreach (var coordinate in coordinatesToRemove)
+            {
+                RemoveCell(coordinate);
+            }
         }
 
-        public void RemoveCells(IEnumerable<Coordinate2D> coordinatesToRemove2d)
+        public void RemoveCells(List<Coordinate2D> coordinatesToRemove2d)
         {
             RemoveCells(Coordinate2D.To3D(coordinatesToRemove2d));
         }
 
+        public void RemoveCell(Coordinate3D coordinate3D)
+        {
+            CellsList.Remove(Cells[coordinate3D]);
+            Cells.Remove(coordinate3D);
+        }
+
         public List<Coordinate3D> GetAllCellsCoordinates()
         {
-            return AllCoordinatesCache;
+            var list = GetListFromPool();
+            list.AddRange(Cells.Keys);
+            return list;
         }
 
         public List<Coordinate2D> GetAllCellsCoordinates(OffsetTypes offsetType)
         {
-            return Coordinate3D.To2D(AllCoordinatesCache, offsetType);
+            var result = PoolProvider.OffsetCoordinateListPool.Get();
+            var cells = GetAllCellsCoordinates();
+            Coordinate3D.To2D(cells, offsetType, result);
+
+            ReturnListToPool(cells);
+            return result;
         }
 
         public List<CellState> GetAllCells()
         {
-            return CellStatesList;
+            var list = PoolProvider.CellStatesListPool.Get();
+            list.AddRange(Cells.Values);
+            return list;
         }
 
-        public void BlockCells(IEnumerable<Coordinate3D> coordinates)
+        public void BlockCells(List<Coordinate3D> coordinates)
         {
             SetCellBlockStatus(coordinates, true);
         }
@@ -192,7 +206,7 @@ namespace HexCore
             SetCellBlockStatus(coordinate, true);
         }
 
-        public void BlockCells(IEnumerable<Coordinate2D> coordinates)
+        public void BlockCells(List<Coordinate2D> coordinates)
         {
             BlockCells(Coordinate2D.To3D(coordinates));
         }
@@ -202,7 +216,7 @@ namespace HexCore
             BlockCells(coordinate.To3D());
         }
 
-        public void UnblockCells(IEnumerable<Coordinate3D> coordinates)
+        public void UnblockCells(List<Coordinate3D> coordinates)
         {
             SetCellBlockStatus(coordinates, false);
         }
@@ -212,7 +226,7 @@ namespace HexCore
             SetCellBlockStatus(coordinate, false);
         }
 
-        public void UnblockCells(IEnumerable<Coordinate2D> coordinates)
+        public void UnblockCells(List<Coordinate2D> coordinates)
         {
             UnblockCells(Coordinate2D.To3D(coordinates));
         }
@@ -222,21 +236,18 @@ namespace HexCore
             UnblockCells(coordinate.To3D());
         }
 
-        public void SetCellsTerrainType(IEnumerable<Coordinate3D> coordinates, TerrainType terrainType)
+        public void SetCellsTerrainType(List<Coordinate3D> coordinates, TerrainType terrainType)
         {
-            foreach (var coordinate in coordinates)
-            {
-                var cellState = GetCellState(coordinate);
-                cellState.TerrainType = terrainType;
-            }
+            foreach (var coordinate in coordinates) SetCellsTerrainType(coordinate, terrainType);
         }
 
         public void SetCellsTerrainType(Coordinate3D coordinate, TerrainType terrainType)
         {
-            SetCellsTerrainType(new[] {coordinate}, terrainType);
+            var cellState = GetCellState(coordinate);
+            cellState.TerrainType = terrainType;
         }
 
-        public void SetCellsTerrainType(IEnumerable<Coordinate2D> coordinates, TerrainType terrainType)
+        public void SetCellsTerrainType(List<Coordinate2D> coordinates, TerrainType terrainType)
         {
             SetCellsTerrainType(Coordinate2D.To3D(coordinates), terrainType);
         }
@@ -253,7 +264,7 @@ namespace HexCore
         /// <returns></returns>
         public bool Contains(Coordinate3D coordinate)
         {
-            return AllCoordinatesCache.Contains(coordinate);
+            return Cells.ContainsKey(coordinate);
         }
 
         public bool Contains(Coordinate2D coordinate)
@@ -268,7 +279,7 @@ namespace HexCore
         /// <returns></returns>
         public bool IsCellBlocked(Coordinate3D coordinate)
         {
-            return GetCellState(coordinate).IsBlocked;
+            return Cells[coordinate].IsBlocked;
         }
 
         public bool IsCellBlocked(Coordinate2D coordinate)
@@ -284,48 +295,68 @@ namespace HexCore
         /// <returns></returns>
         public List<Coordinate3D> GetRange(Coordinate3D startPosition, int radius)
         {
-            var visited = new List<Coordinate3D> {startPosition};
-            var fringes = new List<List<Fringe>>
-            {
-                new List<Fringe> {new Fringe {Coordinate = startPosition, CostSoFar = 0}}
-            };
+            var currentFringes = PoolProvider.FringeListPool.Get();
+            var nextFringes = PoolProvider.FringeListPool.Get();
+            var range = PoolProvider.CoordinateHashSetPool.Get();
+            var result = GetListFromPool();
 
-            for (var currentRange = 0; currentRange < radius; currentRange++)
+            range.Add(startPosition);
+            nextFringes.Add(new Fringe {Coordinate = startPosition, CostSoFar = 0});
+
+            for (var currentRangePoints = 0; currentRangePoints < radius; currentRangePoints++)
             {
-                var newFringes = new List<Fringe>();
-                foreach (var currentFringe in fringes[currentRange])
-                foreach (var neighbor in GetNeighbors(currentFringe.Coordinate, false))
+                currentFringes.Clear();
+                currentFringes.AddRange(nextFringes);
+                nextFringes.Clear();
+
+                foreach (var currentFringe in currentFringes)
                 {
-                    if (visited.Contains(neighbor)) continue;
-                    visited.Add(neighbor);
-                    newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = 0});
-                }
+                    var neighbors = GetNeighbors(currentFringe.Coordinate, false);
+                    foreach (var neighbor in neighbors)
+                    {
+                        if (range.Contains(neighbor)) continue;
+                        range.Add(neighbor);
+                        result.Add(neighbor);
+                        nextFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = 0});
+                    }
 
-                fringes.Add(newFringes);
+                    ReturnListToPool(neighbors);
+                }
             }
 
-            // So start position won't be included in the range
-            visited.Remove(startPosition);
-            return visited;
+            PoolProvider.FringeListPool.Return(currentFringes);
+            PoolProvider.FringeListPool.Return(nextFringes);
+            PoolProvider.CoordinateHashSetPool.Return(range);
+
+            return result;
         }
 
         public List<Coordinate2D> GetRange(Coordinate2D startPosition, int radius)
         {
-            return Coordinate3D.To2D(
-                GetRange(startPosition.To3D(), radius),
-                startPosition.OffsetType
+            var list = GetRange(startPosition.To3D(), radius);
+            var result = PoolProvider.OffsetCoordinateListPool.Get();
+            Coordinate3D.To2D(
+                list,
+                startPosition.OffsetType,
+                result
             );
+
+            ReturnListToPool(list);
+            return result;
         }
 
-        public IEnumerable<Coordinate3D> GetLine(Coordinate3D start, Coordinate3D direction, int length)
+        public List<Coordinate3D> GetLine(Coordinate3D start, Coordinate3D direction, int length)
         {
             if (!Directions.Contains(direction)) throw new InvalidOperationException("Invalid direction");
+            var result = GetListFromPool();
 
             for (var currentLength = 1; currentLength < length + 1; currentLength++)
             {
                 var next = start + direction * currentLength;
-                if (Contains(next)) yield return next;
+                if (Contains(next)) result.Add(next);
             }
+
+            return result;
         }
 
         /// <summary>
@@ -338,41 +369,74 @@ namespace HexCore
         public List<Coordinate3D> GetMovementRange(Coordinate3D startPosition, int movementPoints,
             MovementType movementType)
         {
-            var visited = new List<Coordinate3D> {startPosition};
-            var fringes = new List<List<Fringe>>
-            {
-                new List<Fringe> {new Fringe {Coordinate = startPosition, CostSoFar = 0}}
-            };
+            var currentFringes = PoolProvider.FringeListPool.Get();
+            var nextFringes = PoolProvider.FringeListPool.Get();
+            var range = PoolProvider.CoordinateHashSetPool.Get();
+            var result = PoolProvider.CoordinateListPool.Get();
 
-            for (var currentRangeIndex = 0; currentRangeIndex < movementPoints; currentRangeIndex++)
+            range.Add(startPosition);
+            nextFringes.Add(new Fringe {Coordinate = startPosition, CostSoFar = 0});
+
+            for (var currentRangePoints = 0; currentRangePoints < movementPoints; currentRangePoints++)
             {
-                var newFringes = new List<Fringe>();
-                foreach (var currentFringe in fringes[currentRangeIndex])
-                foreach (var neighbor in GetPassableNeighbors(currentFringe.Coordinate))
+                currentFringes.Clear();
+                currentFringes.AddRange(nextFringes);
+                nextFringes.Clear();
+
+                foreach (var currentFringe in currentFringes)
                 {
-                    if (visited.Contains(neighbor)) continue;
-                    var movementCostToNeighbor = GetMovementCostForTheType(neighbor, movementType);
-                    var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
-                    if (newCost > movementPoints) continue;
-                    visited.Add(neighbor);
-                    newFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = newCost});
-                }
+                    var neighbors = GetPassableNeighbors(currentFringe.Coordinate);
 
-                fringes.Add(newFringes);
+                    foreach (var neighbor in neighbors)
+                    {
+                        if (range.Contains(neighbor)) continue;
+                        var movementCostToNeighbor = GetMovementCostForTheType(neighbor, movementType);
+                        var newCost = currentFringe.CostSoFar + movementCostToNeighbor;
+                        if (newCost > movementPoints) continue;
+                        range.Add(neighbor);
+                        result.Add(neighbor);
+                        nextFringes.Add(new Fringe {Coordinate = neighbor, CostSoFar = newCost});
+                    }
+
+                    ReturnListToPool(neighbors);
+                }
             }
 
-            // So start position won't be included in the range
-            visited.Remove(startPosition);
-            return visited;
+            PoolProvider.FringeListPool.Return(currentFringes);
+            PoolProvider.FringeListPool.Return(nextFringes);
+            PoolProvider.CoordinateHashSetPool.Return(range);
+
+            return result;
         }
 
         public List<Coordinate2D> GetMovementRange(Coordinate2D startPosition, int movementPoints,
             MovementType movementType)
         {
-            return Coordinate3D.To2D(
-                GetMovementRange(startPosition.To3D(), movementPoints, movementType),
-                startPosition.OffsetType
+            var list = GetMovementRange(startPosition.To3D(), movementPoints, movementType);
+            var result = PoolProvider.OffsetCoordinateListPool.Get();
+            Coordinate3D.To2D(
+                list,
+                startPosition.OffsetType,
+                result
             );
+
+            ReturnListToPool(list);
+            return result;
+        }
+
+        public bool IsWithinMovementRange(Coordinate2D startPosition, Coordinate2D target, int movementPoints,
+            MovementType movementType)
+        {
+            var target3D = target.To3D();
+            var result = false;
+            var list = GetMovementRange(startPosition.To3D(), movementPoints, movementType);
+
+            foreach (var coordinate in list)
+                if (coordinate.Equals(target3D))
+                    result = true;
+
+            ReturnListToPool(list);
+            return result;
         }
 
         /// <summary>
@@ -382,7 +446,7 @@ namespace HexCore
         /// <returns></returns>
         public CellState GetCellState(Coordinate3D coordinate)
         {
-            return CoordinateToCellStatesCache[coordinate];
+            return Cells[coordinate];
         }
 
         public CellState GetCellState(Coordinate2D coordinate)
@@ -404,13 +468,31 @@ namespace HexCore
 
         public List<Coordinate2D> GetShortestPath(Coordinate2D start, Coordinate2D goal, MovementType unitMovementType)
         {
-            return Coordinate3D.To2D(
-                GetShortestPath(start.To3D(), goal.To3D(), unitMovementType),
-                start.OffsetType
+            var path = GetShortestPath(start.To3D(), goal.To3D(), unitMovementType);
+            var result = PoolProvider.OffsetCoordinateListPool.Get();
+
+            Coordinate3D.To2D(
+                path,
+                start.OffsetType,
+                result
             );
+
+            ReturnListToPool(path);
+            return result;
         }
 
-        private struct Fringe
+        public void ReturnListToPool(List<Coordinate2D> list)
+        {
+            PoolProvider.OffsetCoordinateListPool.Return(list);
+        }
+
+        public void ReturnListToPool(List<CellState> list)
+        {
+            PoolProvider.CellStatesListPool.Return(list);
+        }
+
+        [Serializable]
+        public struct Fringe
         {
             public Coordinate3D Coordinate;
             public int CostSoFar;

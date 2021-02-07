@@ -5,6 +5,8 @@ namespace HexCore
     public interface IWeightedGraph
     {
         int GetMovementCostForTheType(Coordinate3D a, MovementType unitMovementType);
-        IEnumerable<Coordinate3D> GetPassableNeighbors(Coordinate3D id);
+        List<Coordinate3D> GetPassableNeighbors(Coordinate3D id);
+        void ReturnListToPool(List<Coordinate3D> list);
+        List<Coordinate3D> GetListFromPool();
     }
 }

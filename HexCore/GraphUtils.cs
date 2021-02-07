@@ -11,13 +11,15 @@ namespace HexCore
             var offsetCoordinates =
                 Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
 
-            var areCoordinatesInitialized = offsetCoordinates.Count > 0;
+            var areCoordinatesInitialized = offsetCoordinates.Any();
 
             var width = areCoordinatesInitialized ? offsetCoordinates.Select(item => item.X).Max() + 1 : 0;
             var height = areCoordinatesInitialized ? offsetCoordinates.Select(item => item.Y).Max() + 1 : 0;
 
             if (width > newWidth)
             {
+                offsetCoordinates =
+                    Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
                 var coordinatesToRemove =
                     Coordinate2D.To3D(offsetCoordinates.Where(coordinate => coordinate.X >= newWidth).ToList());
                 graph.RemoveCells(coordinatesToRemove);
@@ -25,6 +27,8 @@ namespace HexCore
 
             if (height > newHeight)
             {
+                offsetCoordinates =
+                    Coordinate3D.To2D(graph.GetAllCellsCoordinates(), offsetType);
                 var coordinatesToRemove =
                     Coordinate2D.To3D(offsetCoordinates.Where(coordinate => coordinate.Y >= newHeight).ToList());
                 graph.RemoveCells(coordinatesToRemove);
@@ -53,7 +57,7 @@ namespace HexCore
             }
         }
 
-        private static IEnumerable<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
+        private static List<CellState> CreateNewCellsForColumn(int x, int oldY, int newY,
             TerrainType defaultTerrainType, OffsetTypes offsetType)
         {
             var newCells = new List<CellState>();

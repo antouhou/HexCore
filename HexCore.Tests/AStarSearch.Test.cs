@@ -23,7 +23,7 @@ namespace HexCoreTests
             var start = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
             var goal = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
 
-            var expectedPath = new[]
+            var expectedPath = new List<Coordinate3D>
             {
                 // But this time we can't go to 1,1, since there is movement penalty. Instead, we are going to the left - 1,2 first
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(),
@@ -45,7 +45,7 @@ namespace HexCoreTests
             // What's different from previous test - even if 0,1 is water, if we go from the bottom left
             // to the top left - go through water still we preferable - path length will be only two cells, but because
             // of penalty it'll cost 3 movement point. Going through all corners will take 6 points - 6 cells, 1 point each.
-            expectedPath = new[]
+            expectedPath = new List<Coordinate3D>
             {
                 // Going up to the water
                 new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
@@ -74,7 +74,7 @@ namespace HexCoreTests
             // Now we have two shortest paths - 1,1, 1,0, 0,0 costs 4, since there is a penalty on 1,1
             // And 2,1, 2,0, 1,0 0,0, costs 4 too. It's 1 cell longer, but there is no penalties.
             // We are expecting to take path 1 because of the heuristics - it's leades to our goal a bit more stright.
-            var expectedPath = new[]
+            var expectedPath = new List<Coordinate3D>
             {
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight).To3D(),
@@ -98,7 +98,7 @@ namespace HexCoreTests
             var goal = new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D();
 
             // We expect algo to go up by diagonal and then turn left
-            var expectedPath = new[]
+            var expectedPath = new List<Coordinate3D>
             {
                 // Go up and left
                 new Coordinate2D(4, 5, OffsetTypes.OddRowsRight).To3D(),
@@ -132,7 +132,7 @@ namespace HexCoreTests
                 new Coordinate2D(3, 3, OffsetTypes.OddRowsRight)
             }), MovementTypesFixture.Water);
 
-            expectedPath = new[]
+            expectedPath = new List<Coordinate3D>
             {
                 // Avoiding obstacles
                 new Coordinate2D(6, 6, OffsetTypes.OddRowsRight).To3D(),
@@ -156,7 +156,7 @@ namespace HexCoreTests
             // Now let's check water movement type - it should prefer going through the water rather than the ground
             path = AStarSearch.FindShortestPath(graph, start, goal, MovementTypesFixture.Swimming);
 
-            expectedPath = new[]
+            expectedPath = new List<Coordinate3D>
             {
                 // Avoiding obstacles
                 new Coordinate2D(6, 6, OffsetTypes.OddRowsRight).To3D(),
@@ -189,7 +189,7 @@ namespace HexCoreTests
             var start = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight).To3D();
             var goal = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
 
-            var expectedPath = new[]
+            var expectedPath = new List<Coordinate3D>
             {
                 // But this time we can't go to 1,1, since it's blocked. Instead, we are going to the left - 1,2 first
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(),
@@ -207,7 +207,7 @@ namespace HexCoreTests
             graph.BlockCells(new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D());
             start = new Coordinate2D(0, 2, OffsetTypes.OddRowsRight).To3D();
 
-            expectedPath = new[]
+            expectedPath = new List<Coordinate3D>
             {
                 // Now we need to go through all corners - first let's go to the bottom right
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D(),
@@ -240,7 +240,7 @@ namespace HexCoreTests
             // To top left
             var goal = new Coordinate2D(0, 0, OffsetTypes.OddRowsRight).To3D();
 
-            var expectedPath = new[]
+            var expectedPath = new List<Coordinate3D>
             {
                 // From 2, 2 we move to 1,1, which is central
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
@@ -258,7 +258,7 @@ namespace HexCoreTests
         public void FindShortestPathShouldReturnAnEmptyList_WhenNoPathFound()
         {
             // There's no connection between (0,1) and (2,5)
-            var graph = new Graph(new[]
+            var graph = new Graph(new List<CellState>
             {
                 new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
                 new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),

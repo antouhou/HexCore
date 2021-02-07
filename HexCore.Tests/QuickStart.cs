@@ -14,7 +14,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new TerrainType[] {ground, water},
+                new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -30,7 +30,7 @@ namespace HexCoreTests
                 }
             );
 
-            var graph = new Graph(new[]
+            var graph = new Graph(new List<CellState>
             {
                 new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), ground),
                 new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), ground),
@@ -60,6 +60,19 @@ namespace HexCoreTests
             graph.UnblockCells(pawnPosition);
             pawnPosition = pawnGoal;
             graph.BlockCells(pawnGoal);
+
+            var expectedMovementRange = new List<Coordinate3D>
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D()
+            };
+
+            var expectedPath = new List<Coordinate3D>
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                pawnGoal
+            };
         }
     }
 }

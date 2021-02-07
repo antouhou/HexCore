@@ -1,4 +1,6 @@
-﻿namespace HexCore
+﻿using System.Linq;
+
+namespace HexCore
 {
     public static class GraphFactory
     {
@@ -7,7 +9,7 @@
             TerrainType defaultTerrainType,
             OffsetTypes offsetType = OffsetTypes.OddRowsRight)
         {
-            var graph = new Graph(new CellState[] { }, movementTypes);
+            var graph = new Graph(new CellState[] { }.ToList(), movementTypes);
 
             GraphUtils.ResizeSquareGraph(graph, offsetType, width, height, defaultTerrainType);
 

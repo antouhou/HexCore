@@ -6,6 +6,11 @@
 <img src='https://github.com/antouhou/HexCore/workflows/Test%20and%20build/badge.svg' alt="Build status" />
 
 HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, various coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
+
+HexCore is designed with performance in mind: it is a zero heap allocation library.
+HexCore achieves zero allocation library by using an object pool with preallocated lists.
+Pass any list returned by the library to the `Graph#ReturnListToPool` method after you no longer need it, and it will be recycled without any memory allocation.
+
 ## Installation
 
 ### Unity:
@@ -40,7 +45,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new TerrainType[] {ground, water},
+                new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -56,7 +61,7 @@ namespace HexCoreTests
                 }
             );
 
-            var graph = new Graph(new[]
+            var graph = new Graph(new List<CellState>
             {
                 new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), ground),
                 new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), ground),
@@ -86,6 +91,19 @@ namespace HexCoreTests
             graph.UnblockCells(pawnPosition);
             pawnPosition = pawnGoal;
             graph.BlockCells(pawnGoal);
+
+            var expectedMovementRange = new List<Coordinate3D>
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
+                new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D()
+            };
+
+            var expectedPath = new List<Coordinate3D>
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                pawnGoal
+            };
         }
     }
 }

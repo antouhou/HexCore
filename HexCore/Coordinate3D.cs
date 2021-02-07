@@ -1,13 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HexCore
 {
     [Serializable]
-    public struct Coordinate3D
+    public struct Coordinate3D : IEquatable<Coordinate3D>
     {
         public int X, Y, Z;
+
+        public Coordinate3D(int x, int y, int z)
+        {
+            if (x + y + z != 0)
+                throw new InvalidOperationException(
+                    "Sum of all points in 3D coordinate should always be equal to zero");
+
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public bool Equals(Coordinate3D other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
 
         public Coordinate2D To2D(OffsetTypes offsetType)
         {
@@ -43,20 +58,14 @@ namespace HexCore
             return result;
         }
 
-        public static List<Coordinate2D> To2D(IEnumerable<Coordinate3D> coordinate3Ds, OffsetTypes offsetType)
+        public static List<Coordinate2D> To2D(List<Coordinate3D> coordinate3Ds, OffsetTypes offsetType,
+            List<Coordinate2D> listToWriteTo = null)
         {
-            return coordinate3Ds.Select(coordinate3D => coordinate3D.To2D(offsetType)).ToList();
-        }
+            if (listToWriteTo == null) listToWriteTo = new List<Coordinate2D>();
 
-        public Coordinate3D(int x, int y, int z)
-        {
-            if (x + y + z != 0)
-                throw new InvalidOperationException(
-                    "Sum of all points in 3D coordinate should always be equal to zero");
+            foreach (var coordinate3D in coordinate3Ds) listToWriteTo.Add(coordinate3D.To2D(offsetType));
 
-            X = x;
-            Y = y;
-            Z = z;
+            return listToWriteTo;
         }
 
         public static Coordinate3D operator +(Coordinate3D a, Coordinate3D b)
@@ -77,6 +86,20 @@ namespace HexCore
         public override string ToString()
         {
             return $"({X}, {Y}, {Z})";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Coordinate3D))
+                return false;
+
+            var other = (Coordinate3D) obj;
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public override int GetHashCode()
+        {
+            return X * 10000 + Y * 1000 + Z;
         }
     }
 }

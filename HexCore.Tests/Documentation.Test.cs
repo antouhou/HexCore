@@ -17,7 +17,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new TerrainType[] { ground, water }, 
+                new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -44,7 +44,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new TerrainType[] { ground, water }, 
+                new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -59,13 +59,14 @@ namespace HexCoreTests
                     }
                 }
             );
-            
-            var graph = new Graph(new CellState[] { 
-                new CellState(false, new Coordinate2D(0,0, OffsetTypes.OddRowsRight), ground),
-                new CellState(false, new Coordinate2D(0,1, OffsetTypes.OddRowsRight), ground),
-                new CellState(true, new Coordinate2D(1,0, OffsetTypes.OddRowsRight), water),
-                new CellState(false, new Coordinate2D(1,1, OffsetTypes.OddRowsRight), water),
-                new CellState(false, new Coordinate2D(1,2, OffsetTypes.OddRowsRight), ground)
+
+            var graph = new Graph(new List<CellState>
+            {
+                new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), ground),
+                new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), ground),
+                new CellState(true, new Coordinate2D(1, 0, OffsetTypes.OddRowsRight), water),
+                new CellState(false, new Coordinate2D(1, 1, OffsetTypes.OddRowsRight), water),
+                new CellState(false, new Coordinate2D(1, 2, OffsetTypes.OddRowsRight), ground)
             }, movementTypes);
         }
     }

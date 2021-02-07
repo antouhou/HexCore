@@ -13,7 +13,7 @@ namespace HexCoreTests
         {
             var ground = new TerrainType(1, "Ground");
             var walking = new MovementType(1, "Walking");
-            var movementTypes = new MovementTypes(new TerrainType[] {ground},
+            var movementTypes = new MovementTypes(new[] {ground},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walking] = new Dictionary<TerrainType, int>
@@ -38,7 +38,7 @@ namespace HexCoreTests
 
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new TerrainType[] {ground, water},
+                    var movementTypes = new MovementTypes(new[] {ground, water},
                         new Dictionary<MovementType, Dictionary<TerrainType, int>>
                         {
                             [walkingType] = new Dictionary<TerrainType, int>
@@ -72,7 +72,7 @@ namespace HexCoreTests
 
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new TerrainType[] {ground, water, air},
+                    var movementTypes = new MovementTypes(new[] {ground, water, air},
                         new Dictionary<MovementType, Dictionary<TerrainType, int>>
                         {
                             [walkingType] = new Dictionary<TerrainType, int>
@@ -105,7 +105,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(1, "Swimming");
             Assert.That(() =>
                 {
-                    var movementTypes = new MovementTypes(new TerrainType[] {ground, water},
+                    var movementTypes = new MovementTypes(new[] {ground, water},
                         new Dictionary<MovementType, Dictionary<TerrainType, int>>
                         {
                             [walkingType] = new Dictionary<TerrainType, int>
@@ -132,7 +132,7 @@ namespace HexCoreTests
             Assert.That(() =>
                 {
                     var movementTypes =
-                        new MovementTypes(new TerrainType[] {ground},
+                        new MovementTypes(new[] {ground},
                             new Dictionary<MovementType, Dictionary<TerrainType, int>>());
                 },
                 Throws.ArgumentException.With.Message.EqualTo(
@@ -163,7 +163,7 @@ namespace HexCoreTests
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(2, "Swimming");
 
-            var movementTypes = new MovementTypes(new TerrainType[] {ground, water},
+            var movementTypes = new MovementTypes(new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -191,7 +191,7 @@ namespace HexCoreTests
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(123, "Swimming");
 
-            var movementTypes = new MovementTypes(new TerrainType[] {ground, water},
+            var movementTypes = new MovementTypes(new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -221,7 +221,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
             var flyingType = new MovementType(3, "Flying");
 
-            var movementTypes = new MovementTypes(new TerrainType[]
+            var movementTypes = new MovementTypes(new[]
             {
                 ground, water, air
             }, new Dictionary<MovementType, Dictionary<TerrainType, int>>
@@ -287,7 +287,7 @@ namespace HexCoreTests
             var walkingType = new MovementType(1, "Walking");
             var swimmingType = new MovementType(123, "Swimming");
 
-            var movementTypes = new MovementTypes(new TerrainType[] {ground, water},
+            var movementTypes = new MovementTypes(new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>

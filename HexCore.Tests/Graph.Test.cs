@@ -19,7 +19,7 @@ namespace HexCoreTests
             var unexpectedTerrainType = new TerrainType(10, "Some Unexpected Terrain");
             Assert.That(() =>
                 {
-                    graph.AddCells(new[]
+                    graph.AddCells(new List<CellState>
                     {
                         new CellState(
                             false,
@@ -36,7 +36,7 @@ namespace HexCoreTests
         public void GetAllCells_ShouldReturnAllCellStates()
         {
             var movementTypes = MovementTypesFixture.GetMovementTypes();
-            var cellStates = new[]
+            var cellStates = new List<CellState>
             {
                 new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
                 new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
@@ -52,10 +52,16 @@ namespace HexCoreTests
         [Test]
         public void GetAllCellsCoordinate_ShouldReturn2DCoordinates_WhenOffsetTypeIsPassed()
         {
-            var graph = GraphFactory.CreateRectangularGraph(2, 2, MovementTypesFixture.GetMovementTypes(),
-                MovementTypesFixture.Ground);
+            var states = new List<CellState>
+            {
+                new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
+                new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
+                new CellState(false, new Coordinate2D(1, 0, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground),
+                new CellState(false, new Coordinate2D(1, 1, OffsetTypes.OddRowsRight), MovementTypesFixture.Ground)
+            };
+            var graph = new Graph(states, MovementTypesFixture.GetMovementTypes());
 
-            var expectedCoordinates = new[]
+            var expectedCoordinates = new List<Coordinate2D>
             {
                 new Coordinate2D(0, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
@@ -221,13 +227,13 @@ namespace HexCoreTests
             var center2d = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
             var center = center2d.To3D();
 
-            graph.BlockCells(new[]
+            graph.BlockCells(new List<Coordinate2D>
             {
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight)
             });
 
-            var expectedPassableNeighbors2d = new[]
+            var expectedPassableNeighbors2d = new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 1, OffsetTypes.OddRowsRight),
@@ -248,7 +254,7 @@ namespace HexCoreTests
             var center2d = new Coordinate2D(1, 0, OffsetTypes.OddRowsRight);
             var center = center2d.To3D();
 
-            var expectedPassableNeighbors2d = new[]
+            var expectedPassableNeighbors2d = new List<Coordinate2D>
             {
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
@@ -269,7 +275,7 @@ namespace HexCoreTests
             var center2d = new Coordinate2D(1, 1, OffsetTypes.OddRowsRight);
             var center = center2d.To3D();
 
-            var expectedPassableNeighbors2d = new[]
+            var expectedPassableNeighbors2d = new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
@@ -337,11 +343,11 @@ namespace HexCoreTests
             var start = start2d.To3D();
             var goal2d = new Coordinate2D(2, 2, OffsetTypes.OddRowsRight);
             var goal = goal2d.To3D();
-            var expectedPath2d = new[]
+            var expectedPath2d = new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight),
-                new Coordinate2D(2, 2, OffsetTypes.OddRowsRight)
+                goal2d
             };
             var expectedShortestPath = Coordinate2D.To3D(expectedPath2d);
 
@@ -374,11 +380,11 @@ namespace HexCoreTests
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
 
-            var cellsToRemove = new[]
+            var cellsToRemove = new List<Coordinate2D>
             {
                 new Coordinate2D(1, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight)
-            };
+            }.ToList();
             var cellsToRemove3d = Coordinate2D.To3D(cellsToRemove);
 
             Assert.That(graph.GetAllCellsCoordinates(), Does.Contain(cellsToRemove3d[0]));
@@ -411,7 +417,7 @@ namespace HexCoreTests
             foreach (var coordinate in coordinatesToSet)
                 Assert.That(graph.GetCellState(coordinate).TerrainType, Is.EqualTo(MovementTypesFixture.Water));
 
-            graph.SetCellsTerrainType(new[]
+            graph.SetCellsTerrainType(new List<Coordinate2D>
             {
                 new Coordinate2D(0, 1, OffsetTypes.OddRowsRight),
                 new Coordinate2D(0, 2, OffsetTypes.OddRowsRight)
@@ -444,7 +450,7 @@ namespace HexCoreTests
             var graph = GraphFactory.CreateRectangularGraph(3, 3, MovementTypesFixture.GetMovementTypes(),
                 MovementTypesFixture.Ground);
 
-            var cellsToBlock = new[]
+            var cellsToBlock = new List<Coordinate2D>
             {
                 new Coordinate2D(2, 0, OffsetTypes.OddRowsRight),
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight)

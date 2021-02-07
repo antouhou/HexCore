@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HexCore;
 using HexCoreTests.Fixtures;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace HexCoreTests
             //Down and right: Y - 1, Z + 1
             //Down and left:  X - 1, Z + 1
             //Right: X + 1, Y - 1;
-            var expectedCubeCoordinates = new[]
+            var expectedCubeCoordinates = new List<Coordinate3D>
             {
                 new Coordinate3D(0, 0, 0),
                 // Down right:
