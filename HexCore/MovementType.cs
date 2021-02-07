@@ -1,7 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HexCore
 {
+    public class MovementTypeComparer : IEqualityComparer<MovementType>
+    {
+        public bool Equals(MovementType x, MovementType y)
+        {
+            return x.GetName() == y.GetName() && x.GetId() == y.GetId();
+        }
+
+        public int GetHashCode(MovementType obj)
+        {
+            return obj.GetId();
+        }
+    }
+
     [Serializable]
     public struct MovementType : IEquatable<MovementType>
     {

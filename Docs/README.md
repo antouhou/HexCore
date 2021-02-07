@@ -61,7 +61,7 @@ Cells have a state. The state contains info about the cell coordinate, whether i
 
 _Note: This example uses `Coordinate2D` to make it easier to understand what's going on, but it's recommended to use `Coordinate3D` instead. You can read more about coordinate systems in the [coordinate systems section](#coordinates)._
 ```c#
-var graph = new Graph(new CellState[] { 
+var graph = new Graph(new List<CellState> { 
     new CellState(false, new Coordinate2D(0,0, OffsetTypes.OddRowsRight), ground),
     new CellState(false, new Coordinate2D(0,1, OffsetTypes.OddRowsRight), ground),
     new CellState(true, new Coordinate2D(1,0, OffsetTypes.OddRowsRight), water),
@@ -86,11 +86,11 @@ new Coordinate3D(0,0,0).To2D(OffsetTypes.OddRowsRight);
 
 Both structures also have static method to convert an enumerable:
 ```c#
-Coordinate2D.To3D(new [] { 
+Coordinate2D.To3D(new List<Coordinate2D> { 
     Coordinate2D(0,0, OffsetTypes.OddRowsRight),
     Coordinate2D(0,1, OffsetTypes.OddRowsRight)
 });
-Coordinate3D.To2D(new [] { 
+Coordinate3D.To2D(new List<Coordinate3D> { 
     Coordinate3D(0,0,0),
     Coordinate3D(0,1,-1)
 }, OffsetTypes.OddRowsRight)

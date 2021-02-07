@@ -3,12 +3,20 @@ using System.Collections.Generic;
 
 namespace HexCore
 {
+    public struct Path
+    {
+        public int cost;
+        public List<Coordinate3D> cells;
+    }
+
     /**
      * This is path finding algorithm called 'A*'. It's one of the most common pathfindg algorithms.
      * In order to work it needs a grid's graph that's implemented in HexGridGraph class.
      */
     public static class AStarSearch
     {
+        private static ObjectPoolProvider PoolProvider => Graph.PoolProvider;
+
         // Returns a distance to the goal.
         private static double Heuristic(Coordinate3D a, Coordinate3D b)
         {
@@ -18,9 +26,10 @@ namespace HexCore
         public static List<Coordinate3D> FindShortestPath(IWeightedGraph graph, Coordinate3D start, Coordinate3D goal,
             MovementType unitMovementType)
         {
-            var costSoFar = new Dictionary<Coordinate3D, int>();
-            var cameFrom = new Dictionary<Coordinate3D, Coordinate3D>();
-            var frontier = new PriorityQueue<Coordinate3D>();
+            var costSoFar = PoolProvider.CoordinateIntDictionaryPool.Get();
+            var cameFrom = PoolProvider.CoordinateDictionaryPool.Get();
+            var frontier = PoolProvider.CoordinateQueuePool.Get();
+            var path = graph.GetListFromPool();
 
             frontier.Enqueue(start, 0);
             cameFrom[start] = start;
@@ -32,7 +41,9 @@ namespace HexCore
 
                 if (current.Equals(goal)) break;
 
-                foreach (var next in graph.GetPassableNeighbors(current))
+                var neighbors = graph.GetPassableNeighbors(current);
+
+                foreach (var next in neighbors)
                 {
                     var newCost = costSoFar[current] + graph.GetMovementCostForTheType(next, unitMovementType);
                     if (costSoFar.ContainsKey(next) && newCost >= costSoFar[next]) continue;
@@ -41,13 +52,12 @@ namespace HexCore
                     frontier.Enqueue(next, priority);
                     cameFrom[next] = current;
                 }
+
+                graph.ReturnListToPool(neighbors);
             }
 
-            var path = new List<Coordinate3D>();
-            var pathWasNotFound = !cameFrom.ContainsKey(goal);
-
-            // Returning an empty list if the path wasn't found
-            if (pathWasNotFound) return path;
+            var pathWasFound = cameFrom.ContainsKey(goal);
+            if (!pathWasFound) return path;
 
             // Reconstructing path
             var curr = goal;
@@ -59,6 +69,11 @@ namespace HexCore
 
             // Reverse it to start at actual start point
             path.Reverse();
+
+            PoolProvider.CoordinateIntDictionaryPool.Return(costSoFar);
+            PoolProvider.CoordinateDictionaryPool.Return(cameFrom);
+            PoolProvider.CoordinateQueuePool.Return(frontier);
+
             return path;
         }
     }

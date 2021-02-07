@@ -1,7 +1,21 @@
 using System;
+using System.Collections.Generic;
 
 namespace HexCore
 {
+    public class TerrainTypeComparer : IEqualityComparer<TerrainType>
+    {
+        public bool Equals(TerrainType x, TerrainType y)
+        {
+            return x.GetName() == y.GetName() && x.GetId() == y.GetId();
+        }
+
+        public int GetHashCode(TerrainType obj)
+        {
+            return obj.GetId();
+        }
+    }
+
     [Serializable]
     public struct TerrainType : IEquatable<TerrainType>
     {
@@ -13,7 +27,7 @@ namespace HexCore
 
         public int Id;
         public string Name;
-        
+
         public int GetId()
         {
             return Id;

@@ -40,9 +40,23 @@ namespace HexCore
             }
         }
 
-        public static List<Coordinate3D> To3D(IEnumerable<Coordinate2D> coordinate2Ds)
+        public static string ToString(List<Coordinate2D> coordinate2Ds)
         {
-            return coordinate2Ds.Select(coordinate2D => coordinate2D.To3D()).ToList();
+            return coordinate2Ds.Aggregate("", (s, coordinate2D) => s + coordinate2D);
+        }
+
+        public static string ToString(List<Coordinate3D> coordinate3Ds)
+        {
+            return ToString(Coordinate3D.To2D(coordinate3Ds, OffsetTypes.OddRowsRight));
+        }
+
+        public static List<Coordinate3D> To3D(List<Coordinate2D> coordinate2Ds, List<Coordinate3D> listToWriteTo = null)
+        {
+            if (listToWriteTo == null) listToWriteTo = new List<Coordinate3D>();
+
+            foreach (var coordinate2D in coordinate2Ds) listToWriteTo.Add(coordinate2D.To3D());
+
+            return listToWriteTo;
         }
 
         public Coordinate2D(int x, int y, OffsetTypes offsetType)

@@ -17,7 +17,7 @@ namespace HexCoreTests
             var swimmingType = new MovementType(2, "Swimming");
 
             var movementTypes = new MovementTypes(
-                new TerrainType[] {ground, water},
+                new[] {ground, water},
                 new Dictionary<MovementType, Dictionary<TerrainType, int>>
                 {
                     [walkingType] = new Dictionary<TerrainType, int>
@@ -33,7 +33,7 @@ namespace HexCoreTests
                 }
             );
 
-            var graph = new Graph(new[]
+            var graph = new Graph(new List<CellState>
             {
                 new CellState(false, new Coordinate2D(0, 0, OffsetTypes.OddRowsRight), ground),
                 new CellState(false, new Coordinate2D(0, 1, OffsetTypes.OddRowsRight), ground),
@@ -64,21 +64,23 @@ namespace HexCoreTests
             pawnPosition = pawnGoal;
             graph.BlockCells(pawnGoal);
 
-            Assert.That(graph.IsCellBlocked(pawnPosition), Is.True);
-            Assert.That(theShortestPath, Is.EquivalentTo(new[]
-            {
-                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
-                pawnGoal
-            }));
-
-            var expectedMovementRange = new[]
+            var expectedMovementRange = new List<Coordinate3D>
             {
                 new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
                 new Coordinate2D(1, 1, OffsetTypes.OddRowsRight).To3D(),
                 new Coordinate2D(1, 2, OffsetTypes.OddRowsRight).To3D()
             };
+
+            var expectedPath = new List<Coordinate3D>
+            {
+                new Coordinate2D(0, 1, OffsetTypes.OddRowsRight).To3D(),
+                pawnGoal
+            };
+
+            Assert.That(graph.IsCellBlocked(pawnPosition), Is.True);
             Assert.That(pawnMovementRange, Is.EquivalentTo(expectedMovementRange));
-            
+            Assert.That(theShortestPath, Is.EquivalentTo(expectedPath));
+
             QuickStart.Demo();
         }
     }
