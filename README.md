@@ -7,8 +7,8 @@
 
 HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, various coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
 
-HexCore is designed with performance in mind: it is a zero heap allocation library.
-HexCore achieves zero allocation library by using an object pool with preallocated lists.
+HexCore is designed with performance in mind: it is a zero runtime heap allocation library.
+HexCore achieves zero runtime allocations by using an object pool with preallocated lists.
 Pass any list returned by the library to the `Graph#ReturnListToPool` method after you no longer need it, and it will be recycled without any memory allocation.
 
 ## Installation
