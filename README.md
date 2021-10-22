@@ -1,9 +1,16 @@
-[logo]: ./icon48.png "HexCore logo"
+<h1 align="center">
+  <a href="https://github.com/antouhou/HexCore">
+    <img src="./HexCore.Website/wwwroot/img/logo.svg" alt="alt text" title="HexCore logo" style="max-width:400px;">
+  </a>
+  <br>HexCore <br>
+</h1>
 
-# HexCore ![alt text][logo] 
-<a href='https://www.nuget.org/packages/HexCore' target='_blank'><img src='https://buildstats.info/nuget/HexCore' alt='Coverage Status' /></a>
-<a href='https://coveralls.io/github/antouhou/HexCore?branch=master' target='_blank'><img src='https://coveralls.io/repos/github/antouhou/HexCore/badge.svg?branch=master' alt='Coverage Status' /></a>
-<img src='https://github.com/antouhou/HexCore/workflows/Test%20and%20build/badge.svg' alt="Build status" />
+<p align="center">
+  <a href='https://www.nuget.org/packages/HexCore' target='_blank'><img src='https://buildstats.info/nuget/HexCore' alt='Coverage Status' /></a>
+  <a href='https://coveralls.io/github/antouhou/HexCore?branch=master' target='_blank'><img src='https://coveralls.io/repos/github/antouhou/HexCore/badge.svg?branch=master' alt='Coverage Status' /></a>
+  <img src='https://github.com/antouhou/HexCore/workflows/Test%20and%20build/badge.svg' alt="Build status" />
+  <a href="https://lgtm.com/projects/g/antouhou/HexCore/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/antouhou/HexCore.svg?logo=lgtm&logoWidth=18"/></a>
+</p>
 
 HexCore is a library to perform various operations with a hexagonal grid, such as finding shortest paths from one cell to another, managing terrains and movement types, maintaining the grid state, finding various ranges, neighbors, various coordinate systems and converters between them, and some more stuff you may want to do with a hex grid.
 
@@ -25,6 +32,10 @@ The library can be installed from [NuGet](https://www.nuget.org/packages/HexCore
 ## Usage
 
 For the detailed explanations please see [the docs](./Docs).
+
+## Demo
+
+For the interactive demo, please visit the [website](https://hexcore.antouhou.com)!
 
 ### Quickstart
 

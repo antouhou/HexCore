@@ -1,0 +1,109 @@
+@using HexCore
+@using HexCore.Website.Data
+@inject GraphService GraphService
+
+<div
+    class="hex outer @GetOuterHexClassName()"
+    @onclick="@(e => OnTileClick())">
+    <div class="top"></div>
+    <div class="middle">
+        @if (TileData.IsEmptySpace) {
+            <span class="oi oi-cloudy"></span>
+        }
+        else
+        {
+            <div class="hex inner @GetInnerHexClassName()">
+                <div class="top"></div>
+                <div class="middle">
+                    @if (HasPawnOnIt)
+                    {
+                         <div class="unit-container">
+                              <div class="unit @TileData.Pawn.Color" >
+                                  <div class="unit-content">@TileData.Pawn.Name</div>
+                              </div>
+                         </div>
+                    }
+                    else
+                    {
+                        <div>
+                            @TileData.Coordinate2D.ToString()
+                        </div>
+                    @if (TileData.ShowMoveButton)
+                    {
+                         <button class="btn btn-sm btn-info" @onclick="@(e => OnMoveButtonClick())">
+                             Move
+                         </button>
+                    }
+                    }
+                </div>
+                <div class="bottom"></div>
+            </div>
+        }
+
+    </div>
+    <div class="bottom"></div>
+</div>
+
+@code {
+    [Parameter]
+    public HexTileData TileData { get; set; }
+
+    private bool HasPawnOnIt => TileData.Pawn != null;
+
+    private string GetOuterHexClassName()
+    {
+        var className = "";
+        
+        if (TileData.IsEmptySpace)
+        {
+            return "empty";
+        }
+        
+        if (TileData.IsSelected)
+        {
+            className += " selected";
+        }
+
+        if (TileData.ShowMoveButton)
+        {
+            className += " hex-green-highlight";
+        }
+
+        return className;
+    }
+    
+    private string GetInnerHexClassName()
+    {
+        var className = "";
+
+        if (TileData.IsEmptySpace)
+        {
+            return "empty";
+        }
+
+        switch (TileData.CellState.TerrainType.Name)
+        {
+            case "Ground":
+                className += " ground";
+                break;
+            case "Water":
+                className += " water";
+                break;
+        }
+
+        return className;
+    }
+
+    private void OnTileClick()
+    {
+        if (TileData.CellState != null)
+        {
+            GraphService.SelectCell(TileData.CellState);
+        }
+    }
+
+    private void OnMoveButtonClick()
+    {
+        GraphService.MoveCurrentlySelectedPawn(TileData.Coordinate2D);
+    }
+}

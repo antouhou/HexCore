@@ -1,0 +1,86 @@
+@using HexCore
+@using HexCore.Website.Data
+@inject GraphService GraphService
+
+<div>
+    <div class="hex-demo-container">
+        <div class="hex-field">
+            <div>
+                <h2>Map</h2>
+            </div>
+            @foreach (var rowIndex in Enumerable.Range(0, GraphParameter.MaxRowNumber))
+            {
+                <div class=@GetRowClassName(rowIndex)>
+                    @foreach (var columnIndex in Enumerable.Range(0, GraphParameter.MaxColumnNumber))
+                    {
+                        <HexTile
+                            TileData="@GraphParameter.TileData[rowIndex][columnIndex]"/>
+                    }
+                </div>
+            }
+        </div>
+
+        <div>
+            <div>
+                <h2>Current selection</h2>
+            </div>
+            <div>
+                <div>
+                    <h3>Cell</h3></div>
+                <div>
+                    <div class="hex-selection-row">
+                        <div>Offset coordinate: @GraphParameter.CurrentlySelectedCell.Coordinate3.To2D(OffsetTypes.OddRowsRight).ToString()</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Cube coordinate: @GraphParameter.CurrentlySelectedCell.Coordinate3.ToString()</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Is passable: @(GraphParameter.CurrentlySelectedCell.IsBlocked ? "No" : "Yes")</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Cube coordinate: <button class="btn btn-sm btn-primary">Select neighbors</button></div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Get range: <button class="btn btn-sm btn-primary">Select range</button></div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Terrain type: @GraphParameter.CurrentlySelectedCell.TerrainType.Name</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Find path: <button class="btn btn-sm btn-primary">Select to</button></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <h3>Pawn</h3></div>
+                @if (GraphParameter.CurrentlySelectedPawnData != null)
+                {
+                    <div class="hex-selection-row">
+                        <div>Pawn name: @GraphParameter.CurrentlySelectedPawnData.Name</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Movement type: @GraphParameter.CurrentlySelectedPawnData.MovementType.Name</div>
+                    </div>
+                    <div class="hex-selection-row">
+                        <div>Movement points available: @GraphParameter.CurrentlySelectedPawnData.MovementRange</div>
+                    </div>
+                }
+                else
+                {
+                    <span>No pawn on the selected tile</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public GraphData GraphParameter { get; set; }
+
+    private static string GetRowClassName(int rowIndex)
+    {
+        return $"hex-row {(rowIndex % 2 == 1 ? "even" : "")}";
+    }
+}
