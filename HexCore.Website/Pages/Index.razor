@@ -1,0 +1,72 @@
+﻿@page "/"
+
+<div>
+    <div class="top-section">
+        <div class="container">
+            <div class="top-section-logo">
+                <img src="img/logo.svg" alt="HexCore logo"/>
+            </div>
+            <div>
+                <h1>HexCore is a library for working with hexagonal grids in C#</h1>
+            </div>
+            <p></p>
+            <p>
+                It manages map state, works with various terrain
+                and movement types, can find movement ranges, spell ranges, other ranges, can find shortes paths,
+                supports different coordinate systmes to match your needs, and many more.
+            </p>
+        </div>
+
+        <div class="container">
+            <div class="points-container">
+                <div class="point">
+                    <div>
+                        <div class="point-icon"><i class="fas fa-2x fa-tachometer-alt text-bright-gradient"></i></div>
+                        <div class="point-header text-dark-blue">
+                            Quickstart
+                        </div>
+                    </div>
+                    <div class="point-content text-dark-grey">
+                        For more details and a quick start guide, check 
+                        <a href="https://github.com/antouhou/HexCore" target="_blank">the GitHub repo.</a>
+                    </div>
+                </div>
+                <div class="point">
+                    <div>
+                        <div class="point-icon"><i class="fas fa-2x fa-shield-alt text-bright-gradient"></i></div>
+                        <div class="point-header text-dark-blue">
+                            Docs
+                        </div>
+                    </div>
+                    <div class="point-content text-dark-grey">
+                        For full list of functionality and uasge examples, check out 
+                        <a href="https://github.com/antouhou/HexCore/tree/master/Docs" target="_blank">the docs</a>
+                    </div>
+                </div>
+                <div class="point">
+                    <div>
+                        <div class="point-icon"><i class="fas fa-2x fa-server text-bright-gradient"></i></div>
+                        <div class="point-header text-dark-blue">
+                            Demo
+                        </div>
+                    </div>
+                    <div class="point-content text-dark-grey">
+                        Can't wait to see it in action? An interactive demo is built in right into this page!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mid-section">
+        <div class="container" id="demo">
+            <GraphDemo/>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div>This is footer.</div>
+        </div>
+    </div>
+</div>

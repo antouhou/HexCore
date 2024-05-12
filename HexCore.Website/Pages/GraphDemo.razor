@@ -1,0 +1,75 @@
+@page "/graphdemo"
+
+@using HexCore.Website.Data
+@inject GraphService GraphService
+@inject IJSRuntime JsRuntime
+
+<div>
+    <div class="demo-header">
+        <h1>Demo</h1>
+        <div class="collapsible-button" @onclick="@(e => ToggleInfo())">How to use the demo v</div>
+    </div>
+
+    <div @ref="@InfoReference" class="collapsible">
+        <div class="collapsible-content">
+            <p>
+                The map contains two terrain types - water and ground (marked as blue and yellow).
+                There are also three movement types: walking, swimming and heavy. Every movemnt on the
+                map has 2 movement points available. Walking type needs to spend 1 point moving on the
+                gropund and 2 in water, vice versa for the swimming type. Knight, a heavy type, needs
+                to spend 99 point to move through 1 water cell, which at 2 points at his disposal
+                makes it impossible for him to swim.
+            </p>
+            <p>
+                Try clicking various buttons to see what effect it will have!
+            </p>
+            <p>
+                Although the library is written in C#, it runs in the browser thanks to Blazor.
+                The source code for this page is available on GitHub.
+            </p>
+        </div>
+    </div>
+</div>
+
+@if (_graph == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="hex-demo-container">
+        <GraphComponent GraphParameter=@_graph></GraphComponent>
+    </div>
+}
+
+@code {
+    private ElementReference InfoReference;
+    private bool _areInstructionsCollapsed = true;
+    private GraphData _graph;
+    
+    private void OnGraphDataChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleInfoVisibility()
+    {
+        _areInstructionsCollapsed = !_areInstructionsCollapsed;
+    }
+
+    private async Task ToggleInfo()
+    {
+        await JsRuntime.InvokeVoidAsync("toggleExpand", InfoReference);
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _graph = GraphService.GetGraph();
+        GraphService.GraphDataUpdated += OnGraphDataChanged;
+    }
+    
+    public void Dispose()
+    {
+        GraphService.GraphDataUpdated -= OnGraphDataChanged;
+    }
+}

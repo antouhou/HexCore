@@ -343,3 +343,5 @@ gen
 /output.mlpd
 /.vscode/
 .DS_Store
+/coverage/lcov.info
+/HexCore.Tests/coverage/lcov.info

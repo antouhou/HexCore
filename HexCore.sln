@@ -39,6 +39,8 @@ ProjectSection(SolutionItems) = preProject
 	scripts\build.sh = scripts\build.sh
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexCore.Website", "HexCore.Website\HexCore.Website.csproj", "{1079E753-7981-4C80-9544-442E4999941A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C61B245-315C-40AB-B4FF-A0C3949B136F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1079E753-7981-4C80-9544-442E4999941A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1079E753-7981-4C80-9544-442E4999941A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1079E753-7981-4C80-9544-442E4999941A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1079E753-7981-4C80-9544-442E4999941A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{18806130-1907-4EB9-9A51-06DF04E0EF07} = {59CBB725-B2A4-4579-89E5-F73CDE744764}
